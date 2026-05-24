@@ -173,25 +173,11 @@ h1 {
 .action-panel {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   gap: 30px;
   padding: 42px;
   background: linear-gradient(180deg, #ffffff, #f7fafb);
   min-width: 0;
-}
-
-.action-panel h2 {
-  margin: 0 0 10px;
-  color: var(--ink);
-  font-size: 28px;
-  line-height: 1.18;
-  overflow-wrap: anywhere;
-}
-
-.action-panel p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
 }
 
 .button {
@@ -650,11 +636,6 @@ a:focus-visible {
       </div>
 
       <aside class="action-panel" aria-label="Client document upload">
-        <div>
-          <h2>Send documents securely for review.</h2>
-          <p>Register first, then upload tax documents and select the year they belong to.</p>
-        </div>
-
         <div>
           <button class="button full" type="button" id="open-upload">Upload Documents</button>
           <div class="session-note" id="session-note"></div>
