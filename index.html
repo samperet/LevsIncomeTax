@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lev's Income Tax</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317486d'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='34' font-weight='700' fill='white'%3EL%3C/text%3E%3C/svg%3E">
+<style>
+:root {
+  --ink: #18212b;
+  --ink-soft: #415162;
+  --muted: #667789;
+  --line: #d9e0e7;
+  --line-strong: #c5ced8;
+  --paper: #ffffff;
+  --canvas: #f5f7f9;
+  --wash: #edf4f7;
+  --blue: #1e5f8f;
+  --blue-dark: #17486d;
+  --teal: #2e776f;
+  --green: #2f6f4f;
+  --green-bg: #e2f1e8;
+  --red: #b23b3b;
+  --red-bg: #f8dddd;
+  --amber: #936100;
+  --amber-bg: #fff4dc;
+  --shadow: 0 1px 2px rgba(24, 33, 43, 0.08), 0 18px 48px rgba(24, 33, 43, 0.12);
+  --focus: 0 0 0 3px rgba(30, 95, 143, 0.24);
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--canvas);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  background: var(--canvas);
+  font-family: var(--font);
+  line-height: 1.5;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 74px;
+  padding: 0 40px;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--blue-dark), var(--teal));
+  color: var(--paper);
+  font-weight: 850;
+}
+
+.brand-name {
+  margin: 0;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 820;
+  line-height: 1.1;
+}
+
+.brand-sub {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 680;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav a {
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--blue-dark);
+}
+
+.main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 480px);
+  gap: 44px;
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: 64px 40px;
+  align-items: center;
+}
+
+.hero {
+  max-width: 760px;
+}
+
+.hero-panel {
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 2px rgba(24, 33, 43, 0.05);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 30px;
+  height: 2px;
+  background: var(--teal);
+}
+
+h1 {
+  max-width: 720px;
+  margin: 0 0 20px;
+  color: var(--ink);
+  font-size: 62px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.lead {
+  max-width: 650px;
+  margin: 0 0 30px;
+  color: var(--ink-soft);
+  font-size: 19px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--blue);
+  color: var(--paper);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 820;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: var(--blue-dark);
+}
+
+.button.secondary {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--blue-dark);
+  border: 1px solid var(--line);
+}
+
+.button.secondary:hover {
+  background: var(--wash);
+}
+
+.button.ghost {
+  background: transparent;
+  color: var(--blue-dark);
+}
+
+.button.full {
+  width: 100%;
+}
+
+.trust-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 42px;
+}
+
+.trust-item {
+  min-height: 116px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.trust-item strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.trust-item span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.side-card {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.side-card h2 {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.side-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.process {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.process-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--canvas);
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.process-step strong {
+  display: block;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.process-step span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  place-items: center;
+  padding: 20px;
+  background: rgba(24, 33, 43, 0.5);
+}
+
+.modal-backdrop.open {
+  display: grid;
+}
+
+.modal {
+  width: min(720px, 100%);
+  max-height: min(760px, calc(100vh - 40px));
+  overflow: auto;
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.modal-copy {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.close-button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--canvas);
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+label {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 780;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+input[type="file"] {
+  height: auto;
+  min-height: 48px;
+  padding: 11px;
+  color: var(--ink-soft);
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.file-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.file-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--canvas);
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.message {
+  display: none;
+  padding: 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.message.show {
+  display: block;
+}
+
+.message.success {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.message.error {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.message.warning {
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+
+.admin-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  background: var(--canvas);
+}
+
+.admin-panel.open {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+}
+
+.admin-sidebar {
+  padding: 24px;
+  background: var(--paper);
+  border-right: 1px solid var(--line);
+  overflow: auto;
+}
+
+.admin-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.admin-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 20px;
+}
+
+.user-list {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.user-button {
+  width: 100%;
+  min-height: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.user-button:hover,
+.user-button.active {
+  border-color: #a8c6db;
+  background: var(--wash);
+}
+
+.user-button strong {
+  display: block;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.user-button span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-main {
+  padding: 28px;
+  overflow: auto;
+}
+
+.dashboard-card {
+  max-width: 980px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow: 0 1px 2px rgba(24, 33, 43, 0.06);
+}
+
+.dashboard-header {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 24px;
+}
+
+.dashboard-header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.doc-table th,
+.doc-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-table th {
+  background: var(--canvas);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 820;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.doc-table a {
+  color: var(--blue-dark);
+  font-weight: 780;
+  text-decoration: none;
+}
+
+.empty {
+  padding: 34px 24px;
+  color: var(--muted);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--wash);
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 820;
+}
+
+@media (max-width: 980px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 48px;
+  }
+
+  .admin-panel.open {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 680px) {
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px 16px;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .main {
+    padding: 40px 16px;
+  }
+
+  h1 {
+    font-size: 38px;
+  }
+
+  .lead {
+    font-size: 16px;
+  }
+
+  .trust-row,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-header,
+  .form {
+    padding: 18px;
+  }
+
+  .doc-table {
+    min-width: 640px;
+  }
+
+  .dashboard-card {
+    overflow-x: auto;
+  }
+}
+</style>
+</head>
+<body>
+<div class="page" id="home">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">L</div>
+      <div>
+        <p class="brand-name">Lev's Income Tax</p>
+        <p class="brand-sub">Tax preparation and document intake</p>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#process">Process</a>
+      <a href="accounting-spectrum-design-system.html">Design System</a>
+    </nav>
+  </header>
+
+  <main class="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-panel">
+        <span class="eyebrow">Professional tax support</span>
+        <h1 id="page-title">Lev's Income Tax</h1>
+        <p class="lead">A straightforward place to send tax documents, identify the tax year, and keep your return moving without extra back-and-forth.</p>
+        <div class="hero-actions">
+          <button class="button" type="button" id="open-upload">Upload Documents</button>
+          <a class="button secondary" href="#process">How it works</a>
+        </div>
+      </div>
+
+      <div class="trust-row" aria-label="Service highlights">
+        <div class="trust-item">
+          <strong>Simple intake</strong>
+          <span>Upload W-2s, 1099s, receipts, and supporting forms in one guided flow.</span>
+        </div>
+        <div class="trust-item">
+          <strong>Clear tax years</strong>
+          <span>Each upload is tagged to the correct recent tax year before submission.</span>
+        </div>
+        <div class="trust-item">
+          <strong>Local preview</strong>
+          <span>This prototype stores demo submissions in this browser for review.</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-card" id="process" aria-label="Upload process">
+      <h2>Document upload process</h2>
+      <p>Use the upload flow to create a client record and attach documents to a selected tax year.</p>
+      <div class="process">
+        <div class="process-step">
+          <span class="step-number">1</span>
+          <div><strong>Sign in</strong><span>Enter your name, email address, and password.</span></div>
+        </div>
+        <div class="process-step">
+          <span class="step-number">2</span>
+          <div><strong>Select tax year</strong><span>Choose from the last three tax years.</span></div>
+        </div>
+        <div class="process-step">
+          <span class="step-number">3</span>
+          <div><strong>Attach documents</strong><span>Add one or more documents and submit them for review.</span></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="upload-modal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="upload-title">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title" id="upload-title">Upload Documents</h2>
+        <p class="modal-copy">Create or update your intake record, then attach files for the selected tax year.</p>
+      </div>
+      <button class="close-button" type="button" data-close-modal aria-label="Close upload form">×</button>
+    </div>
+
+    <form class="form" id="upload-form">
+      <div class="form-grid">
+        <div class="field">
+          <label for="client-name">Full name</label>
+          <input id="client-name" name="client-name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="client-email">Email address</label>
+          <input id="client-email" name="client-email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="client-password">Password</label>
+          <input id="client-password" name="client-password" type="password" autocomplete="new-password" required minlength="6">
+          <span class="hint">Use at least 6 characters for this preview.</span>
+        </div>
+        <div class="field">
+          <label for="tax-year">Tax year</label>
+          <select id="tax-year" name="tax-year" required></select>
+        </div>
+        <div class="field full">
+          <label for="tax-documents">Documents</label>
+          <input id="tax-documents" name="tax-documents" type="file" multiple required>
+          <span class="hint">For this local preview, small files are stored in browser storage for admin review.</span>
+        </div>
+      </div>
+      <ul class="file-list" id="selected-files" aria-label="Selected files"></ul>
+      <div class="message" id="upload-message" role="status" aria-live="polite"></div>
+      <button class="button full" type="submit">Submit Documents</button>
+    </form>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="admin-modal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title" id="admin-login-title">Admin Access</h2>
+        <p class="modal-copy">Enter the admin password to view submitted users and documents.</p>
+      </div>
+      <button class="close-button" type="button" data-close-admin-login aria-label="Close admin access">×</button>
+    </div>
+    <form class="form" id="admin-login-form">
+      <div class="field">
+        <label for="admin-password">Admin password</label>
+        <input id="admin-password" type="password" autocomplete="current-password" required>
+        <span class="hint">Demo password: <strong>levadmin</strong></span>
+      </div>
+      <div class="message" id="admin-message" role="status" aria-live="polite"></div>
+      <button class="button full" type="submit">Open Dashboard</button>
+    </form>
+  </section>
+</div>
+
+<section class="admin-panel" id="admin-dashboard" aria-label="Admin dashboard">
+  <aside class="admin-sidebar">
+    <div class="admin-top">
+      <h2 class="admin-title">Clients</h2>
+      <button class="button ghost" type="button" id="close-dashboard">Close</button>
+    </div>
+    <div class="field">
+      <label for="client-filter">Filter by name or email</label>
+      <input id="client-filter" type="search" placeholder="Search clients">
+    </div>
+    <ul class="user-list" id="user-list"></ul>
+  </aside>
+
+  <main class="admin-main">
+    <article class="dashboard-card" id="document-panel">
+      <div class="dashboard-header">
+        <h2>Submitted Documents</h2>
+        <p>Select a client to review uploaded documents.</p>
+      </div>
+      <div class="empty">No client selected.</div>
+    </article>
+  </main>
+</section>
+
+<script>
+const ADMIN_TRIGGER = "leviosa";
+const ADMIN_PASSWORD = "levadmin";
+const STORAGE_KEY = "levs-income-tax-submissions";
+const MAX_FILE_BYTES = 650000;
+
+const openUploadButton = document.querySelector("#open-upload");
+const uploadModal = document.querySelector("#upload-modal");
+const uploadForm = document.querySelector("#upload-form");
+const uploadMessage = document.querySelector("#upload-message");
+const fileInput = document.querySelector("#tax-documents");
+const fileList = document.querySelector("#selected-files");
+const yearSelect = document.querySelector("#tax-year");
+const adminModal = document.querySelector("#admin-modal");
+const adminLoginForm = document.querySelector("#admin-login-form");
+const adminMessage = document.querySelector("#admin-message");
+const adminPasswordInput = document.querySelector("#admin-password");
+const adminDashboard = document.querySelector("#admin-dashboard");
+const userList = document.querySelector("#user-list");
+const clientFilter = document.querySelector("#client-filter");
+const documentPanel = document.querySelector("#document-panel");
+let activeClientId = null;
+let typedBuffer = "";
+
+function getTaxYears() {
+  const currentYear = new Date().getFullYear();
+  return [currentYear - 1, currentYear - 2, currentYear - 3];
+}
+
+function setYears() {
+  yearSelect.innerHTML = getTaxYears()
+    .map((year) => `<option value="${year}">${year}</option>`)
+    .join("");
+}
+
+function openModal(modal) {
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeModal(modal) {
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function showMessage(element, type, text) {
+  element.className = `message show ${type}`;
+  element.textContent = text;
+}
+
+function clearMessage(element) {
+  element.className = "message";
+  element.textContent = "";
+}
+
+function getSubmissions() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveSubmissions(submissions) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function fileToRecord(file) {
+  return new Promise((resolve) => {
+    const baseRecord = {
+      id: crypto.randomUUID(),
+      name: file.name,
+      type: file.type || "application/octet-stream",
+      size: file.size,
+      stored: false,
+      dataUrl: "",
+      uploadedAt: new Date().toISOString()
+    };
+
+    if (file.size > MAX_FILE_BYTES) {
+      resolve(baseRecord);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => resolve({ ...baseRecord, stored: true, dataUrl: reader.result });
+    reader.onerror = () => resolve(baseRecord);
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderSelectedFiles() {
+  const files = [...fileInput.files];
+  fileList.innerHTML = files
+    .map((file) => `<li><span>${file.name}</span><span>${formatBytes(file.size)}</span></li>`)
+    .join("");
+}
+
+function upsertSubmission(newSubmission) {
+  const submissions = getSubmissions();
+  const existing = submissions.find((submission) => submission.email.toLowerCase() === newSubmission.email.toLowerCase());
+
+  if (existing) {
+    existing.name = newSubmission.name;
+    existing.password = newSubmission.password;
+    existing.updatedAt = newSubmission.updatedAt;
+    existing.documents.push(...newSubmission.documents);
+    saveSubmissions(submissions);
+    return existing;
+  }
+
+  submissions.unshift(newSubmission);
+  saveSubmissions(submissions);
+  return newSubmission;
+}
+
+function getFilteredClients() {
+  const query = clientFilter.value.trim().toLowerCase();
+  return getSubmissions().filter((client) => {
+    return client.name.toLowerCase().includes(query) || client.email.toLowerCase().includes(query);
+  });
+}
+
+function renderUsers() {
+  const clients = getFilteredClients();
+
+  if (!clients.length) {
+    userList.innerHTML = "<li class=\"empty\">No matching clients.</li>";
+    renderDocuments(null);
+    return;
+  }
+
+  userList.innerHTML = clients.map((client) => {
+    const totalDocs = client.documents.length;
+    const activeClass = client.id === activeClientId ? " active" : "";
+    return `
+      <li>
+        <button class="user-button${activeClass}" type="button" data-client-id="${client.id}">
+          <strong>${client.name}</strong>
+          <span>${client.email} · ${totalDocs} document${totalDocs === 1 ? "" : "s"}</span>
+        </button>
+      </li>
+    `;
+  }).join("");
+
+  if (!clients.some((client) => client.id === activeClientId)) {
+    activeClientId = clients[0].id;
+  }
+
+  renderDocuments(getSubmissions().find((client) => client.id === activeClientId));
+}
+
+function renderDocuments(client) {
+  if (!client) {
+    documentPanel.innerHTML = `
+      <div class="dashboard-header">
+        <h2>Submitted Documents</h2>
+        <p>Select a client to review uploaded documents.</p>
+      </div>
+      <div class="empty">No client selected.</div>
+    `;
+    return;
+  }
+
+  const rows = client.documents.map((doc) => {
+    const download = doc.stored
+      ? `<a href="${doc.dataUrl}" download="${doc.name}">Download</a>`
+      : `<span class="pill">Metadata only</span>`;
+
+    return `
+      <tr>
+        <td><strong>${doc.name}</strong><br><span class="hint">${doc.type}</span></td>
+        <td>${doc.taxYear}</td>
+        <td>${formatBytes(doc.size)}</td>
+        <td>${new Date(doc.uploadedAt).toLocaleString()}</td>
+        <td>${download}</td>
+      </tr>
+    `;
+  }).join("");
+
+  documentPanel.innerHTML = `
+    <div class="dashboard-header">
+      <h2>${client.name}</h2>
+      <p>${client.email} · Last updated ${new Date(client.updatedAt).toLocaleString()}</p>
+    </div>
+    ${rows ? `
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>Document</th>
+            <th>Tax year</th>
+            <th>Size</th>
+            <th>Uploaded</th>
+            <th>File</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    ` : "<div class=\"empty\">No documents submitted.</div>"}
+  `;
+}
+
+function openAdminLogin() {
+  clearMessage(adminMessage);
+  adminPasswordInput.value = "";
+  openModal(adminModal);
+  setTimeout(() => adminPasswordInput.focus(), 30);
+}
+
+function openDashboard() {
+  closeModal(adminModal);
+  adminDashboard.classList.add("open");
+  adminDashboard.removeAttribute("aria-hidden");
+  activeClientId = getSubmissions()[0]?.id || null;
+  renderUsers();
+  setTimeout(() => clientFilter.focus(), 30);
+}
+
+setYears();
+
+openUploadButton.addEventListener("click", () => {
+  clearMessage(uploadMessage);
+  uploadForm.reset();
+  setYears();
+  fileList.innerHTML = "";
+  openModal(uploadModal);
+  setTimeout(() => document.querySelector("#client-name").focus(), 30);
+});
+
+document.querySelectorAll("[data-close-modal]").forEach((button) => {
+  button.addEventListener("click", () => closeModal(uploadModal));
+});
+
+document.querySelectorAll("[data-close-admin-login]").forEach((button) => {
+  button.addEventListener("click", () => closeModal(adminModal));
+});
+
+uploadModal.addEventListener("click", (event) => {
+  if (event.target === uploadModal) closeModal(uploadModal);
+});
+
+adminModal.addEventListener("click", (event) => {
+  if (event.target === adminModal) closeModal(adminModal);
+});
+
+fileInput.addEventListener("change", renderSelectedFiles);
+
+uploadForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  clearMessage(uploadMessage);
+
+  const files = [...fileInput.files];
+  if (!files.length) {
+    showMessage(uploadMessage, "error", "Select at least one document before submitting.");
+    return;
+  }
+
+  const formData = new FormData(uploadForm);
+  const taxYear = formData.get("tax-year");
+  const documents = await Promise.all(files.map(fileToRecord));
+  documents.forEach((doc) => {
+    doc.taxYear = taxYear;
+  });
+
+  upsertSubmission({
+    id: crypto.randomUUID(),
+    name: formData.get("client-name").trim(),
+    email: formData.get("client-email").trim(),
+    password: formData.get("client-password"),
+    documents,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  });
+
+  const skipped = documents.filter((doc) => !doc.stored).length;
+  const message = skipped
+    ? `Submitted ${documents.length} document${documents.length === 1 ? "" : "s"}. ${skipped} large file${skipped === 1 ? " was" : "s were"} saved as metadata only in this preview.`
+    : `Submitted ${documents.length} document${documents.length === 1 ? "" : "s"} for ${taxYear}.`;
+
+  showMessage(uploadMessage, skipped ? "warning" : "success", message);
+  uploadForm.reset();
+  fileList.innerHTML = "";
+  setYears();
+});
+
+adminLoginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (adminPasswordInput.value === ADMIN_PASSWORD) {
+    openDashboard();
+    return;
+  }
+
+  showMessage(adminMessage, "error", "Admin password not recognized.");
+  adminPasswordInput.select();
+});
+
+clientFilter.addEventListener("input", renderUsers);
+
+userList.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-client-id]");
+  if (!button) return;
+  activeClientId = button.dataset.clientId;
+  renderUsers();
+});
+
+document.querySelector("#close-dashboard").addEventListener("click", () => {
+  adminDashboard.classList.remove("open");
+  adminDashboard.setAttribute("aria-hidden", "true");
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeModal(uploadModal);
+    closeModal(adminModal);
+    return;
+  }
+
+  if (event.key.length !== 1 || event.metaKey || event.ctrlKey || event.altKey) return;
+
+  typedBuffer = (typedBuffer + event.key.toLowerCase()).slice(-ADMIN_TRIGGER.length);
+  if (typedBuffer === ADMIN_TRIGGER) {
+    typedBuffer = "";
+    openAdminLogin();
+  }
+});
+</script>
+</body>
+</html>
