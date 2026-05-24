@@ -208,6 +208,10 @@ h1 {
   gap: 12px;
 }
 
+.home-confirmation {
+  margin-top: 14px;
+}
+
 .fine-print {
   margin: 18px 0 0;
   color: var(--muted);
@@ -671,6 +675,7 @@ a:focus-visible {
       <aside class="action-panel" aria-label="Client document upload">
         <div>
           <button class="button full" type="button" id="open-upload">Upload Documents</button>
+          <div class="message home-confirmation" id="home-confirmation" role="status" aria-live="polite"></div>
           <div class="session-note" id="session-note"></div>
           <p class="fine-print">Preview note: submissions are stored in this browser for the local demo.</p>
         </div>
@@ -886,6 +891,7 @@ const fileInput = document.querySelector("#tax-documents");
 const fileList = document.querySelector("#selected-files");
 const yearSelect = document.querySelector("#tax-year");
 const uploadCopy = document.querySelector("#upload-copy");
+const homeConfirmation = document.querySelector("#home-confirmation");
 const sessionNote = document.querySelector("#session-note");
 const adminModal = document.querySelector("#admin-modal");
 const adminLoginForm = document.querySelector("#admin-login-form");
@@ -927,6 +933,21 @@ function showMessage(element, type, text) {
 function clearMessage(element) {
   element.className = "message";
   element.textContent = "";
+}
+
+function clearHomeConfirmation() {
+  homeConfirmation.className = "message home-confirmation";
+  homeConfirmation.textContent = "";
+}
+
+function showHomeConfirmation(type, text) {
+  homeConfirmation.className = `message home-confirmation show ${type}`;
+  homeConfirmation.textContent = text;
+  if (location.search || location.hash) {
+    history.replaceState(null, "", location.pathname || "/");
+  }
+  document.querySelector("#home").scrollIntoView({ block: "start" });
+  setTimeout(() => openUploadButton.focus(), 30);
 }
 
 function escapeHtml(value) {
@@ -1203,6 +1224,7 @@ function fillTaxInfoForm(client) {
 }
 
 function openRegister() {
+  clearHomeConfirmation();
   clearMessage(registerMessage);
   registerForm.reset();
   openModal(registerModal);
@@ -1217,6 +1239,7 @@ function openTaxInfo() {
     return;
   }
 
+  clearHomeConfirmation();
   clearMessage(taxInfoMessage);
   taxInfoForm.reset();
   fillTaxInfoForm(client);
@@ -1232,6 +1255,7 @@ function openUpload() {
     return;
   }
 
+  clearHomeConfirmation();
   clearMessage(uploadMessage);
   uploadForm.reset();
   fileList.innerHTML = "";
@@ -1272,6 +1296,7 @@ openUploadButton.addEventListener("click", () => {
 sessionNote.addEventListener("click", (event) => {
   if (!event.target.closest("#sign-out")) return;
   sessionStorage.removeItem(SESSION_KEY);
+  clearHomeConfirmation();
   renderSession();
 });
 
@@ -1349,10 +1374,11 @@ uploadForm.addEventListener("submit", async (event) => {
     ? `Submitted ${documents.length} document${documents.length === 1 ? "" : "s"}. ${skipped} large file${skipped === 1 ? " was" : "s were"} saved as metadata only in this preview.`
     : `Submitted ${documents.length} document${documents.length === 1 ? "" : "s"} for ${taxYear}.`;
 
-  showMessage(uploadMessage, skipped ? "warning" : "success", message);
   uploadForm.reset();
   fileList.innerHTML = "";
   setYears();
+  closeModal(uploadModal);
+  showHomeConfirmation(skipped ? "warning" : "success", message);
 });
 
 document.querySelectorAll("[data-close-register]").forEach((button) => {
