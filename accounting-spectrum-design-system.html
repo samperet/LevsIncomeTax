@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spectrum-Inspired Accounting Firm Design System</title>
+<style>
+:root {
+  color-scheme: light;
+  --blue-900: #102f57;
+  --blue-800: #173f70;
+  --blue-700: #1f5f99;
+  --blue-600: #2f79b7;
+  --blue-100: #dcebf7;
+  --blue-050: #f2f8fc;
+  --teal-700: #25766c;
+  --teal-100: #dff1ed;
+  --green-700: #2f6f4f;
+  --green-100: #e2f1e8;
+  --amber-700: #946200;
+  --amber-100: #f7ead0;
+  --red-700: #b23b3b;
+  --red-100: #f8dddd;
+  --gray-950: #15191f;
+  --gray-900: #22272e;
+  --gray-800: #333b45;
+  --gray-700: #4d5763;
+  --gray-600: #687483;
+  --gray-500: #87919e;
+  --gray-400: #aab2bd;
+  --gray-300: #c9cfd7;
+  --gray-200: #dde2e8;
+  --gray-100: #edf0f3;
+  --gray-075: #f4f6f8;
+  --gray-050: #fafbfc;
+  --white: #ffffff;
+  --shadow-100: 0 1px 2px rgba(16, 47, 87, 0.08), 0 8px 24px rgba(16, 47, 87, 0.05);
+  --shadow-200: 0 1px 2px rgba(16, 47, 87, 0.1), 0 16px 48px rgba(16, 47, 87, 0.09);
+  --focus: 0 0 0 3px rgba(47, 121, 183, 0.28);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-1: 4px;
+  --radius-2: 6px;
+  --radius-3: 8px;
+  --border: 1px solid var(--gray-200);
+  --border-strong: 1px solid var(--gray-300);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--gray-075);
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(180deg, rgba(220, 235, 247, 0.6), rgba(250, 251, 252, 0) 380px),
+    var(--gray-075);
+  color: var(--gray-900);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 20;
+  padding: var(--space-2) var(--space-4);
+  background: var(--gray-950);
+  color: var(--white);
+  border-radius: var(--radius-2);
+  transform: translateY(-150%);
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: none;
+}
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: var(--space-6);
+  background: var(--white);
+  border-right: var(--border);
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  margin-bottom: var(--space-8);
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-2);
+  background: linear-gradient(135deg, var(--blue-800), var(--teal-700));
+  color: var(--white);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.brand-name {
+  margin: 0;
+  color: var(--blue-900);
+  font-size: 16px;
+  font-weight: 760;
+  line-height: 1.1;
+}
+
+.brand-subtitle {
+  margin: 2px 0 0;
+  color: var(--gray-600);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nav-group {
+  margin: 0 0 var(--space-8);
+}
+
+.nav-title {
+  margin: 0 0 var(--space-2);
+  color: var(--gray-600);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  color: var(--gray-700);
+  border-radius: var(--radius-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 620;
+}
+
+.nav-link:hover {
+  background: var(--gray-075);
+  color: var(--blue-800);
+}
+
+.nav-link:focus-visible,
+.button:focus-visible,
+.icon-button:focus-visible,
+.tab:focus-visible,
+.field-control:focus-visible,
+.select-control:focus-visible,
+.checkbox input:focus-visible + span,
+.switch input:focus-visible + span {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gray-300);
+}
+
+.nav-link[aria-current="page"] {
+  color: var(--blue-900);
+  background: var(--blue-050);
+}
+
+.nav-link[aria-current="page"] .nav-dot {
+  background: var(--blue-700);
+}
+
+.sidebar-note {
+  padding: var(--space-4);
+  border: var(--border);
+  border-radius: var(--radius-3);
+  background: var(--gray-050);
+}
+
+.sidebar-note strong {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--gray-900);
+  font-size: 13px;
+}
+
+.sidebar-note span {
+  color: var(--gray-600);
+  font-size: 12px;
+}
+
+.content {
+  min-width: 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 68px;
+  padding: 0 var(--space-8);
+  background: rgba(250, 251, 252, 0.92);
+  border-bottom: var(--border);
+  backdrop-filter: blur(16px);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--gray-600);
+  font-size: 13px;
+  font-weight: 620;
+  white-space: nowrap;
+}
+
+.breadcrumb span:last-child {
+  color: var(--gray-900);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.main {
+  width: min(1420px, 100%);
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-8) var(--space-16);
+}
+
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: var(--space-8);
+  align-items: start;
+  margin-bottom: var(--space-12);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  color: var(--blue-800);
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: var(--teal-700);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 900px;
+  margin-bottom: var(--space-4);
+  color: var(--blue-900);
+  font-size: 68px;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.lead {
+  max-width: 830px;
+  margin-bottom: var(--space-6);
+  color: var(--gray-700);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.principle {
+  min-height: 132px;
+  padding: var(--space-4);
+  border: var(--border);
+  border-radius: var(--radius-3);
+  background: var(--white);
+  box-shadow: var(--shadow-100);
+}
+
+.principle b {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--gray-900);
+  font-size: 14px;
+}
+
+.principle span {
+  color: var(--gray-600);
+  font-size: 13px;
+}
+
+.section {
+  margin-top: var(--space-16);
+}
+
+.section-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border);
+}
+
+.section-title {
+  margin: 0;
+  color: var(--blue-900);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.section-text {
+  max-width: 650px;
+  margin: var(--space-2) 0 0;
+  color: var(--gray-600);
+}
+
+.spec-label {
+  color: var(--gray-600);
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.panel {
+  padding: var(--space-5);
+  border: var(--border);
+  border-radius: var(--radius-3);
+  background: var(--white);
+  box-shadow: var(--shadow-100);
+}
+
+.panel-title {
+  margin: 0 0 var(--space-4);
+  color: var(--gray-900);
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.token-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  gap: var(--space-3);
+}
+
+.swatch {
+  overflow: hidden;
+  border: var(--border);
+  border-radius: var(--radius-3);
+  background: var(--white);
+}
+
+.swatch-color {
+  height: 74px;
+  border-bottom: var(--border);
+}
+
+.swatch-body {
+  padding: var(--space-3);
+}
+
+.swatch-name {
+  margin: 0 0 2px;
+  color: var(--gray-900);
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.swatch-value {
+  margin: 0;
+  color: var(--gray-600);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.type-scale {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) 160px;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-4) 0;
+  border-bottom: var(--border);
+}
+
+.type-row:last-child {
+  border-bottom: 0;
+}
+
+.type-meta {
+  color: var(--gray-600);
+  font-size: 12px;
+  font-weight: 680;
+}
+
+.display-xl {
+  color: var(--blue-900);
+  font-size: 44px;
+  font-weight: 790;
+  line-height: 1;
+}
+
+.heading-lg {
+  color: var(--gray-900);
+  font-size: 28px;
+  font-weight: 760;
+  line-height: 1.14;
+}
+
+.heading-md {
+  color: var(--gray-900);
+  font-size: 21px;
+  font-weight: 720;
+  line-height: 1.24;
+}
+
+.body-copy {
+  color: var(--gray-700);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.numeric {
+  color: var(--gray-900);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+
+.spacing-ramp {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.spacing-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) 80px;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.spacing-bar {
+  height: 18px;
+  border-radius: var(--radius-1);
+  background: var(--blue-700);
+}
+
+.spacing-value {
+  color: var(--gray-600);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.button,
+.icon-button {
+  border: 0;
+  cursor: pointer;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-2);
+  font-size: 14px;
+  font-weight: 720;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.button-primary {
+  background: var(--blue-700);
+  color: var(--white);
+}
+
+.button-primary:hover {
+  background: var(--blue-800);
+}
+
+.button-secondary {
+  background: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.button-secondary:hover {
+  background: var(--gray-200);
+}
+
+.button-quiet {
+  background: transparent;
+  color: var(--blue-800);
+}
+
+.button-quiet:hover {
+  background: var(--blue-050);
+}
+
+.button-danger {
+  background: var(--red-700);
+  color: var(--white);
+}
+
+.icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  flex: 0 0 auto;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 16px 16px;
+}
+
+.icon-download {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v8'/%3E%3Cpath d='m4.5 6.5 3.5 3.5 3.5-3.5'/%3E%3Cpath d='M3 14h10'/%3E%3C/svg%3E");
+}
+
+.icon-filter {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h12'/%3E%3Cpath d='M4 8h8'/%3E%3Cpath d='M6 13h4'/%3E%3C/svg%3E");
+}
+
+.icon-check {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 8.5 3.2 3.2L13 4.8'/%3E%3C/svg%3E");
+}
+
+.icon-search {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='7' cy='7' r='4'/%3E%3Cpath d='m10 10 3.5 3.5'/%3E%3C/svg%3E");
+}
+
+.icon-plus {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M8 3v10M3 8h10'/%3E%3C/svg%3E");
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-2);
+  background: var(--gray-100);
+  color: var(--gray-800);
+}
+
+.icon-button:hover {
+  background: var(--gray-200);
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 var(--space-3);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.tag-blue {
+  background: var(--blue-100);
+  color: var(--blue-900);
+}
+
+.tag-green {
+  background: var(--green-100);
+  color: var(--green-700);
+}
+
+.tag-amber {
+  background: var(--amber-100);
+  color: var(--amber-700);
+}
+
+.tag-red {
+  background: var(--red-100);
+  color: var(--red-700);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: var(--border);
+  border-radius: var(--radius-2);
+  background: var(--gray-075);
+}
+
+.tab {
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-1);
+  background: transparent;
+  color: var(--gray-700);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.tab[aria-selected="true"] {
+  background: var(--white);
+  color: var(--blue-900);
+  box-shadow: var(--shadow-100);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.field label,
+.field-label {
+  color: var(--gray-800);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.field-hint {
+  color: var(--gray-600);
+  font-size: 12px;
+}
+
+.field-control,
+.select-control,
+.textarea-control {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  border: var(--border-strong);
+  border-radius: var(--radius-2);
+  background: var(--white);
+  color: var(--gray-900);
+  font-size: 14px;
+}
+
+.textarea-control {
+  min-height: 92px;
+  padding-top: var(--space-3);
+  resize: vertical;
+}
+
+.field-control::placeholder,
+.textarea-control::placeholder {
+  color: var(--gray-500);
+}
+
+.field-control[aria-invalid="true"] {
+  border-color: var(--red-700);
+}
+
+.field-error {
+  color: var(--red-700);
+  font-size: 12px;
+  font-weight: 680;
+}
+
+.checkbox,
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--gray-800);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 620;
+}
+
+.checkbox input,
+.switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkbox span:first-of-type {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: var(--border-strong);
+  border-radius: var(--radius-1);
+  background: var(--white);
+  color: var(--white);
+}
+
+.checkbox input:checked + span:first-of-type {
+  border-color: var(--blue-700);
+  background: var(--blue-700);
+}
+
+.switch span:first-of-type {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--gray-300);
+}
+
+.switch span:first-of-type::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--white);
+  transition: transform 160ms ease;
+}
+
+.switch input:checked + span:first-of-type {
+  background: var(--teal-700);
+}
+
+.switch input:checked + span:first-of-type::after {
+  transform: translateX(16px);
+}
+
+.alert {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-3);
+  border: 1px solid transparent;
+}
+
+.alert-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.alert-title {
+  margin: 0 0 2px;
+  font-size: 14px;
+  font-weight: 760;
+}
+
+.alert-copy {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 13px;
+}
+
+.alert-info {
+  background: var(--blue-050);
+  border-color: var(--blue-100);
+}
+
+.alert-info .alert-icon {
+  background: var(--blue-700);
+  color: var(--white);
+}
+
+.alert-warning {
+  background: #fff8eb;
+  border-color: var(--amber-100);
+}
+
+.alert-warning .alert-icon {
+  background: var(--amber-700);
+  color: var(--white);
+}
+
+.dashboard {
+  overflow: hidden;
+  border: var(--border);
+  border-radius: var(--radius-3);
+  background: var(--white);
+  box-shadow: var(--shadow-200);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 72px;
+  padding: 0 var(--space-5);
+  border-bottom: var(--border);
+}
+
+.dashboard-title {
+  margin: 0;
+  color: var(--gray-950);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.dashboard-meta {
+  color: var(--gray-600);
+  font-size: 13px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: var(--border);
+}
+
+.kpi {
+  min-height: 132px;
+  padding: var(--space-5);
+  border-right: var(--border);
+}
+
+.kpi:last-child {
+  border-right: 0;
+}
+
+.kpi-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  color: var(--gray-600);
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kpi-value {
+  margin: 0;
+  color: var(--gray-950);
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 780;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-note {
+  margin: var(--space-2) 0 0;
+  color: var(--gray-600);
+  font-size: 13px;
+}
+
+.trend {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.trend-good {
+  color: var(--green-700);
+}
+
+.trend-watch {
+  color: var(--amber-700);
+}
+
+.dashboard-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+  gap: 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.data-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.data-table th {
+  background: var(--gray-050);
+  color: var(--gray-700);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.data-table tr:hover td {
+  background: var(--blue-050);
+}
+
+.data-table .num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.client-name {
+  color: var(--gray-950);
+  font-weight: 760;
+}
+
+.subtext {
+  display: block;
+  margin-top: 1px;
+  color: var(--gray-600);
+  font-size: 12px;
+}
+
+.side-panel {
+  padding: var(--space-5);
+  border-left: var(--border);
+  background: var(--gray-050);
+}
+
+.task-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-2);
+  background: var(--white);
+}
+
+.task-status {
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--blue-700);
+}
+
+.task-status.warn {
+  background: var(--amber-700);
+}
+
+.task-status.done {
+  background: var(--green-700);
+}
+
+.task-title {
+  margin: 0;
+  color: var(--gray-900);
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.task-copy {
+  margin: 2px 0 0;
+  color: var(--gray-600);
+  font-size: 12px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-5);
+}
+
+.bars {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) 72px;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.bar-label,
+.bar-value {
+  color: var(--gray-700);
+  font-size: 13px;
+  font-weight: 680;
+}
+
+.bar-value {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-track {
+  height: 14px;
+  border-radius: 999px;
+  background: var(--gray-100);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue-700), var(--teal-700));
+}
+
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.matrix-cell {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: var(--border);
+  border-radius: var(--radius-2);
+  color: var(--gray-800);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 760;
+  background: var(--gray-050);
+}
+
+.matrix-cell.high {
+  background: var(--blue-100);
+  border-color: #b9d7ee;
+  color: var(--blue-900);
+}
+
+.matrix-cell.mid {
+  background: var(--teal-100);
+  border-color: #bde1da;
+  color: var(--teal-700);
+}
+
+.matrix-cell.warn {
+  background: var(--amber-100);
+  border-color: #ead3a8;
+  color: var(--amber-700);
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.rule {
+  padding: var(--space-5);
+  border-left: 3px solid var(--blue-700);
+  background: var(--white);
+}
+
+.rule strong {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--gray-950);
+}
+
+.rule span {
+  color: var(--gray-600);
+  font-size: 13px;
+}
+
+.footer {
+  margin-top: var(--space-16);
+  padding-top: var(--space-6);
+  border-top: var(--border);
+  color: var(--gray-600);
+  font-size: 13px;
+}
+
+@media (max-width: 1180px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: relative;
+    height: auto;
+    border-right: 0;
+    border-bottom: var(--border);
+  }
+
+  .nav-group {
+    display: none;
+  }
+
+  .sidebar-note {
+    display: none;
+  }
+
+  .brand {
+    margin-bottom: 0;
+  }
+
+  .intro,
+  .dashboard-body,
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .side-panel {
+    border-left: 0;
+    border-top: var(--border);
+  }
+}
+
+@media (max-width: 900px) {
+  h1 {
+    font-size: 52px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: var(--space-4);
+  }
+
+  .main {
+    padding: var(--space-8) var(--space-4) var(--space-12);
+  }
+
+  .principles,
+  .grid-2,
+  .grid-3,
+  .rules-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .token-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi:nth-child(2) {
+    border-right: 0;
+  }
+
+  .kpi:nth-child(-n + 2) {
+    border-bottom: var(--border);
+  }
+
+  .type-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+}
+
+@media (max-width: 560px) {
+  h1 {
+    font-size: 40px;
+  }
+
+  .section-header,
+  .dashboard-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .token-grid,
+  .dashboard-grid,
+  .matrix {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi,
+  .kpi:nth-child(2) {
+    border-right: 0;
+  }
+
+  .kpi {
+    border-bottom: var(--border);
+  }
+
+  .kpi:last-child {
+    border-bottom: 0;
+  }
+
+  .bar-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .bar-value {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <aside class="sidebar" aria-label="Design system navigation">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">A</div>
+      <div>
+        <p class="brand-name">Alder &amp; Vale</p>
+        <p class="brand-subtitle">Accounting design system</p>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav-group">
+        <p class="nav-title">Foundations</p>
+        <a class="nav-link" href="#principles" aria-current="page"><span class="nav-dot"></span>Principles</a>
+        <a class="nav-link" href="#tokens"><span class="nav-dot"></span>Color tokens</a>
+        <a class="nav-link" href="#typography"><span class="nav-dot"></span>Typography</a>
+        <a class="nav-link" href="#spacing"><span class="nav-dot"></span>Spacing</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-title">Components</p>
+        <a class="nav-link" href="#actions"><span class="nav-dot"></span>Actions</a>
+        <a class="nav-link" href="#forms"><span class="nav-dot"></span>Forms</a>
+        <a class="nav-link" href="#alerts"><span class="nav-dot"></span>Alerts</a>
+        <a class="nav-link" href="#dashboard"><span class="nav-dot"></span>Dashboard</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-note">
+      <strong>Accessibility baseline</strong>
+      <span>Visible focus states, semantic tables, tabular numerals, high contrast text, and reduced-motion support.</span>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="breadcrumb" aria-label="Breadcrumb">
+        <span>Design System</span>
+        <span aria-hidden="true">/</span>
+        <span>Accounting Firm</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-button" type="button" aria-label="Search tokens"><span class="icon icon-search"></span></button>
+        <button class="button button-secondary" type="button"><span class="icon icon-filter"></span>Filters</button>
+        <button class="button button-primary" type="button"><span class="icon icon-download"></span>Export spec</button>
+      </div>
+    </header>
+
+    <main class="main" id="main">
+      <section class="intro" id="principles">
+        <div>
+          <span class="eyebrow">Spectrum-inspired fintech system</span>
+          <h1>Trustworthy accounting interfaces for clear financial decisions.</h1>
+          <p class="lead">A restrained enterprise design system for accounting firms, built around visible hierarchy, reliable color semantics, dense but readable dashboards, and low-friction workflows for partners, staff accountants, and clients.</p>
+          <div class="button-row">
+            <a class="button button-primary" href="#dashboard"><span class="icon icon-check"></span>View dashboard pattern</a>
+            <a class="button button-quiet" href="#tokens">Review tokens</a>
+          </div>
+        </div>
+        <div class="principles" aria-label="Design principles">
+          <div class="principle">
+            <b>Trust before flair</b>
+            <span>Neutral surfaces, stable layout, and measured accents communicate reliability without visual noise.</span>
+          </div>
+          <div class="principle">
+            <b>Clarity under load</b>
+            <span>Tabular numerals, aligned columns, and scannable groupings make variance and risk easy to parse.</span>
+          </div>
+          <div class="principle">
+            <b>Accessible by default</b>
+            <span>Contrast, focus, touch targets, and semantic structure are built into the system primitives.</span>
+          </div>
+          <div class="principle">
+            <b>Action proximity</b>
+            <span>Actions appear beside the financial object they affect, reducing memory burden and mistakes.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tokens">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Color Tokens</h2>
+            <p class="section-text">Muted enterprise fintech colors separate brand, status, and financial meaning. Blue carries product trust, teal marks verification, amber flags review, and red is reserved for destructive or overdue states.</p>
+          </div>
+          <span class="spec-label">WCAG-minded pairings</span>
+        </div>
+        <div class="token-grid">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#102f57"></div>
+            <div class="swatch-body"><p class="swatch-name">Trust Blue 900</p><p class="swatch-value">#102F57</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#1f5f99"></div>
+            <div class="swatch-body"><p class="swatch-name">Action Blue 700</p><p class="swatch-value">#1F5F99</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#25766c"></div>
+            <div class="swatch-body"><p class="swatch-name">Verified Teal</p><p class="swatch-value">#25766C</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#946200"></div>
+            <div class="swatch-body"><p class="swatch-name">Review Amber</p><p class="swatch-value">#946200</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#b23b3b"></div>
+            <div class="swatch-body"><p class="swatch-name">Risk Red</p><p class="swatch-value">#B23B3B</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#22272e"></div>
+            <div class="swatch-body"><p class="swatch-name">Ink 900</p><p class="swatch-value">#22272E</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#687483"></div>
+            <div class="swatch-body"><p class="swatch-name">Text Muted</p><p class="swatch-value">#687483</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#dde2e8"></div>
+            <div class="swatch-body"><p class="swatch-name">Rule Neutral</p><p class="swatch-value">#DDE2E8</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#f4f6f8"></div>
+            <div class="swatch-body"><p class="swatch-name">Page Canvas</p><p class="swatch-value">#F4F6F8</p></div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#ffffff"></div>
+            <div class="swatch-body"><p class="swatch-name">Surface</p><p class="swatch-value">#FFFFFF</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="typography">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Typography</h2>
+            <p class="section-text">The system uses system UI fonts for reliability and fast loading. Financial values use monospaced tabular numerals so decimals, balances, and variances align across changing data.</p>
+          </div>
+          <span class="spec-label">No viewport-scaled body type</span>
+        </div>
+        <div class="panel">
+          <div class="type-scale">
+            <div class="type-row">
+              <span class="type-meta">Display XL</span>
+              <span class="display-xl">Quarterly tax planning</span>
+              <span class="type-meta">44 / 44 / 790</span>
+            </div>
+            <div class="type-row">
+              <span class="type-meta">Heading LG</span>
+              <span class="heading-lg">Client profitability review</span>
+              <span class="type-meta">28 / 32 / 760</span>
+            </div>
+            <div class="type-row">
+              <span class="type-meta">Heading MD</span>
+              <span class="heading-md">Open reconciliation tasks</span>
+              <span class="type-meta">21 / 26 / 720</span>
+            </div>
+            <div class="type-row">
+              <span class="type-meta">Body</span>
+              <span class="body-copy">Use clear sentences for operational guidance and reserve dense numeric layouts for tables, KPIs, and charts.</span>
+              <span class="type-meta">15 / 23 / 400</span>
+            </div>
+            <div class="type-row">
+              <span class="type-meta">Numeric</span>
+              <span class="numeric">$1,284,320.48</span>
+              <span class="type-meta">Mono / tabular</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="spacing">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Spacing</h2>
+            <p class="section-text">A compact 4px-based ramp keeps dashboards dense without feeling cramped. Repeated surfaces use 16px to 24px internal padding, while major page groups step up to 48px and 64px.</p>
+          </div>
+          <span class="spec-label">4px base grid</span>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3 class="panel-title">Spacing Ramp</h3>
+            <div class="spacing-ramp">
+              <div class="spacing-row"><span class="spacing-value">space-1</span><div class="spacing-bar" style="width:4px"></div><span class="spacing-value">4px</span></div>
+              <div class="spacing-row"><span class="spacing-value">space-2</span><div class="spacing-bar" style="width:8px"></div><span class="spacing-value">8px</span></div>
+              <div class="spacing-row"><span class="spacing-value">space-4</span><div class="spacing-bar" style="width:16px"></div><span class="spacing-value">16px</span></div>
+              <div class="spacing-row"><span class="spacing-value">space-6</span><div class="spacing-bar" style="width:24px"></div><span class="spacing-value">24px</span></div>
+              <div class="spacing-row"><span class="spacing-value">space-10</span><div class="spacing-bar" style="width:40px"></div><span class="spacing-value">40px</span></div>
+              <div class="spacing-row"><span class="spacing-value">space-16</span><div class="spacing-bar" style="width:64px"></div><span class="spacing-value">64px</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 class="panel-title">Density Rules</h3>
+            <div class="rules-grid" style="grid-template-columns:1fr">
+              <div class="rule"><strong>Forms</strong><span>Use 16px gaps within a form section and 24px between logical groups.</span></div>
+              <div class="rule"><strong>Tables</strong><span>Use 12px vertical cell padding for scan speed, with strong column alignment.</span></div>
+              <div class="rule"><strong>Dashboards</strong><span>Keep KPIs above tables and pair each metric with a short operational note.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="actions">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Actions &amp; Status</h2>
+            <p class="section-text">Button hierarchy keeps primary financial actions clear. Status chips communicate work state without depending on color alone in dense tables.</p>
+          </div>
+          <span class="spec-label">Minimum 36px controls</span>
+        </div>
+        <div class="grid-3">
+          <div class="panel">
+            <h3 class="panel-title">Buttons</h3>
+            <div class="button-row">
+              <button class="button button-primary" type="button"><span class="icon icon-plus"></span>New client</button>
+              <button class="button button-secondary" type="button">Review</button>
+              <button class="button button-quiet" type="button">Cancel</button>
+              <button class="button button-danger" type="button">Void</button>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 class="panel-title">Icon Controls</h3>
+            <div class="button-row">
+              <button class="icon-button" type="button" aria-label="Search"><span class="icon icon-search"></span></button>
+              <button class="icon-button" type="button" aria-label="Filter"><span class="icon icon-filter"></span></button>
+              <button class="icon-button" type="button" aria-label="Download"><span class="icon icon-download"></span></button>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 class="panel-title">Status Chips</h3>
+            <div class="tag-row">
+              <span class="tag tag-blue">In review</span>
+              <span class="tag tag-green">Filed</span>
+              <span class="tag tag-amber">Needs docs</span>
+              <span class="tag tag-red">Overdue</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="forms">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Forms</h2>
+            <p class="section-text">Form controls are quiet, explicit, and validation-forward. Labels stay visible and helper text explains financial consequences before submission.</p>
+          </div>
+          <span class="spec-label">Persistent labels</span>
+        </div>
+        <div class="panel">
+          <div class="form-grid">
+            <div class="field">
+              <label for="entity">Entity name</label>
+              <input class="field-control" id="entity" type="text" value="Northline Manufacturing LLC">
+              <span class="field-hint">Use the legal name shown on source documents.</span>
+            </div>
+            <div class="field">
+              <label for="service">Service line</label>
+              <select class="select-control" id="service">
+                <option>Tax planning</option>
+                <option>Audit support</option>
+                <option>Monthly close</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="balance">Opening balance</label>
+              <input class="field-control" id="balance" type="text" value="$284,320.48" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label for="due">Filing due date</label>
+              <input class="field-control" id="due" type="text" value="09/15/2026" aria-invalid="true" aria-describedby="due-error">
+              <span class="field-error" id="due-error">Confirm extension status before assigning.</span>
+            </div>
+            <label class="checkbox">
+              <input type="checkbox" checked>
+              <span><span class="icon icon-check"></span></span>
+              <span>Require partner approval</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span></span>
+              <span>Client portal access</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="alerts">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Alerts</h2>
+            <p class="section-text">Alerts should name the financial object, the risk, and the required next step. Informational messages stay calm; warning messages use amber before red escalation.</p>
+          </div>
+          <span class="spec-label">Actionable copy</span>
+        </div>
+        <div class="grid-2">
+          <div class="alert alert-info" role="status">
+            <div class="alert-icon" aria-hidden="true">i</div>
+            <div>
+              <p class="alert-title">Bank feed connected</p>
+              <p class="alert-copy">Transactions from Atlas Credit Union will refresh nightly after 2:00 AM Eastern.</p>
+            </div>
+          </div>
+          <div class="alert alert-warning" role="alert">
+            <div class="alert-icon" aria-hidden="true">!</div>
+            <div>
+              <p class="alert-title">Payroll variance needs review</p>
+              <p class="alert-copy">May payroll is 14.8% above the rolling average. Assign review before closing the period.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="dashboard">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Dashboard Pattern</h2>
+            <p class="section-text">A production accounting dashboard should lead with decision-critical metrics, then show the underlying client queue and adjacent actions. Numeric columns align right and task state remains visible without opening details.</p>
+          </div>
+          <span class="spec-label">Client workload view</span>
+        </div>
+
+        <div class="dashboard">
+          <div class="dashboard-header">
+            <div>
+              <h3 class="dashboard-title">Partner Operating Dashboard</h3>
+              <span class="dashboard-meta">Week ending May 24, 2026 · Accrual basis · USD</span>
+            </div>
+            <div class="button-row">
+              <div class="tabs" role="tablist" aria-label="Reporting range">
+                <button class="tab" type="button" role="tab" aria-selected="true">Week</button>
+                <button class="tab" type="button" role="tab" aria-selected="false">Month</button>
+                <button class="tab" type="button" role="tab" aria-selected="false">Quarter</button>
+              </div>
+              <button class="button button-secondary" type="button"><span class="icon icon-download"></span>CSV</button>
+            </div>
+          </div>
+
+          <div class="dashboard-grid" aria-label="Key performance indicators">
+            <div class="kpi">
+              <div class="kpi-label">Revenue recognized <span class="trend trend-good">+8.4%</span></div>
+              <p class="kpi-value">$482,960</p>
+              <p class="kpi-note">Above plan by $37,200.</p>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Open A/R <span class="trend trend-watch">18d</span></div>
+              <p class="kpi-value">$146,830</p>
+              <p class="kpi-note">Two accounts exceed terms.</p>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Utilization <span class="trend trend-good">82%</span></div>
+              <p class="kpi-value">1,246h</p>
+              <p class="kpi-note">Target range is 78-84%.</p>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Risk queue <span class="trend trend-watch">12</span></div>
+              <p class="kpi-value">4 high</p>
+              <p class="kpi-note">Prioritize payroll and sales tax.</p>
+            </div>
+          </div>
+
+          <div class="dashboard-body">
+            <div class="table-wrap">
+              <table class="data-table">
+                <caption>Client workload and financial status</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Client</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="num">A/R</th>
+                    <th scope="col" class="num">Margin</th>
+                    <th scope="col">Owner</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="client-name">Northline Manufacturing</span><span class="subtext">Monthly close · May</span></td>
+                    <td>Controller</td>
+                    <td><span class="tag tag-amber">Needs docs</span></td>
+                    <td class="num">$42,800</td>
+                    <td class="num">31.4%</td>
+                    <td>M. Rivera</td>
+                  </tr>
+                  <tr>
+                    <td><span class="client-name">Cedar Health Partners</span><span class="subtext">Tax planning · Q2</span></td>
+                    <td>Tax</td>
+                    <td><span class="tag tag-blue">In review</span></td>
+                    <td class="num">$18,420</td>
+                    <td class="num">38.9%</td>
+                    <td>A. Chen</td>
+                  </tr>
+                  <tr>
+                    <td><span class="client-name">Hale Street Foods</span><span class="subtext">Sales tax · Multi-state</span></td>
+                    <td>Compliance</td>
+                    <td><span class="tag tag-red">Overdue</span></td>
+                    <td class="num">$63,110</td>
+                    <td class="num">24.2%</td>
+                    <td>D. Brooks</td>
+                  </tr>
+                  <tr>
+                    <td><span class="client-name">Aster Labs</span><span class="subtext">R&D credit support</span></td>
+                    <td>Advisory</td>
+                    <td><span class="tag tag-green">Filed</span></td>
+                    <td class="num">$22,500</td>
+                    <td class="num">42.7%</td>
+                    <td>S. Patel</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <aside class="side-panel" aria-label="Priority work">
+              <h3 class="panel-title">Priority Work</h3>
+              <ul class="task-list">
+                <li class="task">
+                  <span class="task-status warn"></span>
+                  <div><p class="task-title">Resolve sales tax exposure</p><p class="task-copy">Hale Street Foods · due today</p></div>
+                </li>
+                <li class="task">
+                  <span class="task-status"></span>
+                  <div><p class="task-title">Review Q2 projections</p><p class="task-copy">Cedar Health Partners · partner review</p></div>
+                </li>
+                <li class="task">
+                  <span class="task-status done"></span>
+                  <div><p class="task-title">Finalize R&D packet</p><p class="task-copy">Aster Labs · ready to archive</p></div>
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Financial Data Clarity</h2>
+            <p class="section-text">Patterns for charts and matrices prioritize comparison over decoration. Use direct labels, consistent ranges, and meaningful thresholds.</p>
+          </div>
+          <span class="spec-label">Low cognitive load</span>
+        </div>
+        <div class="chart-grid">
+          <div class="panel">
+            <h3 class="panel-title">Revenue Mix</h3>
+            <div class="bars">
+              <div class="bar-row"><span class="bar-label">Tax</span><div class="bar-track"><div class="bar-fill" style="width:82%"></div></div><span class="bar-value">$192k</span></div>
+              <div class="bar-row"><span class="bar-label">Advisory</span><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><span class="bar-value">$158k</span></div>
+              <div class="bar-row"><span class="bar-label">Audit</span><div class="bar-track"><div class="bar-fill" style="width:51%"></div></div><span class="bar-value">$119k</span></div>
+              <div class="bar-row"><span class="bar-label">Bookkeeping</span><div class="bar-track"><div class="bar-fill" style="width:32%"></div></div><span class="bar-value">$74k</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 class="panel-title">Risk Heat Matrix</h3>
+            <div class="matrix" aria-label="Risk heat matrix">
+              <div class="matrix-cell">1</div>
+              <div class="matrix-cell mid">2</div>
+              <div class="matrix-cell high">3</div>
+              <div class="matrix-cell warn">4</div>
+              <div class="matrix-cell">2</div>
+              <div class="matrix-cell mid">4</div>
+              <div class="matrix-cell high">6</div>
+              <div class="matrix-cell warn">8</div>
+              <div class="matrix-cell mid">3</div>
+              <div class="matrix-cell high">6</div>
+              <div class="matrix-cell warn">9</div>
+              <div class="matrix-cell warn">12</div>
+              <div class="matrix-cell high">4</div>
+              <div class="matrix-cell warn">8</div>
+              <div class="matrix-cell warn">12</div>
+              <div class="matrix-cell warn">16</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">System Rules</h2>
+            <p class="section-text">Use these constraints to keep product decisions coherent as the accounting platform grows.</p>
+          </div>
+          <span class="spec-label">Implementation guidance</span>
+        </div>
+        <div class="rules-grid">
+          <div class="rule"><strong>Use blue for actions only</strong><span>Do not use brand blue as a decorative fill when it competes with workflow actions.</span></div>
+          <div class="rule"><strong>Expose source and basis</strong><span>Every dashboard should state reporting period, accounting basis, and currency near the title.</span></div>
+          <div class="rule"><strong>Align money right</strong><span>Currency, percentages, and hours use tabular numerals and right alignment in comparison tables.</span></div>
+          <div class="rule"><strong>Keep warnings specific</strong><span>Alerts must include the account, variance, or compliance item that needs attention.</span></div>
+          <div class="rule"><strong>Prefer progressive disclosure</strong><span>Show summary, risk, and next action first; move deep ledger detail behind a focused view.</span></div>
+          <div class="rule"><strong>Design for repeated work</strong><span>Reduce ornamental layout shifts and preserve familiar control placement across client contexts.</span></div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        Spectrum-inspired accounting design system specimen · optimized for trust, accessibility, financial data clarity, and low cognitive load.
+      </footer>
+    </main>
+  </div>
+</div>
+</body>
+</html>
