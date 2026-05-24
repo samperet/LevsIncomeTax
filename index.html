@@ -121,13 +121,6 @@ h1 {
   overflow-wrap: anywhere;
 }
 
-.description {
-  max-width: 540px;
-  margin: 22px 0 0;
-  color: var(--ink-soft);
-  font-size: 17px;
-}
-
 .contact-list {
   display: grid;
   gap: 12px;
@@ -305,6 +298,11 @@ label {
   color: var(--ink);
   font-size: 13px;
   font-weight: 780;
+}
+
+.required-label::after {
+  content: " *";
+  color: var(--red);
 }
 
 input,
@@ -659,7 +657,6 @@ a:focus-visible {
         <p class="eyebrow">Tax preparation</p>
         <h1 id="page-title">Lev's Income Tax</h1>
         <h2 class="intro-heading">Lev Sukenik, 20 years of personal touch accounting</h2>
-        <p class="description">Simple, professional tax document intake with a human on the other side of the paperwork.</p>
 
         <div class="contact-list" aria-label="Contact information">
           <a class="contact-item" href="mailto:levsincometax@gmail.com">
@@ -695,15 +692,15 @@ a:focus-visible {
     <form class="form" id="register-form">
       <div class="form-grid">
         <div class="field">
-          <label for="register-name">Full name</label>
+          <label class="required-label" for="register-name">Full name</label>
           <input id="register-name" name="register-name" type="text" autocomplete="name" required>
         </div>
         <div class="field">
-          <label for="register-email">Email address</label>
+          <label class="required-label" for="register-email">Email address</label>
           <input id="register-email" name="register-email" type="email" autocomplete="email" required>
         </div>
         <div class="field full">
-          <label for="register-password">Password</label>
+          <label class="required-label" for="register-password">Password</label>
           <input id="register-password" name="register-password" type="password" autocomplete="new-password" required minlength="6">
           <span class="hint">Use at least 6 characters for this preview.</span>
         </div>
@@ -727,31 +724,31 @@ a:focus-visible {
     <form class="form" id="tax-info-form">
       <div class="form-grid">
         <div class="field">
-          <label for="tax-full-name">Full legal name</label>
+          <label class="required-label" for="tax-full-name">Full legal name</label>
           <input id="tax-full-name" name="tax-full-name" type="text" autocomplete="name" required>
         </div>
         <div class="field">
-          <label for="tax-phone">Phone number</label>
+          <label class="required-label" for="tax-phone">Phone number</label>
           <input id="tax-phone" name="tax-phone" type="tel" autocomplete="tel" required>
         </div>
         <div class="field full">
-          <label for="tax-street">Street address</label>
+          <label class="required-label" for="tax-street">Street address</label>
           <input id="tax-street" name="tax-street" type="text" autocomplete="street-address" required>
         </div>
         <div class="field">
-          <label for="tax-city">City</label>
+          <label class="required-label" for="tax-city">City</label>
           <input id="tax-city" name="tax-city" type="text" autocomplete="address-level2" required>
         </div>
         <div class="field">
-          <label for="tax-state">State</label>
+          <label class="required-label" for="tax-state">State</label>
           <input id="tax-state" name="tax-state" type="text" autocomplete="address-level1" maxlength="2" placeholder="NY" required>
         </div>
         <div class="field">
-          <label for="tax-zip">ZIP code</label>
+          <label class="required-label" for="tax-zip">ZIP code</label>
           <input id="tax-zip" name="tax-zip" type="text" autocomplete="postal-code" inputmode="numeric" required>
         </div>
         <div class="field">
-          <label for="filing-status">Filing status</label>
+          <label class="required-label" for="filing-status">Filing status</label>
           <select id="filing-status" name="filing-status" required>
             <option value="">Select status</option>
             <option>Single</option>
@@ -762,7 +759,7 @@ a:focus-visible {
           </select>
         </div>
         <div class="field">
-          <label for="dependents">Dependents</label>
+          <label class="required-label" for="dependents">Dependents</label>
           <input id="dependents" name="dependents" type="number" min="0" max="20" value="0" required>
         </div>
         <div class="field">
@@ -770,7 +767,7 @@ a:focus-visible {
           <input id="occupation" name="occupation" type="text" autocomplete="organization-title">
         </div>
         <div class="field">
-          <label for="income-changes">Major income changes?</label>
+          <label class="required-label" for="income-changes">Major income changes?</label>
           <select id="income-changes" name="income-changes" required>
             <option>No major changes</option>
             <option>New job or employer</option>
@@ -786,7 +783,7 @@ a:focus-visible {
       </div>
       <div class="confirm-row">
         <input id="tax-confirmed" name="tax-confirmed" type="checkbox" required>
-        <label for="tax-confirmed">I confirm this tax information is current and accurate for this upload.</label>
+        <label class="required-label" for="tax-confirmed">I confirm this tax information is current and accurate for this upload.</label>
       </div>
       <div class="message" id="tax-info-message" role="status" aria-live="polite"></div>
       <button class="button full" type="submit">Confirm and Continue</button>
@@ -807,11 +804,11 @@ a:focus-visible {
     <form class="form" id="upload-form">
       <div class="form-grid">
         <div class="field">
-          <label for="tax-year">Tax year</label>
+          <label class="required-label" for="tax-year">Tax year</label>
           <select id="tax-year" name="tax-year" required></select>
         </div>
         <div class="field">
-          <label for="tax-documents">Documents</label>
+          <label class="required-label" for="tax-documents">Documents</label>
           <input id="tax-documents" name="tax-documents" type="file" multiple required>
         </div>
       </div>
@@ -834,7 +831,7 @@ a:focus-visible {
     </div>
     <form class="form" id="admin-login-form">
       <div class="field">
-        <label for="admin-password">Admin password</label>
+        <label class="required-label" for="admin-password">Admin password</label>
         <input id="admin-password" type="password" autocomplete="current-password" required>
         <span class="hint">Demo password: <strong>levadmin</strong></span>
       </div>
