@@ -105,17 +105,19 @@ a {
 h1 {
   margin: 0;
   color: var(--ink);
-  font-size: 60px;
+  font-size: 56px;
   line-height: 0.98;
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
 
-.company {
-  margin: 16px 0 0;
+.intro-heading {
+  margin: 18px 0 0;
   color: var(--blue-dark);
   font-size: 24px;
+  line-height: 1.22;
   font-weight: 820;
+  letter-spacing: 0;
   overflow-wrap: anywhere;
 }
 
@@ -135,7 +137,6 @@ h1 {
 .contact-item {
   display: flex;
   align-items: center;
-  gap: 12px;
   color: var(--ink);
   text-decoration: none;
   font-size: 15px;
@@ -146,20 +147,6 @@ h1 {
 .contact-item span:last-child {
   min-width: 0;
   overflow-wrap: anywhere;
-}
-
-.icon {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--wash);
-  color: var(--blue-dark);
-  font-size: 16px;
-  font-weight: 850;
-  flex: 0 0 auto;
 }
 
 .action-panel {
@@ -646,7 +633,7 @@ a:focus-visible {
     font-size: 38px;
   }
 
-  .company {
+  .intro-heading {
     font-size: 21px;
   }
 
@@ -670,17 +657,15 @@ a:focus-visible {
     <section class="business-card" aria-labelledby="page-title">
       <div class="identity">
         <p class="eyebrow">Tax preparation</p>
-        <h1 id="page-title">Lev Sukenik</h1>
-        <p class="company">Lev's Income Tax</p>
+        <h1 id="page-title">Lev's Income Tax</h1>
+        <h2 class="intro-heading">Lev Sukenik, 20 years of personal touch accounting</h2>
         <p class="description">Simple, professional tax document intake with a human on the other side of the paperwork.</p>
 
         <div class="contact-list" aria-label="Contact information">
           <a class="contact-item" href="mailto:levsincometax@gmail.com">
-            <span class="icon" aria-hidden="true">@</span>
             <span>levsincometax@gmail.com</span>
           </a>
           <a class="contact-item" href="tel:+15182488208">
-            <span class="icon" aria-hidden="true">☎</span>
             <span>518-248-8208</span>
           </a>
         </div>
