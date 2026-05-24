@@ -7,11 +7,11 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317486d'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='34' font-weight='700' fill='white'%3EL%3C/text%3E%3C/svg%3E">
 <style>
 :root {
-  --ink: #18212b;
-  --ink-soft: #415162;
-  --muted: #667789;
+  --ink: #19222d;
+  --ink-soft: #3d4d5f;
+  --muted: #657588;
   --line: #d9e0e7;
-  --line-strong: #c5ced8;
+  --line-strong: #c4ced8;
   --paper: #ffffff;
   --canvas: #f5f7f9;
   --wash: #edf4f7;
@@ -24,7 +24,7 @@
   --red-bg: #f8dddd;
   --amber: #936100;
   --amber-bg: #fff4dc;
-  --shadow: 0 1px 2px rgba(24, 33, 43, 0.08), 0 18px 48px rgba(24, 33, 43, 0.12);
+  --shadow: 0 1px 2px rgba(25, 34, 45, 0.08), 0 24px 70px rgba(25, 34, 45, 0.14);
   --focus: 0 0 0 3px rgba(30, 95, 143, 0.24);
   --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -42,7 +42,10 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--ink);
-  background: var(--canvas);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(46, 119, 111, 0.16), transparent 28%),
+    radial-gradient(circle at 82% 14%, rgba(30, 95, 143, 0.14), transparent 30%),
+    linear-gradient(135deg, #f9fbfc 0%, #eef4f6 54%, #f6f8fa 100%);
   font-family: var(--font);
   line-height: 1.5;
 }
@@ -60,142 +63,166 @@ a {
 
 .page {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  place-items: center;
+  padding: 40px;
 }
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 74px;
-  padding: 0 40px;
-  background: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(16px);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.card-wrap {
+  width: min(960px, 100%);
   min-width: 0;
 }
 
-.brand-mark {
+.business-card {
   display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--blue-dark), var(--teal));
-  color: var(--paper);
-  font-weight: 850;
-}
-
-.brand-name {
-  margin: 0;
-  color: var(--ink);
-  font-size: 18px;
-  font-weight: 820;
-  line-height: 1.1;
-}
-
-.brand-sub {
-  margin: 2px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 680;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.nav a {
-  color: var(--ink-soft);
-  font-size: 14px;
-  font-weight: 720;
-  text-decoration: none;
-}
-
-.nav a:hover {
-  color: var(--blue-dark);
-}
-
-.main {
-  flex: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(380px, 480px);
-  gap: 44px;
-  width: min(1240px, 100%);
-  margin: 0 auto;
-  padding: 64px 40px;
-  align-items: center;
-}
-
-.hero {
-  max-width: 760px;
-}
-
-.hero-panel {
-  padding: 32px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  gap: 0;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 1px 2px rgba(24, 33, 43, 0.05);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow);
+  width: 100%;
+  min-width: 0;
+}
+
+.identity {
+  padding: 42px;
+  border-right: 1px solid var(--line);
+  min-width: 0;
+}
+
+.symbol-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 34px;
+  color: var(--blue-dark);
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+.symbol-line::before,
+.symbol-line::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--line);
 }
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
-  color: var(--blue-dark);
+  margin: 0 0 12px;
+  color: var(--teal);
   font-size: 12px;
   font-weight: 820;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.eyebrow::before {
-  content: "";
-  width: 30px;
-  height: 2px;
-  background: var(--teal);
-}
-
 h1 {
-  max-width: 720px;
-  margin: 0 0 20px;
+  margin: 0;
   color: var(--ink);
-  font-size: 62px;
-  line-height: 1;
+  font-size: 60px;
+  line-height: 0.98;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
-.lead {
-  max-width: 650px;
-  margin: 0 0 30px;
+.company {
+  margin: 16px 0 0;
+  color: var(--blue-dark);
+  font-size: 24px;
+  font-weight: 820;
+  overflow-wrap: anywhere;
+}
+
+.company-label {
+  margin: 26px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.description {
+  max-width: 540px;
+  margin: 22px 0 0;
   color: var(--ink-soft);
-  font-size: 19px;
+  font-size: 17px;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
+.contact-list {
+  display: grid;
   gap: 12px;
+  margin-top: 34px;
+}
+
+.contact-item {
+  display: flex;
   align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 720;
+  min-width: 0;
+}
+
+.contact-item span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--wash);
+  color: var(--blue-dark);
+  font-size: 16px;
+  font-weight: 850;
+  flex: 0 0 auto;
+}
+
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 42px;
+  background: linear-gradient(180deg, #ffffff, #f7fafb);
+  min-width: 0;
+}
+
+.mini-symbols {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.action-panel h2 {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 28px;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.action-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 42px;
+  gap: 9px;
+  min-height: 44px;
   padding: 0 18px;
   border: 0;
   border-radius: 7px;
@@ -212,16 +239,14 @@ h1 {
 }
 
 .button.secondary {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--wash);
   color: var(--blue-dark);
   border: 1px solid var(--line);
 }
 
-.button.secondary:hover {
-  background: var(--wash);
-}
-
 .button.ghost {
+  min-height: 36px;
+  padding: 0 10px;
   background: transparent;
   color: var(--blue-dark);
 }
@@ -230,91 +255,28 @@ h1 {
   width: 100%;
 }
 
-.trust-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 42px;
-}
-
-.trust-item {
-  min-height: 116px;
-  padding: 16px;
+.session-note {
+  display: none;
+  margin-top: 14px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.84);
-}
-
-.trust-item strong {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--ink);
-  font-size: 14px;
-}
-
-.trust-item span {
-  color: var(--muted);
+  background: var(--wash);
+  color: var(--ink-soft);
   font-size: 13px;
 }
 
-.side-card {
-  padding: 28px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
-  box-shadow: var(--shadow);
-}
-
-.side-card h2 {
-  margin: 0 0 10px;
-  color: var(--ink);
-  font-size: 26px;
-  line-height: 1.2;
-}
-
-.side-card p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.process {
-  display: grid;
-  gap: 14px;
-  margin-top: 24px;
-}
-
-.process-step {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+.session-note.show {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--canvas);
 }
 
-.step-number {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--blue);
-  color: var(--paper);
+.fine-print {
+  margin: 18px 0 0;
+  color: var(--muted);
   font-size: 12px;
-  font-weight: 850;
-}
-
-.process-step strong {
-  display: block;
-  color: var(--ink);
-  font-size: 14px;
-}
-
-.process-step span {
-  color: var(--muted);
-  font-size: 13px;
 }
 
 .modal-backdrop {
@@ -324,7 +286,7 @@ h1 {
   display: none;
   place-items: center;
   padding: 20px;
-  background: rgba(24, 33, 43, 0.5);
+  background: rgba(25, 34, 45, 0.5);
 }
 
 .modal-backdrop.open {
@@ -332,7 +294,7 @@ h1 {
 }
 
 .modal {
-  width: min(720px, 100%);
+  width: min(680px, 100%);
   max-height: min(760px, calc(100vh - 40px));
   overflow: auto;
   border-radius: 8px;
@@ -562,7 +524,7 @@ a:focus-visible {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--paper);
-  box-shadow: 0 1px 2px rgba(24, 33, 43, 0.06);
+  box-shadow: 0 1px 2px rgba(25, 34, 45, 0.06);
 }
 
 .dashboard-header {
@@ -628,17 +590,19 @@ a:focus-visible {
   font-weight: 820;
 }
 
-@media (max-width: 980px) {
-  .main {
+@media (max-width: 860px) {
+  .business-card,
+  .admin-panel.open {
     grid-template-columns: 1fr;
+  }
+
+  .identity {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
   }
 
   h1 {
-    font-size: 48px;
-  }
-
-  .admin-panel.open {
-    grid-template-columns: 1fr;
+    font-size: 46px;
   }
 
   .admin-sidebar {
@@ -647,38 +611,32 @@ a:focus-visible {
   }
 }
 
-@media (max-width: 680px) {
-  .topbar {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 18px 16px;
+@media (max-width: 620px) {
+  .page {
+    padding: 16px;
   }
 
-  .nav {
-    width: 100%;
-    justify-content: space-between;
+  .identity,
+  .action-panel,
+  .modal-header,
+  .form {
+    padding: 20px;
   }
 
-  .main {
-    padding: 40px 16px;
+  .business-card {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   h1 {
     font-size: 38px;
   }
 
-  .lead {
-    font-size: 16px;
+  .company {
+    font-size: 21px;
   }
 
-  .trust-row,
   .form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .modal-header,
-  .form {
-    padding: 18px;
   }
 
   .doc-table {
@@ -692,68 +650,76 @@ a:focus-visible {
 </style>
 </head>
 <body>
-<div class="page" id="home">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true">L</div>
-      <div>
-        <p class="brand-name">Lev's Income Tax</p>
-        <p class="brand-sub">Tax preparation and document intake</p>
-      </div>
-    </div>
-    <nav class="nav" aria-label="Primary navigation">
-      <a href="#process">Process</a>
-      <a href="accounting-spectrum-design-system.html">Design System</a>
-    </nav>
-  </header>
+<main class="page" id="home">
+  <div class="card-wrap">
+    <section class="business-card" aria-labelledby="page-title">
+      <div class="identity">
+        <div class="symbol-line" aria-hidden="true">✦ ◆ ✧ ◇ ✦</div>
+        <p class="eyebrow">Tax preparation</p>
+        <h1 id="page-title">Lev Sukenik</h1>
+        <p class="company-label">Company Name</p>
+        <p class="company">Lev's Income Tax</p>
+        <p class="description">Simple, professional tax document intake with a human on the other side of the paperwork.</p>
 
-  <main class="main">
-    <section class="hero" aria-labelledby="page-title">
-      <div class="hero-panel">
-        <span class="eyebrow">Professional tax support</span>
-        <h1 id="page-title">Lev's Income Tax</h1>
-        <p class="lead">A straightforward place to send tax documents, identify the tax year, and keep your return moving without extra back-and-forth.</p>
-        <div class="hero-actions">
-          <button class="button" type="button" id="open-upload">Upload Documents</button>
-          <a class="button secondary" href="#process">How it works</a>
+        <div class="contact-list" aria-label="Contact information">
+          <a class="contact-item" href="mailto:levsincometax@gmail.com">
+            <span class="icon" aria-hidden="true">@</span>
+            <span>levsincometax@gmail.com</span>
+          </a>
+          <a class="contact-item" href="tel:+15182488208">
+            <span class="icon" aria-hidden="true">☎</span>
+            <span>518-248-8208</span>
+          </a>
         </div>
       </div>
 
-      <div class="trust-row" aria-label="Service highlights">
-        <div class="trust-item">
-          <strong>Simple intake</strong>
-          <span>Upload W-2s, 1099s, receipts, and supporting forms in one guided flow.</span>
+      <aside class="action-panel" aria-label="Client document upload">
+        <div>
+          <div class="mini-symbols" aria-hidden="true">✧ 1099 ✦ W-2 ◆ receipts ✧</div>
+          <h2>Send documents securely for review.</h2>
+          <p>Register first, then upload tax documents and select the year they belong to.</p>
         </div>
-        <div class="trust-item">
-          <strong>Clear tax years</strong>
-          <span>Each upload is tagged to the correct recent tax year before submission.</span>
+
+        <div>
+          <button class="button full" type="button" id="open-upload"><span aria-hidden="true">⇧</span>Upload Documents</button>
+          <div class="session-note" id="session-note"></div>
+          <p class="fine-print">Preview note: submissions are stored in this browser for the local demo.</p>
         </div>
-        <div class="trust-item">
-          <strong>Local preview</strong>
-          <span>This prototype stores demo submissions in this browser for review.</span>
-        </div>
-      </div>
+      </aside>
     </section>
+  </div>
+</main>
 
-    <aside class="side-card" id="process" aria-label="Upload process">
-      <h2>Document upload process</h2>
-      <p>Use the upload flow to create a client record and attach documents to a selected tax year.</p>
-      <div class="process">
-        <div class="process-step">
-          <span class="step-number">1</span>
-          <div><strong>Sign in</strong><span>Enter your name, email address, and password.</span></div>
+<div class="modal-backdrop" id="register-modal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title" id="register-title">Register to Upload</h2>
+        <p class="modal-copy">Create a client login before sending documents.</p>
+      </div>
+      <button class="close-button" type="button" data-close-register aria-label="Close registration form">×</button>
+    </div>
+
+    <form class="form" id="register-form">
+      <div class="form-grid">
+        <div class="field">
+          <label for="register-name">Full name</label>
+          <input id="register-name" name="register-name" type="text" autocomplete="name" required>
         </div>
-        <div class="process-step">
-          <span class="step-number">2</span>
-          <div><strong>Select tax year</strong><span>Choose from the last three tax years.</span></div>
+        <div class="field">
+          <label for="register-email">Email address</label>
+          <input id="register-email" name="register-email" type="email" autocomplete="email" required>
         </div>
-        <div class="process-step">
-          <span class="step-number">3</span>
-          <div><strong>Attach documents</strong><span>Add one or more documents and submit them for review.</span></div>
+        <div class="field full">
+          <label for="register-password">Password</label>
+          <input id="register-password" name="register-password" type="password" autocomplete="new-password" required minlength="6">
+          <span class="hint">Use at least 6 characters for this preview.</span>
         </div>
       </div>
-    </aside>
-  </main>
+      <div class="message" id="register-message" role="status" aria-live="polite"></div>
+      <button class="button full" type="submit">Create Account</button>
+    </form>
+  </section>
 </div>
 
 <div class="modal-backdrop" id="upload-modal" aria-hidden="true">
@@ -761,36 +727,23 @@ a:focus-visible {
     <div class="modal-header">
       <div>
         <h2 class="modal-title" id="upload-title">Upload Documents</h2>
-        <p class="modal-copy">Create or update your intake record, then attach files for the selected tax year.</p>
+        <p class="modal-copy" id="upload-copy">Attach files to your registered client account.</p>
       </div>
-      <button class="close-button" type="button" data-close-modal aria-label="Close upload form">×</button>
+      <button class="close-button" type="button" data-close-upload aria-label="Close upload form">×</button>
     </div>
 
     <form class="form" id="upload-form">
       <div class="form-grid">
         <div class="field">
-          <label for="client-name">Full name</label>
-          <input id="client-name" name="client-name" type="text" autocomplete="name" required>
-        </div>
-        <div class="field">
-          <label for="client-email">Email address</label>
-          <input id="client-email" name="client-email" type="email" autocomplete="email" required>
-        </div>
-        <div class="field">
-          <label for="client-password">Password</label>
-          <input id="client-password" name="client-password" type="password" autocomplete="new-password" required minlength="6">
-          <span class="hint">Use at least 6 characters for this preview.</span>
-        </div>
-        <div class="field">
           <label for="tax-year">Tax year</label>
           <select id="tax-year" name="tax-year" required></select>
         </div>
-        <div class="field full">
+        <div class="field">
           <label for="tax-documents">Documents</label>
           <input id="tax-documents" name="tax-documents" type="file" multiple required>
-          <span class="hint">For this local preview, small files are stored in browser storage for admin review.</span>
         </div>
       </div>
+      <span class="hint">Small files are stored in browser storage for admin review. Large files are saved as metadata only in this preview.</span>
       <ul class="file-list" id="selected-files" aria-label="Selected files"></ul>
       <div class="message" id="upload-message" role="status" aria-live="polite"></div>
       <button class="button full" type="submit">Submit Documents</button>
@@ -819,7 +772,7 @@ a:focus-visible {
   </section>
 </div>
 
-<section class="admin-panel" id="admin-dashboard" aria-label="Admin dashboard">
+<section class="admin-panel" id="admin-dashboard" aria-label="Admin dashboard" aria-hidden="true">
   <aside class="admin-sidebar">
     <div class="admin-top">
       <h2 class="admin-title">Clients</h2>
@@ -847,15 +800,21 @@ a:focus-visible {
 const ADMIN_TRIGGER = "leviosa";
 const ADMIN_PASSWORD = "levadmin";
 const STORAGE_KEY = "levs-income-tax-submissions";
+const SESSION_KEY = "levs-income-tax-session";
 const MAX_FILE_BYTES = 650000;
 
 const openUploadButton = document.querySelector("#open-upload");
+const registerModal = document.querySelector("#register-modal");
+const registerForm = document.querySelector("#register-form");
+const registerMessage = document.querySelector("#register-message");
 const uploadModal = document.querySelector("#upload-modal");
 const uploadForm = document.querySelector("#upload-form");
 const uploadMessage = document.querySelector("#upload-message");
 const fileInput = document.querySelector("#tax-documents");
 const fileList = document.querySelector("#selected-files");
 const yearSelect = document.querySelector("#tax-year");
+const uploadCopy = document.querySelector("#upload-copy");
+const sessionNote = document.querySelector("#session-note");
 const adminModal = document.querySelector("#admin-modal");
 const adminLoginForm = document.querySelector("#admin-login-form");
 const adminMessage = document.querySelector("#admin-message");
@@ -910,6 +869,62 @@ function saveSubmissions(submissions) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
 }
 
+function getCurrentClient() {
+  const id = sessionStorage.getItem(SESSION_KEY);
+  if (!id) return null;
+  return getSubmissions().find((client) => client.id === id) || null;
+}
+
+function setCurrentClient(client) {
+  sessionStorage.setItem(SESSION_KEY, client.id);
+  renderSession();
+}
+
+function renderSession() {
+  const client = getCurrentClient();
+
+  if (!client) {
+    sessionNote.classList.remove("show");
+    sessionNote.innerHTML = "";
+    openUploadButton.innerHTML = '<span aria-hidden="true">⇧</span>Upload Documents';
+    return;
+  }
+
+  openUploadButton.innerHTML = '<span aria-hidden="true">⇧</span>Upload Documents';
+  sessionNote.classList.add("show");
+  sessionNote.innerHTML = `
+    <span>Logged in as <strong>${client.name}</strong></span>
+    <button class="button ghost" type="button" id="sign-out">Sign out</button>
+  `;
+}
+
+function registerClient({ name, email, password }) {
+  const submissions = getSubmissions();
+  const existing = submissions.find((client) => client.email.toLowerCase() === email.toLowerCase());
+
+  if (existing) {
+    existing.name = name;
+    existing.password = password;
+    existing.updatedAt = new Date().toISOString();
+    saveSubmissions(submissions);
+    return existing;
+  }
+
+  const client = {
+    id: crypto.randomUUID(),
+    name,
+    email,
+    password,
+    documents: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  submissions.unshift(client);
+  saveSubmissions(submissions);
+  return client;
+}
+
 function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
@@ -947,22 +962,19 @@ function renderSelectedFiles() {
     .join("");
 }
 
-function upsertSubmission(newSubmission) {
+function addDocumentsToCurrentClient(documents) {
+  const currentClient = getCurrentClient();
+  if (!currentClient) return null;
+
   const submissions = getSubmissions();
-  const existing = submissions.find((submission) => submission.email.toLowerCase() === newSubmission.email.toLowerCase());
+  const client = submissions.find((item) => item.id === currentClient.id);
+  if (!client) return null;
 
-  if (existing) {
-    existing.name = newSubmission.name;
-    existing.password = newSubmission.password;
-    existing.updatedAt = newSubmission.updatedAt;
-    existing.documents.push(...newSubmission.documents);
-    saveSubmissions(submissions);
-    return existing;
-  }
-
-  submissions.unshift(newSubmission);
+  client.documents.push(...documents);
+  client.updatedAt = new Date().toISOString();
   saveSubmissions(submissions);
-  return newSubmission;
+  renderSession();
+  return client;
 }
 
 function getFilteredClients() {
@@ -976,7 +988,7 @@ function renderUsers() {
   const clients = getFilteredClients();
 
   if (!clients.length) {
-    userList.innerHTML = "<li class=\"empty\">No matching clients.</li>";
+    userList.innerHTML = '<li class="empty">No matching clients.</li>';
     renderDocuments(null);
     return;
   }
@@ -1016,7 +1028,7 @@ function renderDocuments(client) {
   const rows = client.documents.map((doc) => {
     const download = doc.stored
       ? `<a href="${doc.dataUrl}" download="${doc.name}">Download</a>`
-      : `<span class="pill">Metadata only</span>`;
+      : '<span class="pill">Metadata only</span>';
 
     return `
       <tr>
@@ -1047,8 +1059,32 @@ function renderDocuments(client) {
         </thead>
         <tbody>${rows}</tbody>
       </table>
-    ` : "<div class=\"empty\">No documents submitted.</div>"}
+    ` : '<div class="empty">This client is registered but has not uploaded documents yet.</div>'}
   `;
+}
+
+function openRegister() {
+  clearMessage(registerMessage);
+  registerForm.reset();
+  openModal(registerModal);
+  setTimeout(() => document.querySelector("#register-name").focus(), 30);
+}
+
+function openUpload() {
+  const client = getCurrentClient();
+
+  if (!client) {
+    openRegister();
+    return;
+  }
+
+  clearMessage(uploadMessage);
+  uploadForm.reset();
+  fileList.innerHTML = "";
+  setYears();
+  uploadCopy.textContent = `Uploading as ${client.name} (${client.email}).`;
+  openModal(uploadModal);
+  setTimeout(() => yearSelect.focus(), 30);
 }
 
 function openAdminLogin() {
@@ -1061,44 +1097,49 @@ function openAdminLogin() {
 function openDashboard() {
   closeModal(adminModal);
   adminDashboard.classList.add("open");
-  adminDashboard.removeAttribute("aria-hidden");
+  adminDashboard.setAttribute("aria-hidden", "false");
   activeClientId = getSubmissions()[0]?.id || null;
   renderUsers();
   setTimeout(() => clientFilter.focus(), 30);
 }
 
 setYears();
+renderSession();
 
-openUploadButton.addEventListener("click", () => {
-  clearMessage(uploadMessage);
-  uploadForm.reset();
-  setYears();
-  fileList.innerHTML = "";
-  openModal(uploadModal);
-  setTimeout(() => document.querySelector("#client-name").focus(), 30);
+openUploadButton.addEventListener("click", openUpload);
+
+sessionNote.addEventListener("click", (event) => {
+  if (!event.target.closest("#sign-out")) return;
+  sessionStorage.removeItem(SESSION_KEY);
+  renderSession();
 });
 
-document.querySelectorAll("[data-close-modal]").forEach((button) => {
-  button.addEventListener("click", () => closeModal(uploadModal));
-});
+registerForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  clearMessage(registerMessage);
 
-document.querySelectorAll("[data-close-admin-login]").forEach((button) => {
-  button.addEventListener("click", () => closeModal(adminModal));
-});
+  const formData = new FormData(registerForm);
+  const client = registerClient({
+    name: formData.get("register-name").trim(),
+    email: formData.get("register-email").trim(),
+    password: formData.get("register-password")
+  });
 
-uploadModal.addEventListener("click", (event) => {
-  if (event.target === uploadModal) closeModal(uploadModal);
+  setCurrentClient(client);
+  closeModal(registerModal);
+  openUpload();
 });
-
-adminModal.addEventListener("click", (event) => {
-  if (event.target === adminModal) closeModal(adminModal);
-});
-
-fileInput.addEventListener("change", renderSelectedFiles);
 
 uploadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearMessage(uploadMessage);
+
+  const currentClient = getCurrentClient();
+  if (!currentClient) {
+    closeModal(uploadModal);
+    openRegister();
+    return;
+  }
 
   const files = [...fileInput.files];
   if (!files.length) {
@@ -1106,22 +1147,13 @@ uploadForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  const formData = new FormData(uploadForm);
-  const taxYear = formData.get("tax-year");
+  const taxYear = yearSelect.value;
   const documents = await Promise.all(files.map(fileToRecord));
   documents.forEach((doc) => {
     doc.taxYear = taxYear;
   });
 
-  upsertSubmission({
-    id: crypto.randomUUID(),
-    name: formData.get("client-name").trim(),
-    email: formData.get("client-email").trim(),
-    password: formData.get("client-password"),
-    documents,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  });
+  addDocumentsToCurrentClient(documents);
 
   const skipped = documents.filter((doc) => !doc.stored).length;
   const message = skipped
@@ -1133,6 +1165,26 @@ uploadForm.addEventListener("submit", async (event) => {
   fileList.innerHTML = "";
   setYears();
 });
+
+document.querySelectorAll("[data-close-register]").forEach((button) => {
+  button.addEventListener("click", () => closeModal(registerModal));
+});
+
+document.querySelectorAll("[data-close-upload]").forEach((button) => {
+  button.addEventListener("click", () => closeModal(uploadModal));
+});
+
+document.querySelectorAll("[data-close-admin-login]").forEach((button) => {
+  button.addEventListener("click", () => closeModal(adminModal));
+});
+
+[registerModal, uploadModal, adminModal].forEach((modal) => {
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal(modal);
+  });
+});
+
+fileInput.addEventListener("change", renderSelectedFiles);
 
 adminLoginForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -1161,6 +1213,7 @@ document.querySelector("#close-dashboard").addEventListener("click", () => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    closeModal(registerModal);
     closeModal(uploadModal);
     closeModal(adminModal);
     return;
