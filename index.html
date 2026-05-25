@@ -7,26 +7,27 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317486d'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='34' font-weight='700' fill='white'%3EL%3C/text%3E%3C/svg%3E">
 <style>
 :root {
-  --ink: #19222d;
-  --ink-soft: #3d4d5f;
-  --muted: #657588;
-  --line: #d9e0e7;
-  --line-strong: #c4ced8;
+  --ink: #1f2a24;
+  --ink-soft: #45564b;
+  --muted: #6e7b71;
+  --line: #cbd8ca;
+  --line-strong: #acbcad;
   --paper: #ffffff;
-  --canvas: #f5f7f9;
-  --wash: #edf4f7;
-  --blue: #1e5f8f;
-  --blue-dark: #17486d;
-  --teal: #2e776f;
+  --canvas: #dfe8d8;
+  --wash: #eef4ea;
+  --blue: #315d60;
+  --blue-dark: #173f3d;
+  --teal: #3d7468;
   --green: #2f6f4f;
-  --green-bg: #e2f1e8;
+  --green-bg: #e7f2e9;
   --red: #b23b3b;
   --red-bg: #f8dddd;
   --amber: #936100;
   --amber-bg: #fff4dc;
   --shadow: 0 1px 2px rgba(25, 34, 45, 0.08), 0 24px 70px rgba(25, 34, 45, 0.14);
   --focus: 0 0 0 3px rgba(30, 95, 143, 0.24);
-  --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font: "Avenir Next", Avenir, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --display-font: ui-serif, Georgia, Cambria, "Times New Roman", serif;
 }
 
 * {
@@ -35,14 +36,16 @@
 
 html {
   min-width: 320px;
-  background: var(--canvas);
+  background: #dfe8d8;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
   color: var(--ink);
-  background: #20251f;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 42%),
+    #dfe8d8;
   font-family: var(--font);
   line-height: 1.5;
 }
@@ -59,42 +62,70 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-.page {
-  position: relative;
-  min-height: 100vh;
-  display: grid;
-  align-items: start;
-  justify-items: start;
-  padding: clamp(44px, 9vh, 104px) clamp(22px, 8vw, 116px);
-  background:
-    linear-gradient(90deg, rgba(15, 23, 18, 0.3) 0%, rgba(15, 23, 18, 0.06) 42%, rgba(15, 23, 18, 0.14) 100%),
-    url("lev-office-background.jpg") center center / cover no-repeat;
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 76px;
+  padding: 14px clamp(20px, 5vw, 64px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(232, 239, 226, 0.78);
+  backdrop-filter: blur(18px) saturate(1.12);
+  -webkit-backdrop-filter: blur(18px) saturate(1.12);
 }
 
-.card-wrap {
-  width: min(810px, 100%);
+.brand-mark {
+  color: var(--ink);
+  font-family: var(--display-font);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.menu-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-width: 0;
+}
+
+.page {
+  min-height: calc(100vh - 76px);
+  padding: clamp(36px, 6vw, 76px) clamp(20px, 5vw, 64px) 72px;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(340px, 1.08fr);
+  gap: clamp(24px, 4vw, 52px);
+  align-items: stretch;
+  width: min(1180px, 100%);
+  margin: 0 auto;
   min-width: 0;
 }
 
 .business-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.44fr);
-  gap: 0;
-  overflow: hidden;
+  display: block;
   border: 1px solid rgba(255, 255, 255, 0.48);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.36);
-  box-shadow: 0 18px 60px rgba(24, 30, 25, 0.22);
-  backdrop-filter: blur(18px) saturate(1.16);
-  -webkit-backdrop-filter: blur(18px) saturate(1.16);
+  background: rgba(250, 252, 247, 0.62);
+  box-shadow: 0 18px 56px rgba(45, 62, 46, 0.14);
+  backdrop-filter: blur(16px) saturate(1.06);
+  -webkit-backdrop-filter: blur(16px) saturate(1.06);
   width: 100%;
+  height: 100%;
   min-width: 0;
 }
 
 .identity {
-  padding: 36px;
-  border-right: 1px solid rgba(255, 255, 255, 0.36);
-  background: rgba(255, 255, 255, 0.55);
+  padding: clamp(30px, 4vw, 48px);
   min-width: 0;
 }
 
@@ -102,26 +133,29 @@ a {
   margin: 0 0 12px;
   color: var(--teal);
   font-size: 12px;
-  font-weight: 820;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 h1 {
   margin: 0;
   color: var(--ink);
-  font-size: 56px;
-  line-height: 0.98;
+  font-family: var(--display-font);
+  font-size: clamp(48px, 6vw, 76px);
+  font-weight: 500;
+  line-height: 0.94;
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
 
 .intro-heading {
-  margin: 18px 0 0;
-  color: var(--blue-dark);
-  font-size: 24px;
-  line-height: 1.22;
-  font-weight: 820;
+  max-width: 520px;
+  margin: 22px 0 0;
+  color: #244f4b;
+  font-size: clamp(21px, 2.2vw, 29px);
+  line-height: 1.25;
+  font-weight: 600;
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
@@ -129,17 +163,38 @@ h1 {
 .contact-list {
   display: grid;
   gap: 12px;
-  margin-top: 34px;
+  margin-top: 40px;
 }
 
 .contact-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 11px;
   color: var(--ink);
   text-decoration: none;
-  font-size: 15px;
-  font-weight: 720;
+  font-size: 16px;
+  font-weight: 600;
   min-width: 0;
+}
+
+.contact-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(47, 111, 79, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--green);
+  flex: 0 0 auto;
+}
+
+.contact-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
 }
 
 .contact-item span:last-child {
@@ -147,14 +202,57 @@ h1 {
   overflow-wrap: anywhere;
 }
 
-.action-panel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 30px;
-  padding: 36px;
-  background: rgba(255, 255, 255, 0.34);
+.hero-image {
+  min-height: 420px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 18px 56px rgba(45, 62, 46, 0.16);
+}
+
+.hero-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.supporting-copy {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(22px, 4vw, 44px);
+  width: min(1180px, 100%);
+  margin: clamp(40px, 6vw, 72px) auto 0;
+  padding-top: 28px;
+  border-top: 1px solid rgba(47, 72, 54, 0.22);
+}
+
+.support-section {
   min-width: 0;
+}
+
+.support-section h3 {
+  margin: 10px 0 10px;
+  color: var(--ink);
+  font-family: var(--display-font);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.support-section p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.section-number {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .button {
@@ -170,7 +268,7 @@ h1 {
   color: var(--paper);
   cursor: pointer;
   font-size: 14px;
-  font-weight: 820;
+  font-weight: 760;
   text-decoration: none;
 }
 
@@ -179,9 +277,10 @@ h1 {
 }
 
 #open-upload {
-  min-height: 50px;
+  min-height: 42px;
   background: linear-gradient(135deg, #2f6f4f, #3f8f63);
-  box-shadow: 0 10px 24px rgba(31, 91, 61, 0.28);
+  box-shadow: 0 8px 20px rgba(31, 91, 61, 0.2);
+  white-space: nowrap;
 }
 
 #open-upload:hover {
@@ -207,11 +306,10 @@ h1 {
 
 .session-note {
   display: none;
-  margin-top: 14px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--wash);
+  padding: 7px 8px 7px 12px;
+  border: 1px solid rgba(47, 111, 79, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
   color: var(--ink-soft);
   font-size: 13px;
 }
@@ -229,13 +327,9 @@ h1 {
 }
 
 .home-confirmation {
-  margin-top: 14px;
-}
-
-.fine-print {
-  margin: 18px 0 0;
-  color: var(--ink-soft);
-  font-size: 12px;
+  max-width: 340px;
+  padding: 10px 12px;
+  line-height: 1.3;
 }
 
 .modal-backdrop {
@@ -615,20 +709,14 @@ a:focus-visible {
 }
 
 @media (max-width: 860px) {
-  .page {
-    justify-items: center;
-    padding-top: 38px;
-    background-position: 45% center;
-  }
-
-  .business-card,
+  .hero-section,
+  .supporting-copy,
   .admin-panel.open {
     grid-template-columns: 1fr;
   }
 
-  .identity {
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.36);
+  .hero-image {
+    min-height: 320px;
   }
 
   h1 {
@@ -642,20 +730,51 @@ a:focus-visible {
 }
 
 @media (max-width: 620px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 0;
+    padding: 14px 18px;
+  }
+
+  .brand-mark {
+    font-size: 20px;
+  }
+
+  .menu-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  #open-upload {
+    flex: 1 1 180px;
+  }
+
+  .session-note {
+    flex: 1 1 auto;
+    border-radius: 8px;
+  }
+
+  .home-confirmation {
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
   .page {
-    padding: 18px;
-    background-position: 42% center;
+    min-height: auto;
+    padding: 22px 18px 52px;
   }
 
   .identity,
-  .action-panel,
   .modal-header,
   .form {
     padding: 20px;
   }
 
-  .business-card {
-    grid-template-columns: minmax(0, 1fr);
+  .hero-image {
+    min-height: 250px;
   }
 
   h1 {
@@ -664,6 +783,14 @@ a:focus-visible {
 
   .intro-heading {
     font-size: 21px;
+  }
+
+  .supporting-copy {
+    margin-top: 34px;
+  }
+
+  .support-section h3 {
+    font-size: 25px;
   }
 
   .form-grid {
@@ -681,9 +808,18 @@ a:focus-visible {
 </style>
 </head>
 <body>
+<header class="site-header">
+  <a class="brand-mark" href="#home" aria-label="Lev's Income Tax homepage">Lev's Income Tax</a>
+  <div class="menu-actions">
+    <div class="message home-confirmation" id="home-confirmation" role="status" aria-live="polite"></div>
+    <div class="session-note" id="session-note"></div>
+    <button class="button" type="button" id="open-upload">Upload Documents</button>
+  </div>
+</header>
+
 <main class="page" id="home">
-  <div class="card-wrap">
-    <section class="business-card" aria-labelledby="page-title">
+  <section class="hero-section" aria-labelledby="page-title">
+    <article class="business-card" aria-labelledby="page-title">
       <div class="identity">
         <p class="eyebrow">Tax preparation</p>
         <h1 id="page-title">Lev's Income Tax</h1>
@@ -691,24 +827,48 @@ a:focus-visible {
 
         <div class="contact-list" aria-label="Contact information">
           <a class="contact-item" href="mailto:levsincometax@gmail.com">
+            <span class="contact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 6h16v12H4z"></path>
+                <path d="m4 7 8 6 8-6"></path>
+              </svg>
+            </span>
             <span>levsincometax@gmail.com</span>
           </a>
           <a class="contact-item" href="tel:+15182488208">
+            <span class="contact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.6.5 2.5.6A2 2 0 0 1 22 16.9z"></path>
+              </svg>
+            </span>
             <span>518-248-8208</span>
           </a>
         </div>
       </div>
+    </article>
 
-      <aside class="action-panel" aria-label="Client document upload">
-        <div>
-          <button class="button full" type="button" id="open-upload">Upload Documents</button>
-          <div class="message home-confirmation" id="home-confirmation" role="status" aria-live="polite"></div>
-          <div class="session-note" id="session-note"></div>
-          <p class="fine-print">Preview note: submissions are stored in this browser for the local demo.</p>
-        </div>
-      </aside>
-    </section>
-  </div>
+    <figure class="hero-image" aria-label="Warm accounting office">
+      <img src="lev-office-background.jpg" alt="A calm office with plants, a desk, and soft natural light">
+    </figure>
+  </section>
+
+  <section class="supporting-copy" aria-label="Client support">
+    <article class="support-section">
+      <span class="section-number">01 Personal</span>
+      <h3>Steady help at tax time.</h3>
+      <p>Work directly with Lev through a simple intake process built for clear documents, fewer back-and-forth questions, and practical next steps.</p>
+    </article>
+    <article class="support-section">
+      <span class="section-number">02 Organized</span>
+      <h3>Documents stay easy to review.</h3>
+      <p>Register, confirm your current tax details, choose the year, and submit files in one focused flow without extra screens getting in the way.</p>
+    </article>
+    <article class="support-section">
+      <span class="section-number">03 Trusted</span>
+      <h3>Twenty years of personal touch.</h3>
+      <p>Thoughtful preparation for clients who want professional accounting support that still feels approachable, careful, and human.</p>
+    </article>
+  </section>
 </main>
 
 <div class="modal-backdrop" id="register-modal" aria-hidden="true">
