@@ -295,14 +295,23 @@ h1 {
   right: clamp(16px, 3vw, 30px);
   bottom: clamp(18px, 4vw, 36px);
   z-index: 2;
-  min-height: 42px;
-  background: linear-gradient(135deg, #2f6f4f, #3f8f63);
-  box-shadow: 0 8px 20px rgba(31, 91, 61, 0.2);
+  min-height: 52px;
+  padding: 0 26px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: linear-gradient(135deg, rgba(47, 111, 79, 0.9), rgba(63, 143, 99, 0.82));
+  box-shadow:
+    0 12px 28px rgba(31, 91, 61, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px) saturate(1.14);
+  -webkit-backdrop-filter: blur(10px) saturate(1.14);
+  font-size: 15px;
   white-space: nowrap;
 }
 
 #open-upload:hover {
-  background: linear-gradient(135deg, #275d43, #347b56);
+  border-color: rgba(255, 255, 255, 0.84);
+  background: linear-gradient(135deg, rgba(39, 93, 67, 0.94), rgba(52, 123, 86, 0.88));
 }
 
 .button.secondary {
