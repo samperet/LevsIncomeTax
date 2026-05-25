@@ -1583,10 +1583,18 @@ const enableNotificationsButton = document.querySelector("#enable-notifications"
 const alertList = document.querySelector("#alert-list");
 const alertHeading = document.querySelector("#alert-heading");
 const markAlertsSeenButton = document.querySelector("#mark-alerts-seen");
+const quoteCarousel = document.querySelector(".quote-carousel");
+const quoteSlides = [...document.querySelectorAll("[data-quote-slide]")];
+const quoteDots = [...document.querySelectorAll("[data-quote-dot]")];
+const quotePrevButton = document.querySelector("#quote-prev");
+const quoteNextButton = document.querySelector("#quote-next");
+const infoModals = [...document.querySelectorAll(".info-modal")];
 let activeClientId = null;
+let activeQuoteIndex = 0;
 let typedBuffer = "";
 let pendingMagicLink = "";
 let installPromptEvent = null;
+let quoteTimer = null;
 
 function getTaxYears() {
   const currentYear = new Date().getFullYear();
@@ -1622,6 +1630,47 @@ function clearMessage(element) {
 function clearHomeConfirmation() {
   homeConfirmation.className = "message home-confirmation";
   homeConfirmation.textContent = "";
+}
+
+function setQuote(index) {
+  if (!quoteSlides.length) return;
+
+  activeQuoteIndex = (index + quoteSlides.length) % quoteSlides.length;
+  quoteSlides.forEach((slide, slideIndex) => {
+    const isActive = slideIndex === activeQuoteIndex;
+    slide.classList.toggle("active", isActive);
+    slide.hidden = !isActive;
+  });
+
+  quoteDots.forEach((dot, dotIndex) => {
+    const isActive = dotIndex === activeQuoteIndex;
+    dot.classList.toggle("active", isActive);
+    dot.setAttribute("aria-current", isActive ? "true" : "false");
+  });
+}
+
+function advanceQuote(step) {
+  setQuote(activeQuoteIndex + step);
+}
+
+function stopQuoteCarousel() {
+  if (!quoteTimer) return;
+  clearInterval(quoteTimer);
+  quoteTimer = null;
+}
+
+function startQuoteCarousel() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const userIsReading = quoteCarousel.matches(":hover") || quoteCarousel.contains(document.activeElement);
+  if (reduceMotion || userIsReading || quoteTimer || quoteSlides.length < 2) return;
+  quoteTimer = setInterval(() => advanceQuote(1), 7000);
+}
+
+function openInfoModal(id) {
+  const modal = infoModals.find((item) => item.id === id);
+  if (!modal) return;
+  openModal(modal);
+  setTimeout(() => modal.querySelector(".close-button")?.focus(), 30);
 }
 
 function showHomeConfirmation(type, text) {
@@ -2427,6 +2476,7 @@ function enterAdminRoute() {
   closeModal(registerModal);
   closeModal(taxInfoModal);
   closeModal(uploadModal);
+  infoModals.forEach(closeModal);
 
   if (sessionStorage.getItem(ADMIN_AUTH_KEY) === "true") {
     openDashboard();
@@ -2438,6 +2488,8 @@ function enterAdminRoute() {
 
 setYears();
 renderSession();
+setQuote(0);
+startQuoteCarousel();
 consumeMagicLink().then((handledMagicLink) => {
   if (!handledMagicLink && isAdminRoute()) {
     enterAdminRoute();
@@ -2515,6 +2567,39 @@ registerForm.addEventListener("submit", async (event) => {
 openMagicLinkButton.addEventListener("click", () => {
   if (!pendingMagicLink) return;
   window.location.href = pendingMagicLink;
+});
+
+quotePrevButton.addEventListener("click", () => {
+  stopQuoteCarousel();
+  advanceQuote(-1);
+  startQuoteCarousel();
+});
+
+quoteNextButton.addEventListener("click", () => {
+  stopQuoteCarousel();
+  advanceQuote(1);
+  startQuoteCarousel();
+});
+
+quoteDots.forEach((dot) => {
+  dot.addEventListener("click", () => {
+    stopQuoteCarousel();
+    setQuote(Number(dot.dataset.quoteDot));
+    startQuoteCarousel();
+  });
+});
+
+quoteCarousel.addEventListener("pointerenter", stopQuoteCarousel);
+quoteCarousel.addEventListener("pointerleave", startQuoteCarousel);
+quoteCarousel.addEventListener("focusin", stopQuoteCarousel);
+quoteCarousel.addEventListener("focusout", (event) => {
+  if (!quoteCarousel.contains(event.relatedTarget)) {
+    startQuoteCarousel();
+  }
+});
+
+document.querySelectorAll("[data-info-modal]").forEach((button) => {
+  button.addEventListener("click", () => openInfoModal(button.dataset.infoModal));
 });
 
 window.addEventListener("beforeinstallprompt", (event) => {
@@ -2637,7 +2722,11 @@ document.querySelectorAll("[data-close-admin-login]").forEach((button) => {
   button.addEventListener("click", () => closeModal(adminModal));
 });
 
-[registerModal, taxInfoModal, uploadModal, adminModal].forEach((modal) => {
+document.querySelectorAll("[data-close-info]").forEach((button) => {
+  button.addEventListener("click", () => closeModal(button.closest(".modal-backdrop")));
+});
+
+[registerModal, taxInfoModal, uploadModal, adminModal, ...infoModals].forEach((modal) => {
   modal.addEventListener("click", (event) => {
     if (event.target === modal) closeModal(modal);
   });
@@ -2742,6 +2831,7 @@ document.addEventListener("keydown", (event) => {
     closeModal(taxInfoModal);
     closeModal(uploadModal);
     closeModal(adminModal);
+    infoModals.forEach(closeModal);
     return;
   }
 
