@@ -1,0 +1,15 @@
+{
+  "name": "levs-income-tax",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lev's Income Tax client upload portal with magic-link email backend.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js && node --check service-worker.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemailer": "^8.0.8"
+  }
+}

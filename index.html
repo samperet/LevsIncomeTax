@@ -298,8 +298,7 @@ h1 {
   background: var(--blue-dark);
 }
 
-.button:disabled,
-.auth-tab:disabled {
+.button:disabled {
   cursor: not-allowed;
   opacity: 0.64;
 }
@@ -353,33 +352,6 @@ h1 {
 
 .link-actions:has(#open-magic-link[hidden]) {
   grid-template-columns: 1fr;
-}
-
-.auth-tabs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  padding: 4px;
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.auth-tab {
-  min-height: 36px;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 820;
-}
-
-.auth-tab.active {
-  background: rgba(255, 255, 255, 0.68);
-  color: var(--blue-dark);
-  box-shadow: 0 1px 2px rgba(45, 62, 46, 0.08);
 }
 
 .magic-link-output {
@@ -1108,22 +1080,14 @@ a:focus-visible {
     <div class="modal-header">
       <div>
         <h2 class="modal-title" id="register-title">Client Access</h2>
-        <p class="modal-copy">Customers receive private upload links by email. No customer passwords are used.</p>
+        <p class="modal-copy">Enter your email and we will send a private upload link. No customer passwords are used.</p>
       </div>
       <button class="close-button" type="button" data-close-register aria-label="Close registration form">×</button>
     </div>
 
     <form class="form" id="register-form">
-      <div class="auth-tabs" role="tablist" aria-label="Client access mode">
-        <button class="auth-tab active" id="auth-login" type="button" role="tab" aria-selected="true" data-auth-mode="login">Login</button>
-        <button class="auth-tab" id="auth-register" type="button" role="tab" aria-selected="false" data-auth-mode="register">Register</button>
-      </div>
       <div class="form-grid">
-        <div class="field" id="register-name-field" hidden>
-          <label class="required-label" for="register-name">Full name</label>
-          <input id="register-name" name="register-name" type="text" autocomplete="name">
-        </div>
-        <div class="field">
+        <div class="field full">
           <label class="required-label" for="register-email">Email address</label>
           <input id="register-email" name="register-email" type="email" autocomplete="email" required>
         </div>
@@ -1135,7 +1099,7 @@ a:focus-visible {
       </div>
       <div class="message" id="register-message" role="status" aria-live="polite"></div>
       <div class="link-actions">
-        <button class="button full" id="create-magic-link" type="submit">Email Login Link</button>
+        <button class="button full" id="create-magic-link" type="submit">Email Magic Link</button>
         <button class="button secondary full" type="button" id="open-magic-link" hidden>Open Link</button>
       </div>
     </form>
@@ -1264,7 +1228,7 @@ a:focus-visible {
       <div class="field">
         <label class="required-label" for="admin-password">Admin password</label>
         <input id="admin-password" type="password" autocomplete="current-password" required>
-        <span class="hint">Demo password: <strong>levadmin</strong></span>
+        <span class="hint">Use the admin password configured on the server.</span>
       </div>
       <div class="message" id="admin-message" role="status" aria-live="polite"></div>
       <button class="button full" type="submit">Open Dashboard</button>
@@ -1315,10 +1279,11 @@ a:focus-visible {
 
 <script>
 const ADMIN_TRIGGER = "leviosa";
-const ADMIN_PASSWORD = "levadmin";
 const STORAGE_KEY = "levs-income-tax-submissions";
 const SESSION_KEY = "levs-income-tax-session";
+const CLIENT_AUTH_KEY = "levs-income-tax-client-token";
 const ADMIN_AUTH_KEY = "levs-income-tax-admin-authenticated";
+const ADMIN_TOKEN_KEY = "levs-income-tax-admin-token";
 const ADMIN_ALERTS_KEY = "levs-income-tax-admin-alerts";
 const MAGIC_LINK_KEY = "levs-income-tax-magic-links";
 const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
@@ -1328,9 +1293,6 @@ const openUploadButton = document.querySelector("#open-upload");
 const registerModal = document.querySelector("#register-modal");
 const registerForm = document.querySelector("#register-form");
 const registerMessage = document.querySelector("#register-message");
-const authModeButtons = document.querySelectorAll("[data-auth-mode]");
-const registerNameField = document.querySelector("#register-name-field");
-const registerNameInput = document.querySelector("#register-name");
 const registerEmailInput = document.querySelector("#register-email");
 const createMagicLinkButton = document.querySelector("#create-magic-link");
 const magicLinkOutput = document.querySelector("#magic-link-output");
@@ -1366,7 +1328,6 @@ const markAlertsSeenButton = document.querySelector("#mark-alerts-seen");
 let activeClientId = null;
 let typedBuffer = "";
 let pendingMagicLink = "";
-let authMode = "login";
 let installPromptEvent = null;
 
 function getTaxYears() {
@@ -1415,6 +1376,34 @@ function showHomeConfirmation(type, text) {
   setTimeout(() => openUploadButton.focus(), 30);
 }
 
+async function apiRequest(path, { method = "GET", body, token } = {}) {
+  const response = await fetch(path, {
+    method,
+    headers: {
+      ...(body ? { "Content-Type": "application/json" } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const error = new Error(payload.error || "Request failed.");
+    error.status = response.status;
+    throw error;
+  }
+
+  return payload;
+}
+
+function getClientToken() {
+  return sessionStorage.getItem(CLIENT_AUTH_KEY) || "";
+}
+
+function getAdminToken() {
+  return sessionStorage.getItem(ADMIN_TOKEN_KEY) || "";
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -1436,6 +1425,24 @@ function saveSubmissions(submissions) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
 }
 
+function saveClientFromServer(client) {
+  const submissions = getSubmissions();
+  const index = submissions.findIndex((item) => item.id === client.id || item.email.toLowerCase() === client.email.toLowerCase());
+
+  if (index >= 0) {
+    submissions[index] = client;
+  } else {
+    submissions.unshift(client);
+  }
+
+  saveSubmissions(submissions);
+  return client;
+}
+
+function saveClientsFromServer(clients) {
+  saveSubmissions(Array.isArray(clients) ? clients : []);
+}
+
 function getAdminAlerts() {
   try {
     return JSON.parse(localStorage.getItem(ADMIN_ALERTS_KEY)) || [];
@@ -1446,6 +1453,16 @@ function getAdminAlerts() {
 
 function saveAdminAlerts(alerts) {
   localStorage.setItem(ADMIN_ALERTS_KEY, JSON.stringify(alerts));
+}
+
+function mergeAdminAlerts(alerts) {
+  const merged = [...(Array.isArray(alerts) ? alerts : []), ...getAdminAlerts()];
+  const seenIds = new Set();
+  saveAdminAlerts(merged.filter((alert) => {
+    if (seenIds.has(alert.id)) return false;
+    seenIds.add(alert.id);
+    return true;
+  }));
 }
 
 function getUnseenAlerts() {
@@ -1478,7 +1495,7 @@ function createUploadAlerts(client, documents, taxYear) {
   return createdAlerts;
 }
 
-function markAlertsSeen(clientId = "") {
+async function markAlertsSeen(clientId = "") {
   const now = new Date().toISOString();
   const alerts = getAdminAlerts().map((alert) => {
     if (alert.seenAt || (clientId && alert.clientId !== clientId)) return alert;
@@ -1486,6 +1503,20 @@ function markAlertsSeen(clientId = "") {
   });
 
   saveAdminAlerts(alerts);
+
+  if (getAdminToken()) {
+    try {
+      const result = await apiRequest("/api/admin/alerts/seen", {
+        method: "POST",
+        token: getAdminToken(),
+        body: { clientId }
+      });
+      saveAdminAlerts(result.alerts || alerts);
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
   renderAdminAwareness();
 }
 
@@ -1509,8 +1540,11 @@ function showAdminNotification(title, body) {
   new Notification(title, options);
 }
 
-function notifyAdminUpload(client, documents, taxYear) {
-  const alerts = createUploadAlerts(client, documents, taxYear);
+function notifyAdminUpload(client, documents, taxYear, serverAlerts = null) {
+  const alerts = serverAlerts || createUploadAlerts(client, documents, taxYear);
+  if (serverAlerts) {
+    mergeAdminAlerts(serverAlerts);
+  }
   const fileText = documents.length === 1 ? documents[0].name : `${documents.length} files`;
 
   showAdminNotification("New tax documents uploaded", `${client.name} uploaded ${fileText} for ${taxYear}.`);
@@ -1664,9 +1698,42 @@ function openMagicLinkEmail(client, link) {
   window.location.href = createMailtoUrl(client, link);
 }
 
-function consumeMagicLink() {
+async function requestBackendMagicLink({ email }) {
+  return apiRequest("/api/magic-link", {
+    method: "POST",
+    body: { email }
+  });
+}
+
+async function requestAdminMagicLink(clientId) {
+  return apiRequest("/api/admin/magic-link", {
+    method: "POST",
+    token: getAdminToken(),
+    body: { clientId }
+  });
+}
+
+async function consumeMagicLink() {
   const token = new URLSearchParams(location.search).get("magic");
   if (!token) return false;
+
+  try {
+    const result = await apiRequest("/api/magic-link/consume", {
+      method: "POST",
+      body: { token }
+    });
+    const client = saveClientFromServer(result.client);
+    history.replaceState(null, "", getCleanPageUrl().toString());
+    setCurrentClient(client, result.clientToken);
+    showHomeConfirmation("success", `Welcome back, ${client.name}.`);
+    setTimeout(openTaxInfo, 350);
+    return true;
+  } catch (error) {
+    if (![404, 410].includes(error.status)) {
+      showHomeConfirmation("error", error.message || "Magic link could not be verified.");
+      return true;
+    }
+  }
 
   const records = getMagicLinks();
   const record = records.find((item) => item.token === token);
@@ -1713,8 +1780,11 @@ function getCurrentClient() {
   return getSubmissions().find((client) => client.id === id) || null;
 }
 
-function setCurrentClient(client) {
+function setCurrentClient(client, clientToken = "") {
   sessionStorage.setItem(SESSION_KEY, client.id);
+  if (clientToken) {
+    sessionStorage.setItem(CLIENT_AUTH_KEY, clientToken);
+  }
   renderSession();
 }
 
@@ -1745,24 +1815,6 @@ function resetMagicLinkOutput() {
   magicLinkValue.value = "";
   magicLinkOutput.hidden = true;
   openMagicLinkButton.hidden = true;
-}
-
-function setAuthMode(mode) {
-  authMode = mode;
-
-  authModeButtons.forEach((button) => {
-    const selected = button.dataset.authMode === mode;
-    button.classList.toggle("active", selected);
-    button.setAttribute("aria-selected", String(selected));
-  });
-
-  const isRegistering = mode === "register";
-  registerNameField.hidden = !isRegistering;
-  registerNameInput.required = isRegistering;
-  registerEmailInput.parentElement.classList.toggle("full", !isRegistering);
-  createMagicLinkButton.textContent = isRegistering ? "Email Registration Link" : "Email Login Link";
-  clearMessage(registerMessage);
-  resetMagicLinkOutput();
 }
 
 function registerClient({ name, email }) {
@@ -1859,6 +1911,26 @@ function addDocumentsToCurrentClient(documents) {
   saveSubmissions(submissions);
   renderSession();
   return client;
+}
+
+async function submitUploadToBackend(client, documents, taxYear) {
+  const token = getClientToken();
+  if (!token) return null;
+
+  const result = await apiRequest("/api/uploads", {
+    method: "POST",
+    token,
+    body: {
+      taxYear,
+      taxInfo: client.taxInfo,
+      documents
+    }
+  });
+
+  return {
+    client: saveClientFromServer(result.client),
+    alerts: result.alerts || []
+  };
 }
 
 function getFilteredClients() {
@@ -2008,7 +2080,7 @@ function fillTaxInfoForm(client) {
 function openRegister() {
   clearHomeConfirmation();
   clearMessage(registerMessage);
-  setAuthMode("login");
+  resetMagicLinkOutput();
   registerForm.reset();
   openModal(registerModal);
   setTimeout(() => registerEmailInput.focus(), 30);
@@ -2055,10 +2127,31 @@ function openAdminLogin() {
   setTimeout(() => adminPasswordInput.focus(), 30);
 }
 
-function openDashboard() {
+async function loadAdminData() {
+  if (!getAdminToken()) return;
+
+  const result = await apiRequest("/api/admin/clients", {
+    token: getAdminToken()
+  });
+  saveClientsFromServer(result.clients || []);
+  saveAdminAlerts(result.alerts || []);
+}
+
+async function openDashboard() {
   closeModal(adminModal);
   adminDashboard.classList.add("open");
   adminDashboard.setAttribute("aria-hidden", "false");
+
+  try {
+    await loadAdminData();
+  } catch (error) {
+    sessionStorage.removeItem(ADMIN_AUTH_KEY);
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    openAdminLogin();
+    showMessage(adminMessage, "error", error.message || "Admin session expired.");
+    return;
+  }
+
   activeClientId = getSubmissions()[0]?.id || null;
   renderUsers();
   renderAdminAwareness();
@@ -2085,13 +2178,13 @@ function enterAdminRoute() {
   openAdminLogin();
 }
 
-setAuthMode("login");
 setYears();
 renderSession();
-const handledMagicLink = consumeMagicLink();
-if (!handledMagicLink && isAdminRoute()) {
-  enterAdminRoute();
-}
+consumeMagicLink().then((handledMagicLink) => {
+  if (!handledMagicLink && isAdminRoute()) {
+    enterAdminRoute();
+  }
+});
 
 openUploadButton.addEventListener("click", () => {
   if (!getCurrentClient()) {
@@ -2105,48 +2198,60 @@ openUploadButton.addEventListener("click", () => {
 sessionNote.addEventListener("click", (event) => {
   if (!event.target.closest("#sign-out")) return;
   sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem(CLIENT_AUTH_KEY);
   clearHomeConfirmation();
   renderSession();
 });
 
-authModeButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    setAuthMode(button.dataset.authMode);
-  });
-});
-
-registerForm.addEventListener("submit", (event) => {
+registerForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearMessage(registerMessage);
 
   const formData = new FormData(registerForm);
   const email = formData.get("register-email").trim();
-  const name = formData.get("register-name").trim();
-  let client = findClientByEmail(email);
 
-  if (authMode === "login" && !client) {
-    showMessage(registerMessage, "error", "No client found for that email. Register first to create an upload profile.");
-    return;
-  }
+  createMagicLinkButton.disabled = true;
+  showMessage(registerMessage, "warning", "Sending magic link...");
 
-  if (authMode === "register") {
-    if (!name) {
-      showMessage(registerMessage, "error", "Enter a full name to register.");
-      registerNameInput.focus();
+  try {
+    const result = await requestBackendMagicLink({ email });
+    const client = saveClientFromServer(result.client);
+
+    if (result.previewLink) {
+      pendingMagicLink = result.previewLink;
+      magicLinkValue.value = result.previewLink;
+      magicLinkOutput.hidden = false;
+      openMagicLinkButton.hidden = false;
+      showMessage(registerMessage, "warning", "Email backend is running in console preview mode. Configure email credentials to send live email.");
       return;
     }
 
-    client = registerClient({ name, email });
+    pendingMagicLink = "";
+    magicLinkValue.value = "";
+    magicLinkOutput.hidden = true;
+    openMagicLinkButton.hidden = true;
+    showMessage(registerMessage, "success", `Magic link emailed to ${client.email}.`);
+  } catch (error) {
+    if (error.status) {
+      showMessage(registerMessage, "error", error.message || "Magic link could not be sent.");
+      return;
+    }
+
+    let client = findClientByEmail(email);
+    if (!client) {
+      client = registerClient({ name: email.split("@")[0], email });
+    }
+
+    const link = createMagicLink(client);
+    pendingMagicLink = link;
+    magicLinkValue.value = link;
+    magicLinkOutput.hidden = false;
+    openMagicLinkButton.hidden = false;
+    openMagicLinkEmail(client, link);
+    showMessage(registerMessage, "warning", "Backend is unavailable, so a local email draft was opened instead.");
+  } finally {
+    createMagicLinkButton.disabled = false;
   }
-
-  const link = createMagicLink(client);
-
-  pendingMagicLink = link;
-  magicLinkValue.value = link;
-  magicLinkOutput.hidden = false;
-  openMagicLinkButton.hidden = false;
-  openMagicLinkEmail(client, link);
-  showMessage(registerMessage, "success", `Magic link emailed for ${client.email}.`);
 });
 
 openMagicLinkButton.addEventListener("click", () => {
@@ -2225,9 +2330,25 @@ uploadForm.addEventListener("submit", async (event) => {
     doc.taxYear = taxYear;
   });
 
-  const updatedClient = addDocumentsToCurrentClient(documents);
+  let updatedClient = null;
+  let serverAlerts = null;
+
+  if (getClientToken()) {
+    try {
+      const backendUpload = await submitUploadToBackend(currentClient, documents, taxYear);
+      updatedClient = backendUpload.client;
+      serverAlerts = backendUpload.alerts;
+      setCurrentClient(updatedClient);
+    } catch (error) {
+      showMessage(uploadMessage, "error", error.message || "Upload could not be saved to the email backend.");
+      return;
+    }
+  } else {
+    updatedClient = addDocumentsToCurrentClient(documents);
+  }
+
   if (updatedClient) {
-    notifyAdminUpload(updatedClient, documents, taxYear);
+    notifyAdminUpload(updatedClient, documents, taxYear, serverAlerts);
   }
 
   const skipped = documents.filter((doc) => !doc.stored).length;
@@ -2266,22 +2387,28 @@ document.querySelectorAll("[data-close-admin-login]").forEach((button) => {
 
 fileInput.addEventListener("change", renderSelectedFiles);
 
-adminLoginForm.addEventListener("submit", (event) => {
+adminLoginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (adminPasswordInput.value === ADMIN_PASSWORD) {
-    sessionStorage.setItem(ADMIN_AUTH_KEY, "true");
-    openDashboard();
-    return;
-  }
 
-  showMessage(adminMessage, "error", "Admin password not recognized.");
-  adminPasswordInput.select();
+  try {
+    const result = await apiRequest("/api/admin/login", {
+      method: "POST",
+      body: { password: adminPasswordInput.value }
+    });
+    sessionStorage.setItem(ADMIN_AUTH_KEY, "true");
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, result.adminToken);
+    await openDashboard();
+    return;
+  } catch (error) {
+    showMessage(adminMessage, "error", error.message || "Admin password not recognized.");
+    adminPasswordInput.select();
+  }
 });
 
 clientFilter.addEventListener("input", renderUsers);
 
-markAlertsSeenButton.addEventListener("click", () => {
-  markAlertsSeen();
+markAlertsSeenButton.addEventListener("click", async () => {
+  await markAlertsSeen();
   renderUsers();
 });
 
@@ -2292,11 +2419,10 @@ userList.addEventListener("click", (event) => {
   renderUsers();
 });
 
-documentPanel.addEventListener("click", (event) => {
+documentPanel.addEventListener("click", async (event) => {
   const markSeenButton = event.target.closest("[data-mark-client-seen]");
   if (markSeenButton) {
-    markAlertsSeen(markSeenButton.dataset.markClientSeen);
-    renderUsers();
+    markAlertsSeen(markSeenButton.dataset.markClientSeen).then(renderUsers);
     return;
   }
 
@@ -2310,11 +2436,30 @@ documentPanel.addEventListener("click", (event) => {
 
   if (!client || !panel || !message || !input) return;
 
-  const link = createMagicLink(client);
-  input.value = link;
-  panel.hidden = false;
-  openMagicLinkEmail(client, link);
-  showMessage(message, "success", `Magic link email draft opened for ${client.email}.`);
+  try {
+    const result = await requestAdminMagicLink(client.id);
+    if (result.previewLink) {
+      input.value = result.previewLink;
+      panel.hidden = false;
+      showMessage(message, "warning", "Email backend is in console preview mode. Configure email credentials to send live email.");
+      return;
+    }
+
+    input.value = "";
+    panel.hidden = true;
+    showMessage(message, "success", `Magic link emailed to ${client.email}.`);
+  } catch (error) {
+    if (error.status) {
+      showMessage(message, "error", error.message || "Magic link could not be emailed.");
+      return;
+    }
+
+    const link = createMagicLink(client);
+    input.value = link;
+    panel.hidden = false;
+    openMagicLinkEmail(client, link);
+    showMessage(message, "warning", "Backend is unavailable, so a local email draft was opened instead.");
+  }
 });
 
 document.querySelector("#close-dashboard").addEventListener("click", () => {
