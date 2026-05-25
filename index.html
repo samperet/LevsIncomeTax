@@ -291,6 +291,10 @@ h1 {
 }
 
 #open-upload {
+  position: absolute;
+  right: clamp(16px, 3vw, 30px);
+  bottom: clamp(18px, 4vw, 36px);
+  z-index: 2;
   min-height: 42px;
   background: linear-gradient(135deg, #2f6f4f, #3f8f63);
   box-shadow: 0 8px 20px rgba(31, 91, 61, 0.2);
@@ -794,7 +798,9 @@ a:focus-visible {
   }
 
   #open-upload {
-    flex: 1 1 180px;
+    right: 16px;
+    bottom: 16px;
+    max-width: calc(100% - 32px);
   }
 
   .session-note {
@@ -859,7 +865,6 @@ a:focus-visible {
   <div class="menu-actions">
     <div class="message home-confirmation" id="home-confirmation" role="status" aria-live="polite"></div>
     <div class="session-note" id="session-note"></div>
-    <button class="button" type="button" id="open-upload">Upload Documents</button>
   </div>
 </header>
 
@@ -894,6 +899,7 @@ a:focus-visible {
 
     <figure class="hero-image" aria-label="Warm accounting office">
       <img src="lev-office-background.jpg" alt="A calm office with plants, a desk, and soft natural light">
+      <button class="button" type="button" id="open-upload">Upload Documents</button>
     </figure>
   </section>
 
