@@ -80,11 +80,12 @@ a {
 
 .brand-mark {
   color: var(--ink);
-  font-family: var(--display-font);
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 760;
+  letter-spacing: 0.12em;
   line-height: 1;
   text-decoration: none;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -104,21 +105,23 @@ a {
 .hero-section {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(340px, 1.08fr);
-  gap: clamp(24px, 4vw, 52px);
+  gap: 0;
   align-items: stretch;
   width: min(1180px, 100%);
   margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 8px;
+  background: rgba(250, 252, 247, 0.56);
+  box-shadow: 0 18px 56px rgba(45, 62, 46, 0.14);
+  backdrop-filter: blur(14px) saturate(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
   min-width: 0;
 }
 
 .business-card {
   display: block;
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  border-radius: 8px;
-  background: rgba(250, 252, 247, 0.62);
-  box-shadow: 0 18px 56px rgba(45, 62, 46, 0.14);
-  backdrop-filter: blur(16px) saturate(1.06);
-  -webkit-backdrop-filter: blur(16px) saturate(1.06);
+  background: rgba(250, 252, 247, 0.42);
   width: 100%;
   height: 100%;
   min-width: 0;
@@ -141,21 +144,23 @@ a {
 h1 {
   margin: 0;
   color: var(--ink);
-  font-family: var(--display-font);
-  font-size: clamp(48px, 6vw, 76px);
-  font-weight: 500;
-  line-height: 0.94;
-  letter-spacing: 0;
-  overflow-wrap: anywhere;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 760;
+  line-height: 1.04;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .intro-heading {
   max-width: 520px;
   margin: 22px 0 0;
-  color: #244f4b;
-  font-size: clamp(21px, 2.2vw, 29px);
-  line-height: 1.25;
-  font-weight: 600;
+  color: #526c5e;
+  font-family: var(--display-font);
+  font-size: clamp(20px, 2vw, 27px);
+  font-style: italic;
+  line-height: 1.32;
+  font-weight: 400;
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
@@ -180,20 +185,17 @@ h1 {
 .contact-icon {
   display: inline-grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(47, 111, 79, 0.24);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.5);
+  width: 18px;
+  height: 18px;
   color: var(--green);
   flex: 0 0 auto;
 }
 
 .contact-icon svg {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 1.8;
   fill: none;
 }
 
@@ -206,9 +208,6 @@ h1 {
   min-height: 420px;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 8px;
-  box-shadow: 0 18px 56px rgba(45, 62, 46, 0.16);
 }
 
 .hero-image img {
@@ -224,8 +223,9 @@ h1 {
   gap: clamp(22px, 4vw, 44px);
   width: min(1180px, 100%);
   margin: clamp(40px, 6vw, 72px) auto 0;
-  padding-top: 28px;
-  border-top: 1px solid rgba(47, 72, 54, 0.22);
+  padding: clamp(26px, 4vw, 44px);
+  border-radius: 8px;
+  background: rgba(232, 242, 224, 0.86);
 }
 
 .support-section {
@@ -233,10 +233,10 @@ h1 {
 }
 
 .support-section h3 {
-  margin: 10px 0 10px;
+  margin: 0 0 10px;
   color: var(--ink);
   font-family: var(--display-font);
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 500;
   line-height: 1.08;
 }
@@ -245,14 +245,6 @@ h1 {
   margin: 0;
   color: var(--ink-soft);
   font-size: 15px;
-}
-
-.section-number {
-  color: var(--green);
-  font-size: 12px;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .button {
@@ -809,7 +801,7 @@ a:focus-visible {
 </head>
 <body>
 <header class="site-header">
-  <a class="brand-mark" href="#home" aria-label="Lev's Income Tax homepage">Lev's Income Tax</a>
+  <a class="brand-mark" href="#home" aria-label="Lev's Income Tax homepage">LEV'S INCOME TAX</a>
   <div class="menu-actions">
     <div class="message home-confirmation" id="home-confirmation" role="status" aria-live="polite"></div>
     <div class="session-note" id="session-note"></div>
@@ -822,7 +814,7 @@ a:focus-visible {
     <article class="business-card" aria-labelledby="page-title">
       <div class="identity">
         <p class="eyebrow">Tax preparation</p>
-        <h1 id="page-title">Lev's Income Tax</h1>
+        <h1 id="page-title">LEV'S INCOME TAX</h1>
         <h2 class="intro-heading">Lev Sukenik, 20 years of personal touch accounting</h2>
 
         <div class="contact-list" aria-label="Contact information">
@@ -854,19 +846,16 @@ a:focus-visible {
 
   <section class="supporting-copy" aria-label="Client support">
     <article class="support-section">
-      <span class="section-number">01 Personal</span>
-      <h3>Steady help at tax time.</h3>
-      <p>Work directly with Lev through a simple intake process built for clear documents, fewer back-and-forth questions, and practical next steps.</p>
+      <h3>Simple</h3>
+      <p>A focused document flow keeps registration, current tax details, year selection, and uploads in one clear sequence.</p>
     </article>
     <article class="support-section">
-      <span class="section-number">02 Organized</span>
-      <h3>Documents stay easy to review.</h3>
-      <p>Register, confirm your current tax details, choose the year, and submit files in one focused flow without extra screens getting in the way.</p>
+      <h3>Reliable</h3>
+      <p>Submissions are organized with the client context Lev needs, helping each return start with accurate information and fewer loose ends.</p>
     </article>
     <article class="support-section">
-      <span class="section-number">03 Trusted</span>
-      <h3>Twenty years of personal touch.</h3>
-      <p>Thoughtful preparation for clients who want professional accounting support that still feels approachable, careful, and human.</p>
+      <h3>Personable</h3>
+      <p>Work with a professional who brings twenty years of careful accounting experience and a practical, personal approach.</p>
     </article>
   </section>
 </main>
