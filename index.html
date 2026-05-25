@@ -42,10 +42,7 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 18% 18%, rgba(46, 119, 111, 0.16), transparent 28%),
-    radial-gradient(circle at 82% 14%, rgba(30, 95, 143, 0.14), transparent 30%),
-    linear-gradient(135deg, #f9fbfc 0%, #eef4f6 54%, #f6f8fa 100%);
+  background: #20251f;
   font-family: var(--font);
   line-height: 1.5;
 }
@@ -63,33 +60,41 @@ a {
 }
 
 .page {
+  position: relative;
   min-height: 100vh;
   display: grid;
-  place-items: center;
-  padding: 40px;
+  align-items: start;
+  justify-items: start;
+  padding: clamp(44px, 9vh, 104px) clamp(22px, 8vw, 116px);
+  background:
+    linear-gradient(90deg, rgba(15, 23, 18, 0.3) 0%, rgba(15, 23, 18, 0.06) 42%, rgba(15, 23, 18, 0.14) 100%),
+    url("lev-office-background.jpg") center center / cover no-repeat;
 }
 
 .card-wrap {
-  width: min(960px, 100%);
+  width: min(810px, 100%);
   min-width: 0;
 }
 
 .business-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.44fr);
   gap: 0;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.48);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.36);
+  box-shadow: 0 18px 60px rgba(24, 30, 25, 0.22);
+  backdrop-filter: blur(18px) saturate(1.16);
+  -webkit-backdrop-filter: blur(18px) saturate(1.16);
   width: 100%;
   min-width: 0;
 }
 
 .identity {
-  padding: 42px;
-  border-right: 1px solid var(--line);
+  padding: 36px;
+  border-right: 1px solid rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.55);
   min-width: 0;
 }
 
@@ -147,8 +152,8 @@ h1 {
   flex-direction: column;
   justify-content: center;
   gap: 30px;
-  padding: 42px;
-  background: linear-gradient(180deg, #ffffff, #f7fafb);
+  padding: 36px;
+  background: rgba(255, 255, 255, 0.34);
   min-width: 0;
 }
 
@@ -171,6 +176,16 @@ h1 {
 
 .button:hover {
   background: var(--blue-dark);
+}
+
+#open-upload {
+  min-height: 50px;
+  background: linear-gradient(135deg, #2f6f4f, #3f8f63);
+  box-shadow: 0 10px 24px rgba(31, 91, 61, 0.28);
+}
+
+#open-upload:hover {
+  background: linear-gradient(135deg, #275d43, #347b56);
 }
 
 .button.secondary {
@@ -208,13 +223,18 @@ h1 {
   gap: 12px;
 }
 
+.session-note .button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .home-confirmation {
   margin-top: 14px;
 }
 
 .fine-print {
   margin: 18px 0 0;
-  color: var(--muted);
+  color: var(--ink-soft);
   font-size: 12px;
 }
 
@@ -595,6 +615,12 @@ a:focus-visible {
 }
 
 @media (max-width: 860px) {
+  .page {
+    justify-items: center;
+    padding-top: 38px;
+    background-position: 45% center;
+  }
+
   .business-card,
   .admin-panel.open {
     grid-template-columns: 1fr;
@@ -602,7 +628,7 @@ a:focus-visible {
 
   .identity {
     border-right: 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.36);
   }
 
   h1 {
@@ -617,7 +643,8 @@ a:focus-visible {
 
 @media (max-width: 620px) {
   .page {
-    padding: 16px;
+    padding: 18px;
+    background-position: 42% center;
   }
 
   .identity,
