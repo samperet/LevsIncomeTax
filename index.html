@@ -3,8 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#315d60">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lev's Tax">
 <title>Lev's Income Tax</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317486d'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='34' font-weight='700' fill='white'%3EL%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="site.webmanifest">
 <style>
 :root {
   --ink: #1f2a24;
@@ -37,6 +41,10 @@
 
 * {
   box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 html {
@@ -290,6 +298,12 @@ h1 {
   background: var(--blue-dark);
 }
 
+.button:disabled,
+.auth-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+}
+
 #open-upload {
   position: absolute;
   right: clamp(16px, 3vw, 30px);
@@ -329,6 +343,50 @@ h1 {
 
 .button.full {
   width: 100%;
+}
+
+.link-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.link-actions:has(#open-magic-link[hidden]) {
+  grid-template-columns: 1fr;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 4px;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.auth-tab {
+  min-height: 36px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 820;
+}
+
+.auth-tab.active {
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--blue-dark);
+  box-shadow: 0 1px 2px rgba(45, 62, 46, 0.08);
+}
+
+.magic-link-output {
+  padding: 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.34);
 }
 
 .session-note {
@@ -601,6 +659,34 @@ a:focus-visible {
   font-size: 20px;
 }
 
+.admin-tools {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.admin-tool-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.admin-tool-card h3,
+.alert-list h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.admin-tool-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .user-list {
   display: grid;
   gap: 8px;
@@ -638,6 +724,40 @@ a:focus-visible {
   font-size: 12px;
 }
 
+.user-button.has-new {
+  border-color: rgba(147, 97, 0, 0.34);
+  background: rgba(255, 244, 220, 0.56);
+}
+
+.alert-list {
+  display: grid;
+  gap: 10px;
+}
+
+.alert-items {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alert-item {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.42);
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.alert-item strong {
+  color: var(--ink);
+  font-size: 13px;
+}
+
 .admin-main {
   padding: 28px;
   overflow: auto;
@@ -671,6 +791,36 @@ a:focus-visible {
   margin: 6px 0 0;
   color: var(--muted);
   font-size: 14px;
+}
+
+.dashboard-header.with-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dashboard-heading {
+  min-width: 0;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.dashboard-link-panel {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  padding: 0 24px 18px;
+}
+
+.dashboard-link-panel .message.show {
+  margin-top: 14px;
 }
 
 .doc-table {
@@ -718,6 +868,15 @@ a:focus-visible {
   color: var(--blue-dark);
   font-size: 12px;
   font-weight: 820;
+}
+
+.pill.warning {
+  background: rgba(255, 244, 220, 0.82);
+  color: var(--amber);
+}
+
+.doc-table tr.new-doc {
+  background: rgba(255, 244, 220, 0.36);
 }
 
 .confirm-row {
@@ -858,6 +1017,22 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .link-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header.with-actions {
+    display: grid;
+  }
+
+  .dashboard-actions {
+    justify-content: stretch;
+  }
+
+  .dashboard-actions .button {
+    width: 100%;
+  }
+
   .doc-table {
     min-width: 640px;
   }
@@ -932,30 +1107,37 @@ a:focus-visible {
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
     <div class="modal-header">
       <div>
-        <h2 class="modal-title" id="register-title">Register to Upload</h2>
-        <p class="modal-copy">Create a client login before sending documents.</p>
+        <h2 class="modal-title" id="register-title">Client Access</h2>
+        <p class="modal-copy">Customers receive private upload links by email. No customer passwords are used.</p>
       </div>
       <button class="close-button" type="button" data-close-register aria-label="Close registration form">×</button>
     </div>
 
     <form class="form" id="register-form">
+      <div class="auth-tabs" role="tablist" aria-label="Client access mode">
+        <button class="auth-tab active" id="auth-login" type="button" role="tab" aria-selected="true" data-auth-mode="login">Login</button>
+        <button class="auth-tab" id="auth-register" type="button" role="tab" aria-selected="false" data-auth-mode="register">Register</button>
+      </div>
       <div class="form-grid">
-        <div class="field">
+        <div class="field" id="register-name-field" hidden>
           <label class="required-label" for="register-name">Full name</label>
-          <input id="register-name" name="register-name" type="text" autocomplete="name" required>
+          <input id="register-name" name="register-name" type="text" autocomplete="name">
         </div>
         <div class="field">
           <label class="required-label" for="register-email">Email address</label>
           <input id="register-email" name="register-email" type="email" autocomplete="email" required>
         </div>
-        <div class="field full">
-          <label class="required-label" for="register-password">Password</label>
-          <input id="register-password" name="register-password" type="password" autocomplete="new-password" required minlength="6">
-          <span class="hint">Use at least 6 characters for this preview.</span>
-        </div>
+      </div>
+      <div class="field full magic-link-output" id="magic-link-output" hidden>
+        <label for="magic-link-value">Magic link</label>
+        <input id="magic-link-value" type="url" readonly>
+        <span class="hint">This preview opens an email draft and keeps the link active for 15 minutes.</span>
       </div>
       <div class="message" id="register-message" role="status" aria-live="polite"></div>
-      <button class="button full" type="submit">Create Account</button>
+      <div class="link-actions">
+        <button class="button full" id="create-magic-link" type="submit">Email Login Link</button>
+        <button class="button secondary full" type="button" id="open-magic-link" hidden>Open Link</button>
+      </div>
     </form>
   </section>
 </div>
@@ -1096,6 +1278,23 @@ a:focus-visible {
       <h2 class="admin-title">Clients</h2>
       <button class="button ghost" type="button" id="close-dashboard">Close</button>
     </div>
+    <div class="admin-tools" aria-label="Admin tools">
+      <section class="admin-tool-card" id="install-card">
+        <h3>Install Admin App</h3>
+        <p>Install this dashboard as a web app for faster access to uploads.</p>
+        <button class="button secondary full" type="button" id="install-app">Install App</button>
+      </section>
+      <section class="admin-tool-card">
+        <h3>Upload Alerts</h3>
+        <p id="notification-status">Browser notifications are not enabled.</p>
+        <button class="button secondary full" type="button" id="enable-notifications">Enable Notifications</button>
+      </section>
+      <section class="admin-tool-card alert-list" aria-live="polite">
+        <h3 id="alert-heading">New Uploads</h3>
+        <ul class="alert-items" id="alert-list"></ul>
+        <button class="button ghost full" type="button" id="mark-alerts-seen">Mark All Seen</button>
+      </section>
+    </div>
     <div class="field">
       <label for="client-filter">Filter by name or email</label>
       <input id="client-filter" type="search" placeholder="Search clients">
@@ -1119,12 +1318,24 @@ const ADMIN_TRIGGER = "leviosa";
 const ADMIN_PASSWORD = "levadmin";
 const STORAGE_KEY = "levs-income-tax-submissions";
 const SESSION_KEY = "levs-income-tax-session";
+const ADMIN_AUTH_KEY = "levs-income-tax-admin-authenticated";
+const ADMIN_ALERTS_KEY = "levs-income-tax-admin-alerts";
+const MAGIC_LINK_KEY = "levs-income-tax-magic-links";
+const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
 const MAX_FILE_BYTES = 650000;
 
 const openUploadButton = document.querySelector("#open-upload");
 const registerModal = document.querySelector("#register-modal");
 const registerForm = document.querySelector("#register-form");
 const registerMessage = document.querySelector("#register-message");
+const authModeButtons = document.querySelectorAll("[data-auth-mode]");
+const registerNameField = document.querySelector("#register-name-field");
+const registerNameInput = document.querySelector("#register-name");
+const registerEmailInput = document.querySelector("#register-email");
+const createMagicLinkButton = document.querySelector("#create-magic-link");
+const magicLinkOutput = document.querySelector("#magic-link-output");
+const magicLinkValue = document.querySelector("#magic-link-value");
+const openMagicLinkButton = document.querySelector("#open-magic-link");
 const taxInfoModal = document.querySelector("#tax-info-modal");
 const taxInfoForm = document.querySelector("#tax-info-form");
 const taxInfoMessage = document.querySelector("#tax-info-message");
@@ -1145,8 +1356,18 @@ const adminDashboard = document.querySelector("#admin-dashboard");
 const userList = document.querySelector("#user-list");
 const clientFilter = document.querySelector("#client-filter");
 const documentPanel = document.querySelector("#document-panel");
+const installCard = document.querySelector("#install-card");
+const installAppButton = document.querySelector("#install-app");
+const notificationStatus = document.querySelector("#notification-status");
+const enableNotificationsButton = document.querySelector("#enable-notifications");
+const alertList = document.querySelector("#alert-list");
+const alertHeading = document.querySelector("#alert-heading");
+const markAlertsSeenButton = document.querySelector("#mark-alerts-seen");
 let activeClientId = null;
 let typedBuffer = "";
+let pendingMagicLink = "";
+let authMode = "login";
+let installPromptEvent = null;
 
 function getTaxYears() {
   const currentYear = new Date().getFullYear();
@@ -1215,6 +1436,277 @@ function saveSubmissions(submissions) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
 }
 
+function getAdminAlerts() {
+  try {
+    return JSON.parse(localStorage.getItem(ADMIN_ALERTS_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveAdminAlerts(alerts) {
+  localStorage.setItem(ADMIN_ALERTS_KEY, JSON.stringify(alerts));
+}
+
+function getUnseenAlerts() {
+  return getAdminAlerts().filter((alert) => !alert.seenAt);
+}
+
+function getUnseenDocIds(clientId = "") {
+  return new Set(
+    getUnseenAlerts()
+      .filter((alert) => !clientId || alert.clientId === clientId)
+      .map((alert) => alert.documentId)
+  );
+}
+
+function createUploadAlerts(client, documents, taxYear) {
+  const alerts = getAdminAlerts();
+  const createdAlerts = documents.map((doc) => ({
+    id: crypto.randomUUID(),
+    clientId: client.id,
+    clientName: client.name,
+    clientEmail: client.email,
+    documentId: doc.id,
+    documentName: doc.name,
+    taxYear,
+    uploadedAt: doc.uploadedAt,
+    seenAt: ""
+  }));
+
+  saveAdminAlerts([...createdAlerts, ...alerts]);
+  return createdAlerts;
+}
+
+function markAlertsSeen(clientId = "") {
+  const now = new Date().toISOString();
+  const alerts = getAdminAlerts().map((alert) => {
+    if (alert.seenAt || (clientId && alert.clientId !== clientId)) return alert;
+    return { ...alert, seenAt: now };
+  });
+
+  saveAdminAlerts(alerts);
+  renderAdminAwareness();
+}
+
+function showAdminNotification(title, body) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+  const options = {
+    body,
+    tag: "levs-income-tax-upload",
+    badge: "lev-icon.svg",
+    icon: "lev-icon.svg"
+  };
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.ready
+      .then((registration) => registration.showNotification(title, options))
+      .catch(() => new Notification(title, options));
+    return;
+  }
+
+  new Notification(title, options);
+}
+
+function notifyAdminUpload(client, documents, taxYear) {
+  const alerts = createUploadAlerts(client, documents, taxYear);
+  const fileText = documents.length === 1 ? documents[0].name : `${documents.length} files`;
+
+  showAdminNotification("New tax documents uploaded", `${client.name} uploaded ${fileText} for ${taxYear}.`);
+
+  if (adminDashboard.classList.contains("open")) {
+    activeClientId = client.id;
+    renderUsers();
+    renderAdminAwareness();
+  }
+
+  return alerts;
+}
+
+function renderNotificationStatus() {
+  if (!("Notification" in window)) {
+    notificationStatus.textContent = "Browser notifications are not available here.";
+    enableNotificationsButton.disabled = true;
+    return;
+  }
+
+  if (Notification.permission === "granted") {
+    notificationStatus.textContent = "Upload notifications are enabled.";
+    enableNotificationsButton.textContent = "Notifications Enabled";
+    enableNotificationsButton.disabled = true;
+    return;
+  }
+
+  if (Notification.permission === "denied") {
+    notificationStatus.textContent = "Notifications are blocked in this browser.";
+    enableNotificationsButton.textContent = "Notifications Blocked";
+    enableNotificationsButton.disabled = true;
+    return;
+  }
+
+  notificationStatus.textContent = "Enable browser alerts for new uploads.";
+  enableNotificationsButton.textContent = "Enable Notifications";
+  enableNotificationsButton.disabled = false;
+}
+
+function renderInstallPrompt() {
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+
+  if (isStandalone) {
+    installCard.hidden = true;
+    return;
+  }
+
+  installCard.hidden = false;
+  installAppButton.disabled = !installPromptEvent;
+  installAppButton.textContent = installPromptEvent ? "Install App" : "Use Browser Install";
+}
+
+function renderAlerts() {
+  const unseenAlerts = getUnseenAlerts();
+  alertHeading.textContent = `New Uploads${unseenAlerts.length ? ` (${unseenAlerts.length})` : ""}`;
+  markAlertsSeenButton.hidden = !unseenAlerts.length;
+
+  if (!unseenAlerts.length) {
+    alertList.innerHTML = '<li class="empty">No unseen uploads.</li>';
+    return;
+  }
+
+  alertList.innerHTML = unseenAlerts.slice(0, 6).map((alert) => `
+    <li class="alert-item">
+      <strong>${escapeHtml(alert.documentName)}</strong>
+      <span>${escapeHtml(alert.clientName)} · ${escapeHtml(alert.taxYear)} · ${new Date(alert.uploadedAt).toLocaleString()}</span>
+    </li>
+  `).join("");
+}
+
+function renderAdminAwareness() {
+  renderNotificationStatus();
+  renderInstallPrompt();
+  renderAlerts();
+}
+
+function getMagicLinks() {
+  try {
+    return JSON.parse(localStorage.getItem(MAGIC_LINK_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveMagicLinks(records) {
+  localStorage.setItem(MAGIC_LINK_KEY, JSON.stringify(records));
+}
+
+function pruneMagicLinks() {
+  const now = Date.now();
+  const records = getMagicLinks().filter((record) => {
+    return !record.usedAt && new Date(record.expiresAt).getTime() > now;
+  });
+  saveMagicLinks(records);
+  return records;
+}
+
+function createToken() {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes))
+    .replaceAll("+", "-")
+    .replaceAll("/", "_")
+    .replaceAll("=", "");
+}
+
+function getCleanPageUrl() {
+  const url = new URL(location.href);
+  url.search = "";
+  url.hash = "";
+  url.pathname = url.pathname.replace(/\/admin(?:\/index\.html)?\/?$/, "/");
+  return url;
+}
+
+function createMagicLink(client) {
+  const token = createToken();
+  const records = pruneMagicLinks();
+  records.unshift({
+    token,
+    clientId: client.id,
+    email: client.email,
+    name: client.name,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + MAGIC_LINK_TTL_MS).toISOString(),
+    usedAt: ""
+  });
+  saveMagicLinks(records);
+
+  const url = getCleanPageUrl();
+  url.searchParams.set("magic", token);
+  return url.toString();
+}
+
+function createMailtoUrl(client, link) {
+  const subject = "Your Lev's Income Tax upload link";
+  const body = [
+    `Hi ${client.name},`,
+    "",
+    "Use this private link to confirm your tax information and upload documents:",
+    link,
+    "",
+    "This link expires in 15 minutes.",
+    "",
+    "Lev's Income Tax"
+  ].join("\n");
+
+  return `mailto:${encodeURIComponent(client.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function openMagicLinkEmail(client, link) {
+  window.location.href = createMailtoUrl(client, link);
+}
+
+function consumeMagicLink() {
+  const token = new URLSearchParams(location.search).get("magic");
+  if (!token) return false;
+
+  const records = getMagicLinks();
+  const record = records.find((item) => item.token === token);
+  const cleanUrl = getCleanPageUrl();
+
+  history.replaceState(null, "", cleanUrl.toString());
+
+  if (!record) {
+    showHomeConfirmation("error", "Magic link was not recognized. Create a new email link to continue.");
+    pruneMagicLinks();
+    return true;
+  }
+
+  if (record.usedAt) {
+    showHomeConfirmation("error", "Magic link has already been used. Create a new email link to continue.");
+    pruneMagicLinks();
+    return true;
+  }
+
+  if (new Date(record.expiresAt).getTime() <= Date.now()) {
+    showHomeConfirmation("error", "Magic link has expired. Create a new email link to continue.");
+    pruneMagicLinks();
+    return true;
+  }
+
+  const client = getSubmissions().find((item) => item.id === record.clientId);
+  if (!client) {
+    showHomeConfirmation("error", "Client account was not found for this magic link.");
+    pruneMagicLinks();
+    return true;
+  }
+
+  record.usedAt = new Date().toISOString();
+  saveMagicLinks(records);
+  setCurrentClient(client);
+  showHomeConfirmation("success", `Welcome back, ${client.name}.`);
+  setTimeout(openTaxInfo, 350);
+  return true;
+}
+
 function getCurrentClient() {
   const id = sessionStorage.getItem(SESSION_KEY);
   if (!id) return null;
@@ -1244,13 +1736,41 @@ function renderSession() {
   `;
 }
 
-function registerClient({ name, email, password }) {
+function findClientByEmail(email) {
+  return getSubmissions().find((client) => client.email.toLowerCase() === email.toLowerCase()) || null;
+}
+
+function resetMagicLinkOutput() {
+  pendingMagicLink = "";
+  magicLinkValue.value = "";
+  magicLinkOutput.hidden = true;
+  openMagicLinkButton.hidden = true;
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+
+  authModeButtons.forEach((button) => {
+    const selected = button.dataset.authMode === mode;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-selected", String(selected));
+  });
+
+  const isRegistering = mode === "register";
+  registerNameField.hidden = !isRegistering;
+  registerNameInput.required = isRegistering;
+  registerEmailInput.parentElement.classList.toggle("full", !isRegistering);
+  createMagicLinkButton.textContent = isRegistering ? "Email Registration Link" : "Email Login Link";
+  clearMessage(registerMessage);
+  resetMagicLinkOutput();
+}
+
+function registerClient({ name, email }) {
   const submissions = getSubmissions();
   const existing = submissions.find((client) => client.email.toLowerCase() === email.toLowerCase());
 
   if (existing) {
     existing.name = name;
-    existing.password = password;
     existing.updatedAt = new Date().toISOString();
     saveSubmissions(submissions);
     return existing;
@@ -1260,7 +1780,6 @@ function registerClient({ name, email, password }) {
     id: crypto.randomUUID(),
     name,
     email,
-    password,
     taxInfo: null,
     taxInfoConfirmedAt: "",
     documents: [],
@@ -1360,12 +1879,15 @@ function renderUsers() {
 
   userList.innerHTML = clients.map((client) => {
     const totalDocs = client.documents.length;
+    const unseenCount = getUnseenAlerts().filter((alert) => alert.clientId === client.id).length;
     const activeClass = client.id === activeClientId ? " active" : "";
+    const newClass = unseenCount ? " has-new" : "";
+    const unseenText = unseenCount ? ` · ${unseenCount} new` : "";
     return `
       <li>
-        <button class="user-button${activeClass}" type="button" data-client-id="${client.id}">
+        <button class="user-button${activeClass}${newClass}" type="button" data-client-id="${client.id}">
           <strong>${escapeHtml(client.name)}</strong>
-          <span>${escapeHtml(client.email)} · ${totalDocs} document${totalDocs === 1 ? "" : "s"}</span>
+          <span>${escapeHtml(client.email)} · ${totalDocs} document${totalDocs === 1 ? "" : "s"}${unseenText}</span>
         </button>
       </li>
     `;
@@ -1412,14 +1934,17 @@ function renderDocuments(client) {
     </section>
   `;
 
+  const unseenDocIds = getUnseenDocIds(client.id);
   const rows = client.documents.map((doc) => {
+    const isNew = unseenDocIds.has(doc.id);
     const download = doc.stored
       ? `<a href="${escapeHtml(doc.dataUrl)}" download="${escapeHtml(doc.name)}">Download</a>`
       : '<span class="pill">Metadata only</span>';
+    const newPill = isNew ? ' <span class="pill warning">New</span>' : "";
 
     return `
-      <tr>
-        <td><strong>${escapeHtml(doc.name)}</strong><br><span class="hint">${escapeHtml(doc.type)}</span></td>
+      <tr class="${isNew ? "new-doc" : ""}">
+        <td><strong>${escapeHtml(doc.name)}</strong>${newPill}<br><span class="hint">${escapeHtml(doc.type)}</span></td>
         <td>${escapeHtml(doc.taxYear)}</td>
         <td>${formatBytes(doc.size)}</td>
         <td>${new Date(doc.uploadedAt).toLocaleString()}</td>
@@ -1429,9 +1954,22 @@ function renderDocuments(client) {
   }).join("");
 
   documentPanel.innerHTML = `
-    <div class="dashboard-header">
-      <h2>${escapeHtml(client.name)}</h2>
-      <p>${escapeHtml(client.email)} · Last updated ${new Date(client.updatedAt).toLocaleString()}</p>
+    <div class="dashboard-header with-actions">
+      <div class="dashboard-heading">
+        <h2>${escapeHtml(client.name)}</h2>
+        <p>${escapeHtml(client.email)} · Last updated ${new Date(client.updatedAt).toLocaleString()}</p>
+      </div>
+      <div class="dashboard-actions">
+        <button class="button secondary" type="button" data-email-magic-link="${escapeHtml(client.id)}">Email Magic Link</button>
+        <button class="button ghost" type="button" data-mark-client-seen="${escapeHtml(client.id)}"${unseenDocIds.size ? "" : " hidden"}>Mark Seen</button>
+      </div>
+    </div>
+    <div class="dashboard-link-panel" id="dashboard-link-panel" hidden>
+      <div class="message" id="dashboard-message" role="status" aria-live="polite"></div>
+      <div class="field magic-link-output">
+        <label for="dashboard-magic-link">Magic link</label>
+        <input id="dashboard-magic-link" type="url" readonly>
+      </div>
     </div>
     ${taxSummary}
     ${rows ? `
@@ -1470,9 +2008,10 @@ function fillTaxInfoForm(client) {
 function openRegister() {
   clearHomeConfirmation();
   clearMessage(registerMessage);
+  setAuthMode("login");
   registerForm.reset();
   openModal(registerModal);
-  setTimeout(() => document.querySelector("#register-name").focus(), 30);
+  setTimeout(() => registerEmailInput.focus(), 30);
 }
 
 function openTaxInfo() {
@@ -1522,11 +2061,37 @@ function openDashboard() {
   adminDashboard.setAttribute("aria-hidden", "false");
   activeClientId = getSubmissions()[0]?.id || null;
   renderUsers();
+  renderAdminAwareness();
   setTimeout(() => clientFilter.focus(), 30);
 }
 
+function isAdminRoute() {
+  const path = location.pathname.replace(/\/+$/, "");
+  const params = new URLSearchParams(location.search);
+  return path.endsWith("/admin") || params.get("admin") === "1" || location.hash === "#admin";
+}
+
+function enterAdminRoute() {
+  clearHomeConfirmation();
+  closeModal(registerModal);
+  closeModal(taxInfoModal);
+  closeModal(uploadModal);
+
+  if (sessionStorage.getItem(ADMIN_AUTH_KEY) === "true") {
+    openDashboard();
+    return;
+  }
+
+  openAdminLogin();
+}
+
+setAuthMode("login");
 setYears();
 renderSession();
+const handledMagicLink = consumeMagicLink();
+if (!handledMagicLink && isAdminRoute()) {
+  enterAdminRoute();
+}
 
 openUploadButton.addEventListener("click", () => {
   if (!getCurrentClient()) {
@@ -1544,20 +2109,69 @@ sessionNote.addEventListener("click", (event) => {
   renderSession();
 });
 
+authModeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    setAuthMode(button.dataset.authMode);
+  });
+});
+
 registerForm.addEventListener("submit", (event) => {
   event.preventDefault();
   clearMessage(registerMessage);
 
   const formData = new FormData(registerForm);
-  const client = registerClient({
-    name: formData.get("register-name").trim(),
-    email: formData.get("register-email").trim(),
-    password: formData.get("register-password")
-  });
+  const email = formData.get("register-email").trim();
+  const name = formData.get("register-name").trim();
+  let client = findClientByEmail(email);
 
-  setCurrentClient(client);
-  closeModal(registerModal);
-  openTaxInfo();
+  if (authMode === "login" && !client) {
+    showMessage(registerMessage, "error", "No client found for that email. Register first to create an upload profile.");
+    return;
+  }
+
+  if (authMode === "register") {
+    if (!name) {
+      showMessage(registerMessage, "error", "Enter a full name to register.");
+      registerNameInput.focus();
+      return;
+    }
+
+    client = registerClient({ name, email });
+  }
+
+  const link = createMagicLink(client);
+
+  pendingMagicLink = link;
+  magicLinkValue.value = link;
+  magicLinkOutput.hidden = false;
+  openMagicLinkButton.hidden = false;
+  openMagicLinkEmail(client, link);
+  showMessage(registerMessage, "success", `Magic link emailed for ${client.email}.`);
+});
+
+openMagicLinkButton.addEventListener("click", () => {
+  if (!pendingMagicLink) return;
+  window.location.href = pendingMagicLink;
+});
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  installPromptEvent = event;
+  renderInstallPrompt();
+});
+
+installAppButton.addEventListener("click", async () => {
+  if (!installPromptEvent) return;
+  installPromptEvent.prompt();
+  await installPromptEvent.userChoice;
+  installPromptEvent = null;
+  renderInstallPrompt();
+});
+
+enableNotificationsButton.addEventListener("click", async () => {
+  if (!("Notification" in window)) return;
+  await Notification.requestPermission();
+  renderNotificationStatus();
 });
 
 taxInfoForm.addEventListener("submit", (event) => {
@@ -1611,7 +2225,10 @@ uploadForm.addEventListener("submit", async (event) => {
     doc.taxYear = taxYear;
   });
 
-  addDocumentsToCurrentClient(documents);
+  const updatedClient = addDocumentsToCurrentClient(documents);
+  if (updatedClient) {
+    notifyAdminUpload(updatedClient, documents, taxYear);
+  }
 
   const skipped = documents.filter((doc) => !doc.stored).length;
   const message = skipped
@@ -1652,6 +2269,7 @@ fileInput.addEventListener("change", renderSelectedFiles);
 adminLoginForm.addEventListener("submit", (event) => {
   event.preventDefault();
   if (adminPasswordInput.value === ADMIN_PASSWORD) {
+    sessionStorage.setItem(ADMIN_AUTH_KEY, "true");
     openDashboard();
     return;
   }
@@ -1662,6 +2280,11 @@ adminLoginForm.addEventListener("submit", (event) => {
 
 clientFilter.addEventListener("input", renderUsers);
 
+markAlertsSeenButton.addEventListener("click", () => {
+  markAlertsSeen();
+  renderUsers();
+});
+
 userList.addEventListener("click", (event) => {
   const button = event.target.closest("[data-client-id]");
   if (!button) return;
@@ -1669,10 +2292,46 @@ userList.addEventListener("click", (event) => {
   renderUsers();
 });
 
+documentPanel.addEventListener("click", (event) => {
+  const markSeenButton = event.target.closest("[data-mark-client-seen]");
+  if (markSeenButton) {
+    markAlertsSeen(markSeenButton.dataset.markClientSeen);
+    renderUsers();
+    return;
+  }
+
+  const button = event.target.closest("[data-email-magic-link]");
+  if (!button) return;
+
+  const client = getSubmissions().find((item) => item.id === button.dataset.emailMagicLink);
+  const panel = document.querySelector("#dashboard-link-panel");
+  const message = document.querySelector("#dashboard-message");
+  const input = document.querySelector("#dashboard-magic-link");
+
+  if (!client || !panel || !message || !input) return;
+
+  const link = createMagicLink(client);
+  input.value = link;
+  panel.hidden = false;
+  openMagicLinkEmail(client, link);
+  showMessage(message, "success", `Magic link email draft opened for ${client.email}.`);
+});
+
 document.querySelector("#close-dashboard").addEventListener("click", () => {
   adminDashboard.classList.remove("open");
   adminDashboard.setAttribute("aria-hidden", "true");
 });
+
+window.addEventListener("storage", (event) => {
+  if (![STORAGE_KEY, ADMIN_ALERTS_KEY].includes(event.key)) return;
+  if (!adminDashboard.classList.contains("open")) return;
+  renderUsers();
+  renderAdminAwareness();
+});
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js").catch(() => {});
+}
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
