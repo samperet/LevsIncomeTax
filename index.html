@@ -28,6 +28,11 @@
   --focus: 0 0 0 3px rgba(30, 95, 143, 0.24);
   --font: "Avenir Next", Avenir, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --display-font: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.56), rgba(238, 247, 232, 0.28));
+  --glass-strong: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(239, 248, 233, 0.42));
+  --glass-green: linear-gradient(135deg, rgba(239, 249, 232, 0.76), rgba(215, 233, 206, 0.46));
+  --glass-border: rgba(255, 255, 255, 0.68);
+  --glass-shadow: 0 18px 56px rgba(45, 62, 46, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.56);
 }
 
 * {
@@ -44,7 +49,8 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 42%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0) 46%),
+    linear-gradient(35deg, rgba(125, 154, 122, 0.18), rgba(255, 255, 255, 0) 58%),
     #dfe8d8;
   font-family: var(--font);
   line-height: 1.5;
@@ -72,8 +78,9 @@ a {
   gap: 18px;
   min-height: 76px;
   padding: 14px clamp(20px, 5vw, 64px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.42);
-  background: rgba(232, 239, 226, 0.78);
+  border-bottom: 1px solid var(--glass-border);
+  background: var(--glass-strong);
+  box-shadow: 0 10px 34px rgba(45, 62, 46, 0.08);
   backdrop-filter: blur(18px) saturate(1.12);
   -webkit-backdrop-filter: blur(18px) saturate(1.12);
 }
@@ -110,18 +117,32 @@ a {
   width: min(1180px, 100%);
   margin: 0 auto;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.58);
+  position: relative;
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
-  background: rgba(250, 252, 247, 0.56);
-  box-shadow: 0 18px 56px rgba(45, 62, 46, 0.14);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
   backdrop-filter: blur(14px) saturate(1.04);
   -webkit-backdrop-filter: blur(14px) saturate(1.04);
   min-width: 0;
 }
 
+.hero-section::before,
+.support-section::before,
+.modal::before,
+.dashboard-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0) 42%);
+}
+
 .business-card {
   display: block;
-  background: rgba(250, 252, 247, 0.42);
+  position: relative;
+  z-index: 1;
+  background: rgba(250, 252, 247, 0.2);
   width: 100%;
   height: 100%;
   min-width: 0;
@@ -130,15 +151,6 @@ a {
 .identity {
   padding: clamp(30px, 4vw, 48px);
   min-width: 0;
-}
-
-.eyebrow {
-  margin: 0 0 12px;
-  color: var(--teal);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 h1 {
@@ -208,6 +220,8 @@ h1 {
   min-height: 420px;
   margin: 0;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-image img {
@@ -220,19 +234,26 @@ h1 {
 .supporting-copy {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(22px, 4vw, 44px);
+  gap: clamp(18px, 3vw, 28px);
   width: min(1180px, 100%);
   margin: clamp(40px, 6vw, 72px) auto 0;
-  padding: clamp(26px, 4vw, 44px);
-  border-radius: 8px;
-  background: rgba(232, 242, 224, 0.86);
 }
 
 .support-section {
+  position: relative;
+  overflow: hidden;
   min-width: 0;
+  padding: clamp(24px, 3.4vw, 38px);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: var(--glass-green);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px) saturate(1.08);
+  -webkit-backdrop-filter: blur(16px) saturate(1.08);
 }
 
 .support-section h3 {
+  position: relative;
   margin: 0 0 10px;
   color: var(--ink);
   font-family: var(--display-font);
@@ -242,6 +263,7 @@ h1 {
 }
 
 .support-section p {
+  position: relative;
   margin: 0;
   color: var(--ink-soft);
   font-size: 15px;
@@ -280,9 +302,9 @@ h1 {
 }
 
 .button.secondary {
-  background: var(--wash);
+  background: rgba(255, 255, 255, 0.5);
   color: var(--blue-dark);
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-border);
 }
 
 .button.ghost {
@@ -299,11 +321,13 @@ h1 {
 .session-note {
   display: none;
   padding: 7px 8px 7px 12px;
-  border: 1px solid rgba(47, 111, 79, 0.18);
+  border: 1px solid var(--glass-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.48);
   color: var(--ink-soft);
   font-size: 13px;
+  backdrop-filter: blur(12px) saturate(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
 }
 
 .session-note.show {
@@ -331,7 +355,9 @@ h1 {
   display: none;
   place-items: center;
   padding: 20px;
-  background: rgba(25, 34, 45, 0.5);
+  background: rgba(31, 42, 36, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .modal-backdrop.open {
@@ -339,21 +365,26 @@ h1 {
 }
 
 .modal {
+  position: relative;
   width: min(680px, 100%);
   max-height: min(920px, calc(100vh - 40px));
   overflow: auto;
   border-radius: 8px;
-  background: var(--paper);
-  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(1.12);
+  -webkit-backdrop-filter: blur(20px) saturate(1.12);
 }
 
 .modal-header {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 18px;
   padding: 24px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .modal-title {
@@ -376,7 +407,7 @@ h1 {
   height: 36px;
   border: 0;
   border-radius: 7px;
-  background: var(--canvas);
+  background: rgba(255, 255, 255, 0.5);
   color: var(--ink-soft);
   cursor: pointer;
   font-size: 22px;
@@ -384,6 +415,7 @@ h1 {
 }
 
 .form {
+  position: relative;
   display: grid;
   gap: 18px;
   padding: 24px;
@@ -421,10 +453,12 @@ textarea {
   width: 100%;
   min-height: 42px;
   padding: 0 12px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid rgba(172, 188, 173, 0.72);
   border-radius: 7px;
-  background: var(--paper);
+  background: rgba(255, 255, 255, 0.52);
   color: var(--ink);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 textarea {
@@ -473,9 +507,9 @@ a:focus-visible {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-border);
   border-radius: 7px;
-  background: var(--canvas);
+  background: rgba(255, 255, 255, 0.4);
   color: var(--ink-soft);
   font-size: 13px;
 }
@@ -493,18 +527,27 @@ a:focus-visible {
 }
 
 .message.success {
-  background: var(--green-bg);
+  background: rgba(231, 242, 233, 0.76);
   color: var(--green);
+  border: 1px solid rgba(47, 111, 79, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .message.error {
-  background: var(--red-bg);
+  background: rgba(248, 221, 221, 0.78);
   color: var(--red);
+  border: 1px solid rgba(178, 59, 59, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .message.warning {
-  background: var(--amber-bg);
+  background: rgba(255, 244, 220, 0.78);
   color: var(--amber);
+  border: 1px solid rgba(147, 97, 0, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .admin-panel {
@@ -512,7 +555,9 @@ a:focus-visible {
   inset: 0;
   z-index: 40;
   display: none;
-  background: var(--canvas);
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 48%),
+    var(--canvas);
 }
 
 .admin-panel.open {
@@ -522,8 +567,10 @@ a:focus-visible {
 
 .admin-sidebar {
   padding: 24px;
-  background: var(--paper);
-  border-right: 1px solid var(--line);
+  background: var(--glass-strong);
+  border-right: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
   overflow: auto;
 }
 
@@ -553,9 +600,9 @@ a:focus-visible {
   width: 100%;
   min-height: auto;
   padding: 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
-  background: var(--paper);
+  background: rgba(255, 255, 255, 0.42);
   color: inherit;
   cursor: pointer;
   text-align: left;
@@ -584,16 +631,21 @@ a:focus-visible {
 }
 
 .dashboard-card {
+  position: relative;
+  overflow: hidden;
   max-width: 980px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
-  background: var(--paper);
-  box-shadow: 0 1px 2px rgba(25, 34, 45, 0.06);
+  background: var(--glass-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
 }
 
 .dashboard-header {
+  position: relative;
   padding: 22px 24px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .dashboard-header h2 {
@@ -609,6 +661,7 @@ a:focus-visible {
 }
 
 .doc-table {
+  position: relative;
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
@@ -623,7 +676,7 @@ a:focus-visible {
 }
 
 .doc-table th {
-  background: var(--canvas);
+  background: rgba(255, 255, 255, 0.34);
   color: var(--muted);
   font-size: 11px;
   font-weight: 820;
@@ -648,7 +701,7 @@ a:focus-visible {
   min-height: 24px;
   padding: 0 10px;
   border-radius: 999px;
-  background: var(--wash);
+  background: rgba(255, 255, 255, 0.48);
   color: var(--blue-dark);
   font-size: 12px;
   font-weight: 820;
@@ -660,9 +713,9 @@ a:focus-visible {
   gap: 10px;
   align-items: start;
   padding: 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
-  background: var(--canvas);
+  background: rgba(255, 255, 255, 0.36);
 }
 
 .confirm-row label {
@@ -670,9 +723,10 @@ a:focus-visible {
 }
 
 .tax-summary {
+  position: relative;
   padding: 18px 24px;
-  border-bottom: 1px solid var(--line);
-  background: #fbfcfd;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .tax-summary h3 {
@@ -813,7 +867,6 @@ a:focus-visible {
   <section class="hero-section" aria-labelledby="page-title">
     <article class="business-card" aria-labelledby="page-title">
       <div class="identity">
-        <p class="eyebrow">Tax preparation</p>
         <h1 id="page-title">LEV'S INCOME TAX</h1>
         <h2 class="intro-heading">Lev Sukenik, 20 years of personal touch accounting</h2>
 
@@ -845,18 +898,18 @@ a:focus-visible {
   </section>
 
   <section class="supporting-copy" aria-label="Client support">
-    <article class="support-section">
-      <h3>Simple</h3>
+    <section class="support-section" aria-labelledby="simple-title">
+      <h3 id="simple-title">Simple</h3>
       <p>A focused document flow keeps registration, current tax details, year selection, and uploads in one clear sequence.</p>
-    </article>
-    <article class="support-section">
-      <h3>Reliable</h3>
+    </section>
+    <section class="support-section" aria-labelledby="reliable-title">
+      <h3 id="reliable-title">Reliable</h3>
       <p>Submissions are organized with the client context Lev needs, helping each return start with accurate information and fewer loose ends.</p>
-    </article>
-    <article class="support-section">
-      <h3>Personable</h3>
+    </section>
+    <section class="support-section" aria-labelledby="personable-title">
+      <h3 id="personable-title">Personable</h3>
       <p>Work with a professional who brings twenty years of careful accounting experience and a practical, personal approach.</p>
-    </article>
+    </section>
   </section>
 </main>
 
