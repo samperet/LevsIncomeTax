@@ -2515,6 +2515,8 @@ async function openDashboard() {
   try {
     await loadAdminData();
   } catch (error) {
+    adminDashboard.classList.remove("open");
+    adminDashboard.setAttribute("aria-hidden", "true");
     sessionStorage.removeItem(ADMIN_AUTH_KEY);
     sessionStorage.removeItem(ADMIN_TOKEN_KEY);
     openAdminLogin();

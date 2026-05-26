@@ -1,7 +1,6 @@
-const CACHE_NAME = "levs-income-tax-v5";
+const CACHE_NAME = "levs-income-tax-v6";
 const ASSETS = [
   "/",
-  "/admin",
   "/index.html",
   "/lev-office-background.jpg",
   "/lev-icon.svg",
@@ -26,6 +25,17 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  const acceptsHtml = event.request.headers.get("accept")?.includes("text/html");
+  const isPageRequest = event.request.mode === "navigate" || acceptsHtml;
+
+  if (isPageRequest) {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match("/index.html")))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request)
