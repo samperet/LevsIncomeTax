@@ -54,7 +54,10 @@ html {
 
 body {
   min-height: 100vh;
+  min-height: 100svh;
   margin: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   color: var(--ink);
   background:
     linear-gradient(120deg, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0) 46%),
@@ -116,8 +119,8 @@ a {
 }
 
 .page {
-  min-height: calc(100vh - 76px);
-  padding: clamp(36px, 6vw, 76px) clamp(20px, 5vw, 64px) 72px;
+  min-height: 0;
+  padding: clamp(36px, 6vw, 76px) clamp(20px, 5vw, 64px) clamp(30px, 4vw, 44px);
 }
 
 .hero-section {
@@ -160,6 +163,10 @@ a {
 }
 
 .identity {
+  --hero-text-gap: clamp(26px, 3vw, 42px);
+  display: grid;
+  align-content: center;
+  gap: var(--hero-text-gap);
   padding: clamp(30px, 4vw, 48px);
   min-width: 0;
 }
@@ -179,12 +186,12 @@ h1 {
 
 .intro-heading {
   max-width: 520px;
-  margin: 22px 0 0;
+  margin: 0;
   color: #526c5e;
   font-family: var(--display-font);
   font-size: clamp(20px, 2vw, 27px);
   font-style: italic;
-  line-height: 1.32;
+  line-height: 1.42;
   font-weight: 400;
   letter-spacing: 0;
   overflow-wrap: anywhere;
@@ -192,8 +199,8 @@ h1 {
 
 .contact-list {
   display: grid;
-  gap: 12px;
-  margin-top: 40px;
+  gap: clamp(14px, 1.5vw, 18px);
+  margin: 0;
 }
 
 .contact-item {
@@ -204,6 +211,7 @@ h1 {
   text-decoration: none;
   font-size: 16px;
   font-weight: 600;
+  line-height: 1.45;
   min-width: 0;
 }
 
@@ -245,11 +253,12 @@ h1 {
 }
 
 .supporting-copy {
+  --support-gap: clamp(18px, 3vw, 28px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(18px, 3vw, 28px);
+  gap: var(--support-gap);
   width: min(1180px, 100%);
-  margin: clamp(40px, 6vw, 72px) auto 0;
+  margin: var(--support-gap) auto 0;
 }
 
 .support-section {
@@ -280,6 +289,87 @@ h1 {
   margin: 0;
   color: var(--ink-soft);
   font-size: 15px;
+}
+
+.quote-carousel {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
+  align-items: center;
+  gap: clamp(12px, 2.4vw, 28px);
+  width: min(940px, 100%);
+  min-height: 146px;
+  margin: clamp(30px, 4.5vw, 46px) auto 0;
+  padding-top: clamp(8px, 1.6vw, 18px);
+  color: rgba(31, 42, 36, 0.62);
+  text-align: center;
+}
+
+.quote-track {
+  min-width: 0;
+}
+
+.quote-slide {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.quote-text {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: clamp(18px, 2vw, 23px);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.quote-slide[hidden] {
+  display: none;
+}
+
+.quote-attribution {
+  display: grid;
+  gap: 2px;
+  color: rgba(31, 42, 36, 0.56);
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.35;
+}
+
+.quote-author {
+  color: rgba(31, 42, 36, 0.68);
+  font-size: 14px;
+}
+
+.quote-business {
+  font-size: 12px;
+}
+
+.quote-arrow {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(31, 42, 36, 0.52);
+  cursor: pointer;
+}
+
+.quote-arrow:hover {
+  color: rgba(31, 42, 36, 0.78);
+}
+
+.quote-arrow svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .site-footer {
@@ -399,6 +489,25 @@ button * {
   background: linear-gradient(135deg, rgba(39, 93, 67, 0.94), rgba(52, 123, 86, 0.88));
 }
 
+.button.home-action {
+  min-height: 52px;
+  padding: 0 26px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: linear-gradient(135deg, rgba(47, 111, 79, 0.9), rgba(63, 143, 99, 0.82));
+  box-shadow:
+    0 12px 28px rgba(31, 91, 61, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px) saturate(1.14);
+  -webkit-backdrop-filter: blur(10px) saturate(1.14);
+  font-size: 15px;
+}
+
+.button.home-action:hover {
+  border-color: rgba(255, 255, 255, 0.84);
+  background: linear-gradient(135deg, rgba(39, 93, 67, 0.94), rgba(52, 123, 86, 0.88));
+}
+
 .button.secondary {
   background: rgba(255, 255, 255, 0.5);
   color: var(--blue-dark);
@@ -469,6 +578,12 @@ button * {
   display: grid;
 }
 
+.access-backdrop {
+  background: rgba(232, 238, 229, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
 .modal {
   position: relative;
   width: min(680px, 100%);
@@ -503,6 +618,11 @@ button * {
   margin: 6px 0 0;
   color: var(--muted);
   font-size: 14px;
+}
+
+.access-modal .modal-title,
+.access-modal label {
+  font-weight: 400;
 }
 
 .close-button {
@@ -1125,8 +1245,19 @@ a:focus-visible {
     font-size: 21px;
   }
 
+  .quote-carousel {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    gap: 8px;
+    min-height: 136px;
+  }
+
+  .quote-arrow {
+    width: 34px;
+    height: 34px;
+  }
+
   .supporting-copy {
-    margin-top: 34px;
+    margin-top: var(--support-gap);
   }
 
   .footer-inner {
@@ -1222,6 +1353,48 @@ a:focus-visible {
       <p>Clients work directly with a professional who values real conversation, steady communication, and long-term trust.</p>
     </section>
   </section>
+
+  <section class="quote-carousel" aria-label="Customer quotes">
+    <button class="quote-arrow" type="button" data-quote-nav="-1" aria-label="Previous quote">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+    </button>
+    <div class="quote-track" aria-live="polite">
+      <figure class="quote-slide active" data-quote-slide>
+        <blockquote class="quote-text">
+          "Lev makes every filing feel organized, clear, and much less stressful."
+        </blockquote>
+        <figcaption class="quote-attribution">
+          <span class="quote-author">Miriam Cohen</span>
+          <span class="quote-business">Retail shop owner</span>
+        </figcaption>
+      </figure>
+      <figure class="quote-slide" data-quote-slide hidden>
+        <blockquote class="quote-text">
+          "He explains what matters, keeps deadlines simple, and follows through."
+        </blockquote>
+        <figcaption class="quote-attribution">
+          <span class="quote-author">Daniel Rivera</span>
+          <span class="quote-business">Home services contractor</span>
+        </figcaption>
+      </figure>
+      <figure class="quote-slide" data-quote-slide hidden>
+        <blockquote class="quote-text">
+          "The personal attention helps our bookkeeping and taxes stay on track."
+        </blockquote>
+        <figcaption class="quote-attribution">
+          <span class="quote-author">Priya Shah</span>
+          <span class="quote-business">Cafe owner</span>
+        </figcaption>
+      </figure>
+    </div>
+    <button class="quote-arrow" type="button" data-quote-nav="1" aria-label="Next quote">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m9 18 6-6-6-6"></path>
+      </svg>
+    </button>
+  </section>
 </main>
 
 <footer class="site-footer">
@@ -1234,12 +1407,12 @@ a:focus-visible {
   </div>
 </footer>
 
-<div class="modal-backdrop" id="register-modal" aria-hidden="true">
-  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
+<div class="modal-backdrop access-backdrop" id="register-modal" aria-hidden="true">
+  <section class="modal access-modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
     <div class="modal-header">
       <div>
-        <h2 class="modal-title" id="register-title">Client Access</h2>
-        <p class="modal-copy">Enter your email, then open the link we send you to securely upload files. No customer passwords are used.</p>
+        <h2 class="modal-title" id="register-title">Client Login</h2>
+        <p class="modal-copy">Enter your email address. We will send you a secure login link.</p>
       </div>
       <button class="close-button" type="button" data-close-register aria-label="Close registration form">×</button>
     </div>
@@ -1252,7 +1425,7 @@ a:focus-visible {
         </div>
       </div>
       <div class="message" id="register-message" role="status" aria-live="polite"></div>
-      <button class="button full" id="create-magic-link" type="submit">Email Magic Link</button>
+      <button class="button full home-action" id="create-magic-link" type="submit">Send Login Link</button>
     </form>
   </section>
 </div>
@@ -1563,11 +1736,15 @@ const alertMenuButton = document.querySelector("#alert-menu-button");
 const alertMenu = document.querySelector("#alert-menu");
 const markAlertsSeenButton = document.querySelector("#mark-alerts-seen");
 const infoModals = [...document.querySelectorAll(".info-modal")];
+const quoteSlides = [...document.querySelectorAll("[data-quote-slide]")];
+const quoteControls = [...document.querySelectorAll("[data-quote-nav]")];
 let activeClientId = null;
 let typedBuffer = "";
 let installPromptEvent = null;
 let taxInfoFormMode = "client";
 let adminTaxInfoClientId = "";
+let quoteIndex = 0;
+let quoteTimer = null;
 
 function getTaxYears() {
   const currentYear = new Date().getFullYear();
@@ -1603,6 +1780,26 @@ function clearMessage(element) {
 function clearHomeConfirmation() {
   homeConfirmation.className = "message home-confirmation";
   homeConfirmation.textContent = "";
+}
+
+function showQuote(index) {
+  if (!quoteSlides.length) return;
+  quoteIndex = (index + quoteSlides.length) % quoteSlides.length;
+  quoteSlides.forEach((slide, slideIndex) => {
+    const isActive = slideIndex === quoteIndex;
+    slide.hidden = !isActive;
+    slide.classList.toggle("active", isActive);
+  });
+}
+
+function startQuoteCarousel() {
+  if (quoteTimer) window.clearInterval(quoteTimer);
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (quoteSlides.length < 2 || reduceMotion) {
+    quoteTimer = null;
+    return;
+  }
+  quoteTimer = window.setInterval(() => showQuote(quoteIndex + 1), 5600);
 }
 
 function openInfoModal(id) {
@@ -2568,6 +2765,8 @@ function enterAdminRoute() {
 
 setYears();
 renderSession();
+showQuote(0);
+startQuoteCarousel();
 if (isFilePreview()) {
   showServerRequiredMessage();
 }
@@ -2608,7 +2807,7 @@ registerForm.addEventListener("submit", async (event) => {
   const email = formData.get("register-email").trim();
 
   createMagicLinkButton.disabled = true;
-  showMessage(registerMessage, "warning", "Sending magic link...");
+  showMessage(registerMessage, "warning", "Sending login link...");
 
   try {
     const result = await requestBackendMagicLink({ email });
@@ -2616,7 +2815,7 @@ registerForm.addEventListener("submit", async (event) => {
     showEmailLinkPopup();
   } catch (error) {
     if (error.status) {
-      showMessage(registerMessage, "error", error.message || "Magic link could not be sent.");
+      showMessage(registerMessage, "error", error.message || "Login link could not be sent.");
       return;
     }
 
@@ -2635,6 +2834,13 @@ registerForm.addEventListener("submit", async (event) => {
 
 document.querySelectorAll("[data-info-modal]").forEach((button) => {
   button.addEventListener("click", () => openInfoModal(button.dataset.infoModal));
+});
+
+quoteControls.forEach((button) => {
+  button.addEventListener("click", () => {
+    showQuote(quoteIndex + Number(button.dataset.quoteNav));
+    startQuoteCarousel();
+  });
 });
 
 window.addEventListener("beforeinstallprompt", (event) => {
