@@ -94,11 +94,14 @@ a {
 }
 
 .brand-mark {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
   color: var(--ink);
   font-size: 15px;
   font-weight: 760;
   letter-spacing: 0.12em;
-  line-height: 1;
+  line-height: 1.1;
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
@@ -162,6 +165,7 @@ a {
 }
 
 h1 {
+  max-width: 100%;
   margin: 0;
   color: var(--ink);
   font-size: clamp(28px, 3vw, 38px);
@@ -169,6 +173,7 @@ h1 {
   line-height: 1.04;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  text-wrap: balance;
   white-space: nowrap;
 }
 
@@ -1058,11 +1063,16 @@ a:focus-visible {
     flex-direction: column;
     align-items: flex-start;
     min-height: 0;
-    padding: 14px 18px;
+    gap: 12px;
+    padding: 14px clamp(14px, 4.8vw, 18px);
   }
 
   .brand-mark {
-    font-size: 20px;
+    font-size: clamp(15px, 5vw, 18px);
+    letter-spacing: clamp(0.04em, 1.2vw, 0.09em);
+    line-height: 1.12;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .menu-actions {
@@ -1104,7 +1114,11 @@ a:focus-visible {
   }
 
   h1 {
-    font-size: 38px;
+    font-size: clamp(30px, 10vw, 38px);
+    letter-spacing: clamp(0.04em, 1.3vw, 0.09em);
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .intro-heading {
