@@ -137,7 +137,6 @@ a {
 
 .hero-section::before,
 .support-section::before,
-.quote-carousel::before,
 .modal::before,
 .dashboard-card::before {
   content: "";
@@ -278,104 +277,6 @@ h1 {
   font-size: 15px;
 }
 
-.quote-carousel {
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  gap: 24px;
-  width: min(1180px, 100%);
-  margin: clamp(34px, 5vw, 58px) auto 0;
-  padding: clamp(26px, 4vw, 44px);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  background: var(--glass-bg);
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(15px) saturate(1.06);
-  -webkit-backdrop-filter: blur(15px) saturate(1.06);
-}
-
-.quote-track {
-  position: relative;
-  z-index: 1;
-}
-
-.quote-slide {
-  display: none;
-  gap: 14px;
-  margin: 0;
-}
-
-.quote-slide.active {
-  display: grid;
-}
-
-.quote-copy {
-  margin: 0;
-  max-width: 920px;
-  color: var(--ink);
-  font-family: var(--display-font);
-  font-size: clamp(24px, 3vw, 36px);
-  font-style: italic;
-  font-weight: 400;
-  line-height: 1.22;
-}
-
-.quote-author {
-  color: var(--ink-soft);
-  font-size: 14px;
-  font-weight: 780;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.quote-controls {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-.quote-arrows,
-.quote-dots {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.quote-control,
-.quote-dot {
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.46);
-  color: var(--blue-dark);
-  cursor: pointer;
-}
-
-.quote-control {
-  width: 40px;
-  height: 40px;
-  border-radius: 7px;
-  font-size: 24px;
-  line-height: 1;
-}
-
-.quote-dot {
-  width: 10px;
-  height: 10px;
-  padding: 0;
-  border-radius: 50%;
-}
-
-.quote-control:hover,
-.quote-dot:hover,
-.quote-dot.active {
-  border-color: rgba(49, 93, 96, 0.44);
-  background: rgba(49, 93, 96, 0.16);
-}
-
 .site-footer {
   padding: 28px clamp(20px, 5vw, 64px);
   background: var(--blue-dark);
@@ -407,10 +308,9 @@ h1 {
   background: transparent;
   color: var(--paper);
   cursor: pointer;
-  font-weight: 780;
+  font-weight: 400;
   padding: 6px 0;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
 }
 
 .info-body {
@@ -504,6 +404,10 @@ h1 {
 
 .button.full {
   width: 100%;
+}
+
+.button.normal-weight {
+  font-weight: 400;
 }
 
 .link-actions {
@@ -1151,12 +1055,6 @@ a:focus-visible {
     margin-top: 34px;
   }
 
-  .quote-carousel {
-    margin-top: 30px;
-    padding: 22px;
-  }
-
-  .quote-controls,
   .footer-inner {
     align-items: flex-start;
     flex-direction: column;
@@ -1240,34 +1138,6 @@ a:focus-visible {
     </figure>
   </section>
 
-  <section class="quote-carousel" aria-label="Client quotes">
-    <div class="quote-track" id="quote-track" aria-live="polite">
-      <figure class="quote-slide active" data-quote-slide>
-        <blockquote class="quote-copy">"Lev made tax season feel calm, clear, and completely manageable from the first email."</blockquote>
-        <figcaption class="quote-author">Miriam K., small business owner</figcaption>
-      </figure>
-      <figure class="quote-slide" data-quote-slide hidden>
-        <blockquote class="quote-copy">"Every question was answered with patience, and every detail felt carefully looked after."</blockquote>
-        <figcaption class="quote-author">Daniel R., returning client</figcaption>
-      </figure>
-      <figure class="quote-slide" data-quote-slide hidden>
-        <blockquote class="quote-copy">"The upload process was simple, and I always knew what was happening next."</blockquote>
-        <figcaption class="quote-author">Rachel S., remote filer</figcaption>
-      </figure>
-    </div>
-    <div class="quote-controls" aria-label="Quote controls">
-      <div class="quote-arrows">
-        <button class="quote-control" type="button" id="quote-prev" aria-label="Previous quote">&lsaquo;</button>
-        <button class="quote-control" type="button" id="quote-next" aria-label="Next quote">&rsaquo;</button>
-      </div>
-      <div class="quote-dots" aria-label="Select quote">
-        <button class="quote-dot active" type="button" data-quote-dot="0" aria-label="Show quote 1" aria-current="true"></button>
-        <button class="quote-dot" type="button" data-quote-dot="1" aria-label="Show quote 2" aria-current="false"></button>
-        <button class="quote-dot" type="button" data-quote-dot="2" aria-label="Show quote 3" aria-current="false"></button>
-      </div>
-    </div>
-  </section>
-
   <section class="supporting-copy" aria-label="Client support">
     <section class="support-section" aria-labelledby="simple-title">
       <h3 id="simple-title">Simple</h3>
@@ -1299,7 +1169,7 @@ a:focus-visible {
     <div class="modal-header">
       <div>
         <h2 class="modal-title" id="register-title">Client Access</h2>
-        <p class="modal-copy">Enter your email and we will send a private upload link. No customer passwords are used.</p>
+        <p class="modal-copy">Enter your email, then open the link we send you to securely upload files. No customer passwords are used.</p>
       </div>
       <button class="close-button" type="button" data-close-register aria-label="Close registration form">×</button>
     </div>
@@ -1318,7 +1188,7 @@ a:focus-visible {
       </div>
       <div class="message" id="register-message" role="status" aria-live="polite"></div>
       <div class="link-actions">
-        <button class="button full" id="create-magic-link" type="submit">Email Magic Link</button>
+        <button class="button full normal-weight" id="create-magic-link" type="submit">Email Magic Link</button>
         <button class="button secondary full" type="button" id="open-magic-link" hidden>Open Link</button>
       </div>
     </form>
@@ -1472,6 +1342,10 @@ a:focus-visible {
     <div class="info-body">
       <ul>
         <li>Client access uses time-limited magic links instead of reusable customer passwords.</li>
+        <li>Uploaded tax documents are intended to be stored in a private Cloudflare R2 bucket, not in the public website files.</li>
+        <li>R2 file access should use short-lived signed upload and download URLs so clients and admins only reach the specific files they are authorized to handle.</li>
+        <li>Documents are protected in transit with HTTPS/TLS and stored in R2 with encryption at rest.</li>
+        <li>The database should keep client records, upload status, and private R2 object keys only; document contents should remain in R2.</li>
         <li>Uploaded documents stay tied to the registered client email and confirmed tax profile.</li>
         <li>Admin tools are protected behind the configured server password and private dashboard session.</li>
         <li>For best results, use a private device and sign out after uploading on a shared computer.</li>
@@ -1588,18 +1462,11 @@ const enableNotificationsButton = document.querySelector("#enable-notifications"
 const alertList = document.querySelector("#alert-list");
 const alertHeading = document.querySelector("#alert-heading");
 const markAlertsSeenButton = document.querySelector("#mark-alerts-seen");
-const quoteCarousel = document.querySelector(".quote-carousel");
-const quoteSlides = [...document.querySelectorAll("[data-quote-slide]")];
-const quoteDots = [...document.querySelectorAll("[data-quote-dot]")];
-const quotePrevButton = document.querySelector("#quote-prev");
-const quoteNextButton = document.querySelector("#quote-next");
 const infoModals = [...document.querySelectorAll(".info-modal")];
 let activeClientId = null;
-let activeQuoteIndex = 0;
 let typedBuffer = "";
 let pendingMagicLink = "";
 let installPromptEvent = null;
-let quoteTimer = null;
 
 function getTaxYears() {
   const currentYear = new Date().getFullYear();
@@ -1637,40 +1504,6 @@ function clearHomeConfirmation() {
   homeConfirmation.textContent = "";
 }
 
-function setQuote(index) {
-  if (!quoteSlides.length) return;
-
-  activeQuoteIndex = (index + quoteSlides.length) % quoteSlides.length;
-  quoteSlides.forEach((slide, slideIndex) => {
-    const isActive = slideIndex === activeQuoteIndex;
-    slide.classList.toggle("active", isActive);
-    slide.hidden = !isActive;
-  });
-
-  quoteDots.forEach((dot, dotIndex) => {
-    const isActive = dotIndex === activeQuoteIndex;
-    dot.classList.toggle("active", isActive);
-    dot.setAttribute("aria-current", isActive ? "true" : "false");
-  });
-}
-
-function advanceQuote(step) {
-  setQuote(activeQuoteIndex + step);
-}
-
-function stopQuoteCarousel() {
-  if (!quoteTimer) return;
-  clearInterval(quoteTimer);
-  quoteTimer = null;
-}
-
-function startQuoteCarousel() {
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const userIsReading = quoteCarousel.matches(":hover") || quoteCarousel.contains(document.activeElement);
-  if (reduceMotion || userIsReading || quoteTimer || quoteSlides.length < 2) return;
-  quoteTimer = setInterval(() => advanceQuote(1), 7000);
-}
-
 function openInfoModal(id) {
   const modal = infoModals.find((item) => item.id === id);
   if (!modal) return;
@@ -1688,7 +1521,19 @@ function showHomeConfirmation(type, text) {
   setTimeout(() => openUploadButton.focus(), 30);
 }
 
+function isFilePreview() {
+  return location.protocol === "file:";
+}
+
+function showServerRequiredMessage() {
+  showHomeConfirmation("warning", "This portal needs the local server for secure upload links. Run npm run dev and open http://localhost:4173/.");
+}
+
 async function apiRequest(path, { method = "GET", body, token } = {}) {
+  if (isFilePreview()) {
+    throw new Error("Open http://localhost:4173/ instead of the local HTML file.");
+  }
+
   const response = await fetch(path, {
     method,
     headers: {
@@ -2471,8 +2316,9 @@ function enterAdminRoute() {
 
 setYears();
 renderSession();
-setQuote(0);
-startQuoteCarousel();
+if (isFilePreview()) {
+  showServerRequiredMessage();
+}
 consumeMagicLink().then((handledMagicLink) => {
   if (!handledMagicLink && isAdminRoute()) {
     enterAdminRoute();
@@ -2480,6 +2326,11 @@ consumeMagicLink().then((handledMagicLink) => {
 });
 
 openUploadButton.addEventListener("click", () => {
+  if (isFilePreview()) {
+    showServerRequiredMessage();
+    return;
+  }
+
   if (!getCurrentClient()) {
     openRegister();
     return;
@@ -2550,35 +2401,6 @@ registerForm.addEventListener("submit", async (event) => {
 openMagicLinkButton.addEventListener("click", () => {
   if (!pendingMagicLink) return;
   window.location.href = pendingMagicLink;
-});
-
-quotePrevButton.addEventListener("click", () => {
-  stopQuoteCarousel();
-  advanceQuote(-1);
-  startQuoteCarousel();
-});
-
-quoteNextButton.addEventListener("click", () => {
-  stopQuoteCarousel();
-  advanceQuote(1);
-  startQuoteCarousel();
-});
-
-quoteDots.forEach((dot) => {
-  dot.addEventListener("click", () => {
-    stopQuoteCarousel();
-    setQuote(Number(dot.dataset.quoteDot));
-    startQuoteCarousel();
-  });
-});
-
-quoteCarousel.addEventListener("pointerenter", stopQuoteCarousel);
-quoteCarousel.addEventListener("pointerleave", startQuoteCarousel);
-quoteCarousel.addEventListener("focusin", stopQuoteCarousel);
-quoteCarousel.addEventListener("focusout", (event) => {
-  if (!quoteCarousel.contains(event.relatedTarget)) {
-    startQuoteCarousel();
-  }
 });
 
 document.querySelectorAll("[data-info-modal]").forEach((button) => {
