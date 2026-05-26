@@ -377,7 +377,8 @@ h1 {
 }
 
 .site-footer {
-  padding: 0 clamp(20px, 5vw, 64px) 34px;
+  padding: 28px clamp(20px, 5vw, 64px);
+  background: var(--blue-dark);
 }
 
 .footer-inner {
@@ -387,9 +388,7 @@ h1 {
   gap: 18px;
   width: min(1180px, 100%);
   margin: 0 auto;
-  padding-top: 20px;
-  border-top: 1px solid rgba(172, 188, 173, 0.7);
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.76);
   font-size: 13px;
 }
 
@@ -406,7 +405,7 @@ h1 {
 .footer-link {
   border: 0;
   background: transparent;
-  color: var(--blue-dark);
+  color: var(--paper);
   cursor: pointer;
   font-weight: 780;
   padding: 6px 0;
@@ -744,6 +743,14 @@ a:focus-visible {
   background: rgba(248, 221, 221, 0.78);
   color: var(--red);
   border: 1px solid rgba(178, 59, 59, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.message.info {
+  background: rgba(224, 235, 248, 0.78);
+  color: var(--text);
+  border: 1px solid rgba(80, 130, 200, 0.14);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -1279,7 +1286,7 @@ a:focus-visible {
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p class="footer-brand">&copy; 2026 Lev's Income Tax. Personal tax support with secure document handling.</p>
+    <p class="footer-brand">&copy; 2026 Lev's Income Tax.</p>
     <nav class="footer-links" aria-label="Privacy and security">
       <button class="footer-link" type="button" data-info-modal="privacy-modal">Privacy</button>
       <button class="footer-link" type="button" data-info-modal="security-modal">Security</button>
@@ -1419,7 +1426,7 @@ a:focus-visible {
           <input id="tax-documents" name="tax-documents" type="file" multiple required>
         </div>
       </div>
-      <span class="hint">Small files are stored in browser storage for admin review. Large files are saved as metadata only in this preview.</span>
+      <span class="hint">Files upload directly to Lev's secure document storage. PDFs, images, and Office files up to 25 MB are accepted.</span>
       <ul class="file-list" id="selected-files" aria-label="Selected files"></ul>
       <div class="message" id="upload-message" role="status" aria-live="polite"></div>
       <button class="button full" type="submit">Submit Documents</button>
@@ -1545,8 +1552,6 @@ const ADMIN_TOKEN_KEY = "levs-income-tax-admin-token";
 const ADMIN_ALERTS_KEY = "levs-income-tax-admin-alerts";
 const MAGIC_LINK_KEY = "levs-income-tax-magic-links";
 const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
-const MAX_FILE_BYTES = 650000;
-
 const openUploadButton = document.querySelector("#open-upload");
 const registerModal = document.querySelector("#register-modal");
 const registerForm = document.querySelector("#register-form");
@@ -2174,29 +2179,7 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function fileToRecord(file) {
-  return new Promise((resolve) => {
-    const baseRecord = {
-      id: crypto.randomUUID(),
-      name: file.name,
-      type: file.type || "application/octet-stream",
-      size: file.size,
-      stored: false,
-      dataUrl: "",
-      uploadedAt: new Date().toISOString()
-    };
 
-    if (file.size > MAX_FILE_BYTES) {
-      resolve(baseRecord);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => resolve({ ...baseRecord, stored: true, dataUrl: reader.result });
-    reader.onerror = () => resolve(baseRecord);
-    reader.readAsDataURL(file);
-  });
-}
 
 function renderSelectedFiles() {
   const files = [...fileInput.files];
@@ -2316,8 +2299,8 @@ function renderDocuments(client) {
   const unseenDocIds = getUnseenDocIds(client.id);
   const rows = client.documents.map((doc) => {
     const isNew = unseenDocIds.has(doc.id);
-    const download = doc.stored
-      ? `<a href="${escapeHtml(doc.dataUrl)}" download="${escapeHtml(doc.name)}">Download</a>`
+    const download = doc.key
+      ? `<button class="button ghost" type="button" data-doc-key="${escapeHtml(doc.key)}" data-doc-name="${escapeHtml(doc.name)}">Download</button>`
       : '<span class="pill">Metadata only</span>';
     const newPill = isNew ? ' <span class="pill warning">New</span>' : "";
 
@@ -2655,55 +2638,54 @@ uploadForm.addEventListener("submit", async (event) => {
   clearMessage(uploadMessage);
 
   const currentClient = getCurrentClient();
-  if (!currentClient) {
-    closeModal(uploadModal);
-    openRegister();
-    return;
-  }
+  if (!currentClient) { closeModal(uploadModal); openRegister(); return; }
 
   const files = [...fileInput.files];
-  if (!files.length) {
-    showMessage(uploadMessage, "error", "Select at least one document before submitting.");
-    return;
-  }
+  if (!files.length) { showMessage(uploadMessage, "error", "Select at least one document before submitting."); return; }
+
+  const token = getClientToken();
+  if (!token) { showMessage(uploadMessage, "error", "Open the magic link before uploading."); return; }
 
   const taxYear = yearSelect.value;
-  const documents = await Promise.all(files.map(fileToRecord));
-  documents.forEach((doc) => {
-    doc.taxYear = taxYear;
-  });
+  showMessage(uploadMessage, "info", `Uploading ${files.length} file${files.length === 1 ? "" : "s"}…`);
 
-  let updatedClient = null;
-  let serverAlerts = null;
+  try {
+    // 1. Get presigned PUT URLs from server
+    const { uploads } = await apiRequest("/api/uploads/presign", {
+      method: "POST",
+      token,
+      body: { files: files.map((f) => ({ name: f.name, type: f.type || "application/octet-stream", size: f.size })) }
+    });
 
-  if (getClientToken()) {
-    try {
-      const backendUpload = await submitUploadToBackend(currentClient, documents, taxYear);
-      updatedClient = backendUpload.client;
-      serverAlerts = backendUpload.alerts;
-      setCurrentClient(updatedClient);
-    } catch (error) {
-      showMessage(uploadMessage, "error", error.message || "Upload could not be saved to the email backend.");
-      return;
-    }
-  } else {
-    updatedClient = addDocumentsToCurrentClient(documents);
+    // 2. PUT each file directly to R2
+    await Promise.all(files.map((file, i) => {
+      const { uploadUrl, headers } = uploads[i];
+      return fetch(uploadUrl, { method: "PUT", headers, body: file })
+        .then((r) => { if (!r.ok) throw new Error(`Upload failed for ${file.name} (${r.status})`); });
+    }));
+
+    // 3. Register metadata with the server
+    const documents = files.map((file, i) => ({
+      name: file.name,
+      type: file.type || "application/octet-stream",
+      size: file.size,
+      key: uploads[i].key,
+      uploadedAt: new Date().toISOString()
+    }));
+
+    const backendUpload = await submitUploadToBackend(currentClient, documents, taxYear);
+    const updatedClient = backendUpload.client;
+    setCurrentClient(updatedClient);
+    notifyAdminUpload(updatedClient, documents, taxYear, backendUpload.alerts);
+
+    uploadForm.reset();
+    fileList.innerHTML = "";
+    setYears();
+    closeModal(uploadModal);
+    showHomeConfirmation("success", `Submitted ${documents.length} document${documents.length === 1 ? "" : "s"} for ${taxYear}.`);
+  } catch (error) {
+    showMessage(uploadMessage, "error", error.message || "Upload failed. Please try again.");
   }
-
-  if (updatedClient) {
-    notifyAdminUpload(updatedClient, documents, taxYear, serverAlerts);
-  }
-
-  const skipped = documents.filter((doc) => !doc.stored).length;
-  const message = skipped
-    ? `Submitted ${documents.length} document${documents.length === 1 ? "" : "s"}. ${skipped} large file${skipped === 1 ? " was" : "s were"} saved as metadata only in this preview.`
-    : `Submitted ${documents.length} document${documents.length === 1 ? "" : "s"} for ${taxYear}.`;
-
-  uploadForm.reset();
-  fileList.innerHTML = "";
-  setYears();
-  closeModal(uploadModal);
-  showHomeConfirmation(skipped ? "warning" : "success", message);
 });
 
 document.querySelectorAll("[data-close-register]").forEach((button) => {
@@ -2770,6 +2752,25 @@ documentPanel.addEventListener("click", async (event) => {
   const markSeenButton = event.target.closest("[data-mark-client-seen]");
   if (markSeenButton) {
     markAlertsSeen(markSeenButton.dataset.markClientSeen).then(renderUsers);
+    return;
+  }
+
+  const downloadButton = event.target.closest("[data-doc-key]");
+  if (downloadButton) {
+    const key = downloadButton.dataset.docKey;
+    const name = downloadButton.dataset.docName || "document";
+    downloadButton.disabled = true;
+    downloadButton.textContent = "…";
+    try {
+      const token = getAdminToken();
+      const result = await apiRequest("/api/admin/documents/download", { method: "POST", token, body: { key } });
+      window.open(result.url, "_blank");
+    } catch (error) {
+      alert(error.message || "Could not get download link.");
+    } finally {
+      downloadButton.disabled = false;
+      downloadButton.textContent = "Download";
+    }
     return;
   }
 

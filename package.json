@@ -9,6 +9,8 @@
     "check": "node --check server.js && node --check service-worker.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1053.0",
+    "@aws-sdk/s3-request-presigner": "^3.1053.0",
     "express": "^4.19.2",
     "nodemailer": "^8.0.8"
   }

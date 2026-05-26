@@ -1,4 +1,4 @@
-const CACHE_NAME = "levs-income-tax-v1";
+const CACHE_NAME = "levs-income-tax-v2";
 const ASSETS = [
   "./",
   "admin/",

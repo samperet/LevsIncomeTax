@@ -4,6 +4,8 @@ const fsp = require("fs/promises");
 const path = require("path");
 const express = require("express");
 const nodemailer = require("nodemailer");
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const ROOT = __dirname;
 loadEnv(path.join(ROOT, ".env"));
@@ -16,12 +18,33 @@ const EMAIL_FROM = process.env.EMAIL_FROM || `Lev's Income Tax <${ADMIN_EMAIL}>`
 const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
 const CLIENT_SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 const ADMIN_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
-const MAX_STORED_DATA_URL_BYTES = 850000;
+const PRESIGN_PUT_TTL_SECONDS = 5 * 60;
+const PRESIGN_GET_TTL_SECONDS = 5 * 60;
+const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+const ALLOWED_MIME_PREFIXES = ["application/pdf", "image/", "application/vnd.openxmlformats", "application/msword", "text/"];
 
 const app = express();
 let writeQueue = Promise.resolve();
 
-app.use(express.json({ limit: "12mb" }));
+app.set("trust proxy", true);
+app.use(express.json({ limit: "1mb" }));
+
+let r2ClientCache = null;
+function getR2Client() {
+  if (r2ClientCache) return r2ClientCache;
+  const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY } = process.env;
+  if (!R2_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !process.env.R2_BUCKET) return null;
+  r2ClientCache = new S3Client({
+    region: "auto",
+    endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY }
+  });
+  return r2ClientCache;
+}
+
+function sanitizeKeySegment(name) {
+  return name.replace(/[^A-Za-z0-9._-]/g, "-").replace(/-{2,}/g, "-").slice(0, 120);
+}
 
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, emailConfigured: isEmailConfigured() });
@@ -146,6 +169,12 @@ app.post("/api/uploads", async (req, res) => {
         client.taxInfoConfirmedAt = new Date().toISOString();
       }
 
+      for (const doc of incomingDocs) {
+        if (!cleanText(doc.key)) {
+          return { error: "Each document must include an upload key.", status: 400 };
+        }
+      }
+
       const documents = incomingDocs.map((doc) => normalizeDocument(doc, taxYear));
       client.documents.push(...documents);
       client.updatedAt = new Date().toISOString();
@@ -161,6 +190,70 @@ app.post("/api/uploads", async (req, res) => {
 
     await sendUploadNotificationEmail(result.client, result.documents, taxYear, getPublicBaseUrl(req));
     res.json({ ok: true, client: result.client, alerts: result.alerts });
+  } catch (error) {
+    handleApiError(res, error);
+  }
+});
+
+app.post("/api/uploads/presign", async (req, res) => {
+  try {
+    const bearer = getBearerToken(req);
+    const files = Array.isArray(req.body.files) ? req.body.files : [];
+    if (!files.length) return res.status(400).json({ error: "No files specified." });
+
+    const client = getR2Client();
+    if (!client) return res.status(503).json({ error: "Document storage is not configured. Set R2 environment variables and restart the server." });
+
+    const store = await readStore();
+    const clientId = verifySession(store.clientSessions, bearer);
+    if (!clientId) return res.status(401).json({ error: "Upload session is missing or expired." });
+
+    const uploads = [];
+    for (const file of files) {
+      const name = cleanText(file.name) || "document";
+      const type = cleanText(file.type) || "application/octet-stream";
+      const size = Number(file.size) || 0;
+      if (size > MAX_UPLOAD_BYTES) {
+        return res.status(413).json({ error: `${name} exceeds the ${MAX_UPLOAD_BYTES / (1024 * 1024)} MB upload limit.` });
+      }
+      if (!ALLOWED_MIME_PREFIXES.some((prefix) => type.startsWith(prefix))) {
+        return res.status(415).json({ error: `${name} is not a supported document type.` });
+      }
+      const key = `clients/${clientId}/${Date.now()}-${crypto.randomUUID()}-${sanitizeKeySegment(name)}`;
+      const command = new PutObjectCommand({
+        Bucket: process.env.R2_BUCKET,
+        Key: key,
+        ContentType: type,
+        ContentLength: size
+      });
+      const uploadUrl = await getSignedUrl(client, command, { expiresIn: PRESIGN_PUT_TTL_SECONDS });
+      uploads.push({ key, uploadUrl, headers: { "Content-Type": type } });
+    }
+
+    res.json({ ok: true, uploads });
+  } catch (error) {
+    handleApiError(res, error);
+  }
+});
+
+app.post("/api/admin/documents/download", async (req, res) => {
+  try {
+    const bearer = getBearerToken(req);
+    const key = cleanText(req.body.key);
+    if (!key) return res.status(400).json({ error: "Key is required." });
+
+    const client = getR2Client();
+    if (!client) return res.status(503).json({ error: "Document storage is not configured." });
+
+    const store = await readStore();
+    if (!verifySession(store.adminSessions, bearer)) return res.status(401).json({ error: "Admin session is missing or expired." });
+
+    const exists = store.clients.some((c) => Array.isArray(c.documents) && c.documents.some((d) => d.key === key));
+    if (!exists) return res.status(404).json({ error: "Document not found." });
+
+    const command = new GetObjectCommand({ Bucket: process.env.R2_BUCKET, Key: key });
+    const url = await getSignedUrl(client, command, { expiresIn: PRESIGN_GET_TTL_SECONDS });
+    res.json({ ok: true, url });
   } catch (error) {
     handleApiError(res, error);
   }
@@ -275,12 +368,19 @@ app.get(["/admin", "/admin/"], (req, res) => {
 
 app.use(express.static(ROOT, { extensions: ["html"] }));
 
-app.listen(PORT, () => {
-  console.log(`Lev's Income Tax portal running at http://localhost:${PORT}`);
-  if (!isEmailConfigured()) {
-    console.log("Email backend is in console preview mode. Configure RESEND_API_KEY or SMTP_* env vars to send real email.");
-  }
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Lev's Income Tax portal running at http://localhost:${PORT}`);
+    if (!isEmailConfigured()) {
+      console.log("Email backend is in console preview mode. Configure RESEND_API_KEY or SMTP_* env vars to send real email.");
+    }
+    if (!getR2Client()) {
+      console.log("R2 document storage is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, and R2_BUCKET to enable file uploads.");
+    }
+  });
+}
+
+module.exports = app;
 
 function loadEnv(filePath) {
   if (!fs.existsSync(filePath)) return;
@@ -381,7 +481,20 @@ function defaultStore() {
   };
 }
 
+const STORE_R2_KEY = process.env.STORE_R2_KEY || "app-state/store.json";
+
 async function readStore() {
+  const client = getR2Client();
+  if (client) {
+    try {
+      const out = await client.send(new GetObjectCommand({ Bucket: process.env.R2_BUCKET, Key: STORE_R2_KEY }));
+      const text = await out.Body.transformToString();
+      return { ...defaultStore(), ...JSON.parse(text) };
+    } catch (error) {
+      if (error.name === "NoSuchKey" || error.$metadata?.httpStatusCode === 404) return defaultStore();
+      throw error;
+    }
+  }
   try {
     const parsed = JSON.parse(await fsp.readFile(STORE_PATH, "utf8"));
     return { ...defaultStore(), ...parsed };
@@ -392,6 +505,16 @@ async function readStore() {
 }
 
 async function writeStore(store) {
+  const client = getR2Client();
+  if (client) {
+    await client.send(new PutObjectCommand({
+      Bucket: process.env.R2_BUCKET,
+      Key: STORE_R2_KEY,
+      Body: JSON.stringify(store, null, 2),
+      ContentType: "application/json"
+    }));
+    return;
+  }
   await fsp.mkdir(path.dirname(STORE_PATH), { recursive: true });
   await fsp.writeFile(STORE_PATH, `${JSON.stringify(store, null, 2)}\n`);
 }
@@ -462,16 +585,12 @@ function normalizeTaxInfo(value) {
 }
 
 function normalizeDocument(doc, taxYear) {
-  const dataUrl = cleanText(doc.dataUrl);
-  const canStore = Boolean(doc.stored && dataUrl.startsWith("data:") && Buffer.byteLength(dataUrl, "utf8") <= MAX_STORED_DATA_URL_BYTES);
-
   return {
     id: crypto.randomUUID(),
     name: cleanText(doc.name) || "document",
     type: cleanText(doc.type) || "application/octet-stream",
     size: Number.isFinite(Number(doc.size)) ? Number(doc.size) : 0,
-    stored: canStore,
-    dataUrl: canStore ? dataUrl : "",
+    key: cleanText(doc.key),
     taxYear,
     uploadedAt: new Date().toISOString()
   };
