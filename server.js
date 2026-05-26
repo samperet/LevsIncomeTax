@@ -295,6 +295,45 @@ app.get("/api/admin/clients", async (req, res) => {
   }
 });
 
+app.post("/api/admin/clients/tax-info", async (req, res) => {
+  try {
+    const taxInfo = normalizeTaxInfo(req.body.taxInfo);
+
+    if (!taxInfo || !taxInfo.fullName) {
+      res.status(400).json({ error: "Full legal name is required." });
+      return;
+    }
+
+    const result = await updateStore((store) => {
+      pruneStore(store);
+
+      if (!verifySession(store.adminSessions, getBearerToken(req))) {
+        return { error: "Admin session is missing or expired.", status: 401 };
+      }
+
+      const client = store.clients.find((item) => item.id === cleanText(req.body.clientId));
+      if (!client) {
+        return { error: "Client account was not found.", status: 404 };
+      }
+
+      client.name = taxInfo.fullName || client.name;
+      client.taxInfo = taxInfo;
+      client.updatedAt = new Date().toISOString();
+
+      return { client: publicClient(client) };
+    });
+
+    if (result.error) {
+      res.status(result.status || 400).json({ error: result.error });
+      return;
+    }
+
+    res.json({ ok: true, client: result.client });
+  } catch (error) {
+    handleApiError(res, error);
+  }
+});
+
 app.post("/api/admin/alerts/seen", async (req, res) => {
   try {
     const result = await updateStore((store) => {
@@ -363,7 +402,7 @@ app.post("/api/admin/magic-link", async (req, res) => {
 });
 
 app.get(["/admin", "/admin/"], (req, res) => {
-  res.sendFile(path.join(ROOT, "admin", "index.html"));
+  res.sendFile(path.join(ROOT, "index.html"));
 });
 
 app.use(express.static(ROOT, { extensions: ["html"] }));

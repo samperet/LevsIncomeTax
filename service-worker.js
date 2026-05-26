@@ -1,11 +1,11 @@
-const CACHE_NAME = "levs-income-tax-v2";
+const CACHE_NAME = "levs-income-tax-v5";
 const ASSETS = [
-  "./",
-  "admin/",
-  "index.html",
-  "lev-office-background.jpg",
-  "lev-icon.svg",
-  "site.webmanifest"
+  "/",
+  "/admin",
+  "/index.html",
+  "/lev-office-background.jpg",
+  "/lev-icon.svg",
+  "/site.webmanifest"
 ];
 
 self.addEventListener("install", (event) => {

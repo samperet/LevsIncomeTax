@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Lev's Tax">
 <title>Lev's Income Tax</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2317486d'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='34' font-weight='700' fill='white'%3EL%3C/text%3E%3C/svg%3E">
-<link rel="manifest" href="site.webmanifest">
+<link rel="manifest" href="/site.webmanifest">
 <style>
 :root {
   --ink: #1f2a24;
@@ -352,8 +352,13 @@ h1 {
   color: var(--paper);
   cursor: pointer;
   font-size: 14px;
-  font-weight: 760;
+  font-weight: 400;
   text-decoration: none;
+}
+
+button,
+button * {
+  font-weight: 400;
 }
 
 .button:hover {
@@ -406,20 +411,6 @@ h1 {
   width: 100%;
 }
 
-.button.normal-weight {
-  font-weight: 400;
-}
-
-.link-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.link-actions:has(#open-magic-link[hidden]) {
-  grid-template-columns: 1fr;
-}
-
 .magic-link-output {
   padding: 12px;
   border: 1px solid var(--glass-border);
@@ -460,7 +451,7 @@ h1 {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 60;
   display: none;
   place-items: center;
   padding: 20px;
@@ -711,6 +702,43 @@ a:focus-visible {
   margin: 0 0 18px;
 }
 
+.admin-menubar {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.admin-menu-button {
+  width: 100%;
+  justify-content: space-between;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.admin-menu-button.has-new {
+  border-color: rgba(147, 97, 0, 0.34);
+  background: rgba(255, 244, 220, 0.56);
+  color: var(--amber);
+}
+
+.admin-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: var(--glass-strong);
+  box-shadow: 0 16px 34px rgba(45, 62, 46, 0.16);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+}
+
 .admin-tool-card {
   display: grid;
   gap: 10px;
@@ -720,8 +748,7 @@ a:focus-visible {
   background: rgba(255, 255, 255, 0.38);
 }
 
-.admin-tool-card h3,
-.alert-list h3 {
+.admin-tool-card h3 {
   margin: 0;
   color: var(--ink);
   font-size: 14px;
@@ -899,6 +926,13 @@ a:focus-visible {
   text-decoration: none;
 }
 
+.doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .empty {
   padding: 34px 24px;
   color: var(--muted);
@@ -947,8 +981,16 @@ a:focus-visible {
   background: rgba(255, 255, 255, 0.3);
 }
 
-.tax-summary h3 {
+.tax-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
   margin: 0 0 12px;
+}
+
+.tax-summary h3 {
+  margin: 0;
   color: var(--ink);
   font-size: 16px;
 }
@@ -970,6 +1012,24 @@ a:focus-visible {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.document-preview-body {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.document-preview-modal {
+  width: min(1100px, 100%);
+}
+
+.document-preview-frame {
+  width: 100%;
+  height: min(70vh, 720px);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: #fff;
 }
 
 @media (max-width: 860px) {
@@ -1068,10 +1128,6 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .link-actions {
-    grid-template-columns: 1fr;
-  }
-
   .dashboard-header.with-actions {
     display: grid;
   }
@@ -1133,7 +1189,7 @@ a:focus-visible {
     </article>
 
     <figure class="hero-image" aria-label="Warm accounting office">
-      <img src="lev-office-background.jpg" alt="A calm office with plants, a desk, and soft natural light">
+      <img src="/lev-office-background.jpg" alt="A calm office with plants, a desk, and soft natural light">
       <button class="button" type="button" id="open-upload">Upload Documents</button>
     </figure>
   </section>
@@ -1181,17 +1237,21 @@ a:focus-visible {
           <input id="register-email" name="register-email" type="email" autocomplete="email" required>
         </div>
       </div>
-      <div class="field full magic-link-output" id="magic-link-output" hidden>
-        <label for="magic-link-value">Magic link</label>
-        <input id="magic-link-value" type="url" readonly>
-        <span class="hint">This preview opens an email draft and keeps the link active for 15 minutes.</span>
-      </div>
       <div class="message" id="register-message" role="status" aria-live="polite"></div>
-      <div class="link-actions">
-        <button class="button full normal-weight" id="create-magic-link" type="submit">Email Magic Link</button>
-        <button class="button secondary full" type="button" id="open-magic-link" hidden>Open Link</button>
-      </div>
+      <button class="button full" id="create-magic-link" type="submit">Email Magic Link</button>
     </form>
+  </section>
+</div>
+
+<div class="modal-backdrop info-modal" id="email-link-modal" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="email-link-title">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title" id="email-link-title">Check Your Email</h2>
+        <p class="modal-copy">Check your email for a Secure Log on Link.</p>
+      </div>
+      <button class="close-button" type="button" data-close-info aria-label="Close email confirmation">×</button>
+    </div>
   </section>
 </div>
 
@@ -1200,7 +1260,7 @@ a:focus-visible {
     <div class="modal-header">
       <div>
         <h2 class="modal-title" id="tax-info-title">Confirm Tax Info</h2>
-        <p class="modal-copy">Before uploading documents, confirm your contact and tax profile are up to date.</p>
+        <p class="modal-copy" id="tax-info-copy">Before uploading documents, confirm your contact and tax profile are up to date.</p>
       </div>
       <button class="close-button" type="button" data-close-tax-info aria-label="Close tax info form">×</button>
     </div>
@@ -1265,12 +1325,12 @@ a:focus-visible {
           <textarea id="tax-notes" name="tax-notes" placeholder="Deductions, credits, life changes, new dependents, home purchase, business expenses, or anything Lev should know."></textarea>
         </div>
       </div>
-      <div class="confirm-row">
+      <div class="confirm-row" id="tax-info-confirm-row">
         <input id="tax-confirmed" name="tax-confirmed" type="checkbox" required>
         <label class="required-label" for="tax-confirmed">I confirm this tax information is current and accurate for this upload.</label>
       </div>
       <div class="message" id="tax-info-message" role="status" aria-live="polite"></div>
-      <button class="button full" type="submit">Confirm and Continue</button>
+      <button class="button full" id="tax-info-submit" type="submit">Confirm and Continue</button>
     </form>
   </section>
 </div>
@@ -1301,6 +1361,22 @@ a:focus-visible {
       <div class="message" id="upload-message" role="status" aria-live="polite"></div>
       <button class="button full" type="submit">Submit Documents</button>
     </form>
+  </section>
+</div>
+
+<div class="modal-backdrop" id="document-preview-modal" aria-hidden="true">
+  <section class="modal document-preview-modal" role="dialog" aria-modal="true" aria-labelledby="document-preview-title">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title" id="document-preview-title">Document Preview</h2>
+        <p class="modal-copy" id="document-preview-meta"></p>
+      </div>
+      <button class="close-button" type="button" data-close-document-preview aria-label="Close document preview">×</button>
+    </div>
+    <div class="document-preview-body">
+      <div class="message" id="document-preview-message" role="status" aria-live="polite"></div>
+      <iframe class="document-preview-frame" id="document-preview-frame" title="Document preview" referrerpolicy="no-referrer"></iframe>
+    </div>
   </section>
 </div>
 
@@ -1335,20 +1411,18 @@ a:focus-visible {
     <div class="modal-header">
       <div>
         <h2 class="modal-title" id="security-title">Security</h2>
-        <p class="modal-copy">The safeguards used for client upload access.</p>
+        <p class="modal-copy">How your private upload link and tax documents are protected.</p>
       </div>
       <button class="close-button" type="button" data-close-info aria-label="Close security popup">×</button>
     </div>
     <div class="info-body">
       <ul>
-        <li>Client access uses time-limited magic links instead of reusable customer passwords.</li>
-        <li>Uploaded tax documents are intended to be stored in a private Cloudflare R2 bucket, not in the public website files.</li>
-        <li>R2 file access should use short-lived signed upload and download URLs so clients and admins only reach the specific files they are authorized to handle.</li>
-        <li>Documents are protected in transit with HTTPS/TLS and stored in R2 with encryption at rest.</li>
-        <li>The database should keep client records, upload status, and private R2 object keys only; document contents should remain in R2.</li>
-        <li>Uploaded documents stay tied to the registered client email and confirmed tax profile.</li>
-        <li>Admin tools are protected behind the configured server password and private dashboard session.</li>
-        <li>For best results, use a private device and sign out after uploading on a shared computer.</li>
+        <li>You sign in with a private link sent to your email, so there is no customer password to remember or reuse.</li>
+        <li>Each sign-in link works for a limited time and is meant only for the person who requested it.</li>
+        <li>Your tax documents are uploaded through a secure connection and kept in private document storage.</li>
+        <li>Documents are connected to your email and tax profile, so Lev can match each file to the right client.</li>
+        <li>Only the protected admin dashboard can be used to review submitted documents.</li>
+        <li>When using a shared computer, close the browser or sign out after uploading your files.</li>
       </ul>
     </div>
   </section>
@@ -1381,21 +1455,23 @@ a:focus-visible {
       <h2 class="admin-title">Clients</h2>
       <button class="button ghost" type="button" id="close-dashboard">Close</button>
     </div>
+    <nav class="admin-menubar" aria-label="Admin menu">
+      <button class="button ghost admin-menu-button" type="button" id="alert-menu-button" aria-expanded="false" aria-controls="alert-menu">New Uploads</button>
+      <section class="admin-menu-panel alert-list" id="alert-menu" hidden aria-live="polite">
+        <ul class="alert-items" id="alert-list"></ul>
+        <button class="button ghost full" type="button" id="mark-alerts-seen">Mark All Seen</button>
+      </section>
+    </nav>
     <div class="admin-tools" aria-label="Admin tools">
       <section class="admin-tool-card" id="install-card">
         <h3>Install Admin App</h3>
         <p>Install this dashboard as a web app for faster access to uploads.</p>
         <button class="button secondary full" type="button" id="install-app">Install App</button>
       </section>
-      <section class="admin-tool-card">
+      <section class="admin-tool-card" id="notification-card">
         <h3>Upload Alerts</h3>
         <p id="notification-status">Browser notifications are not enabled.</p>
         <button class="button secondary full" type="button" id="enable-notifications">Enable Notifications</button>
-      </section>
-      <section class="admin-tool-card alert-list" aria-live="polite">
-        <h3 id="alert-heading">New Uploads</h3>
-        <ul class="alert-items" id="alert-list"></ul>
-        <button class="button ghost full" type="button" id="mark-alerts-seen">Mark All Seen</button>
       </section>
     </div>
     <div class="field">
@@ -1425,6 +1501,7 @@ const ADMIN_AUTH_KEY = "levs-income-tax-admin-authenticated";
 const ADMIN_TOKEN_KEY = "levs-income-tax-admin-token";
 const ADMIN_ALERTS_KEY = "levs-income-tax-admin-alerts";
 const MAGIC_LINK_KEY = "levs-income-tax-magic-links";
+const TAX_INFO_SESSION_KEY = "levs-income-tax-tax-info-confirmed";
 const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
 const openUploadButton = document.querySelector("#open-upload");
 const registerModal = document.querySelector("#register-modal");
@@ -1432,15 +1509,22 @@ const registerForm = document.querySelector("#register-form");
 const registerMessage = document.querySelector("#register-message");
 const registerEmailInput = document.querySelector("#register-email");
 const createMagicLinkButton = document.querySelector("#create-magic-link");
-const magicLinkOutput = document.querySelector("#magic-link-output");
-const magicLinkValue = document.querySelector("#magic-link-value");
-const openMagicLinkButton = document.querySelector("#open-magic-link");
 const taxInfoModal = document.querySelector("#tax-info-modal");
 const taxInfoForm = document.querySelector("#tax-info-form");
 const taxInfoMessage = document.querySelector("#tax-info-message");
+const taxInfoTitle = document.querySelector("#tax-info-title");
+const taxInfoCopy = document.querySelector("#tax-info-copy");
+const taxInfoConfirmRow = document.querySelector("#tax-info-confirm-row");
+const taxConfirmedInput = document.querySelector("#tax-confirmed");
+const taxInfoSubmitButton = document.querySelector("#tax-info-submit");
 const uploadModal = document.querySelector("#upload-modal");
 const uploadForm = document.querySelector("#upload-form");
 const uploadMessage = document.querySelector("#upload-message");
+const documentPreviewModal = document.querySelector("#document-preview-modal");
+const documentPreviewTitle = document.querySelector("#document-preview-title");
+const documentPreviewMeta = document.querySelector("#document-preview-meta");
+const documentPreviewMessage = document.querySelector("#document-preview-message");
+const documentPreviewFrame = document.querySelector("#document-preview-frame");
 const fileInput = document.querySelector("#tax-documents");
 const fileList = document.querySelector("#selected-files");
 const yearSelect = document.querySelector("#tax-year");
@@ -1457,16 +1541,19 @@ const clientFilter = document.querySelector("#client-filter");
 const documentPanel = document.querySelector("#document-panel");
 const installCard = document.querySelector("#install-card");
 const installAppButton = document.querySelector("#install-app");
+const notificationCard = document.querySelector("#notification-card");
 const notificationStatus = document.querySelector("#notification-status");
 const enableNotificationsButton = document.querySelector("#enable-notifications");
 const alertList = document.querySelector("#alert-list");
-const alertHeading = document.querySelector("#alert-heading");
+const alertMenuButton = document.querySelector("#alert-menu-button");
+const alertMenu = document.querySelector("#alert-menu");
 const markAlertsSeenButton = document.querySelector("#mark-alerts-seen");
 const infoModals = [...document.querySelectorAll(".info-modal")];
 let activeClientId = null;
 let typedBuffer = "";
-let pendingMagicLink = "";
 let installPromptEvent = null;
+let taxInfoFormMode = "client";
+let adminTaxInfoClientId = "";
 
 function getTaxYears() {
   const currentYear = new Date().getFullYear();
@@ -1683,8 +1770,8 @@ function showAdminNotification(title, body) {
   const options = {
     body,
     tag: "levs-income-tax-upload",
-    badge: "lev-icon.svg",
-    icon: "lev-icon.svg"
+    badge: "/lev-icon.svg",
+    icon: "/lev-icon.svg"
   };
 
   if ("serviceWorker" in navigator) {
@@ -1716,6 +1803,8 @@ function notifyAdminUpload(client, documents, taxYear, serverAlerts = null) {
 }
 
 function renderNotificationStatus() {
+  notificationCard.hidden = false;
+
   if (!("Notification" in window)) {
     notificationStatus.textContent = "Browser notifications are not available here.";
     enableNotificationsButton.disabled = true;
@@ -1723,9 +1812,7 @@ function renderNotificationStatus() {
   }
 
   if (Notification.permission === "granted") {
-    notificationStatus.textContent = "Upload notifications are enabled.";
-    enableNotificationsButton.textContent = "Notifications Enabled";
-    enableNotificationsButton.disabled = true;
+    notificationCard.hidden = true;
     return;
   }
 
@@ -1741,22 +1828,34 @@ function renderNotificationStatus() {
   enableNotificationsButton.disabled = false;
 }
 
-function renderInstallPrompt() {
-  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+function isMobileDevice() {
+  return window.matchMedia("(hover: none) and (pointer: coarse)").matches || window.innerWidth <= 760;
+}
 
-  if (isStandalone) {
+function isInstalledApp() {
+  return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+}
+
+function renderInstallPrompt() {
+  if (!isMobileDevice() || isInstalledApp() || !installPromptEvent) {
     installCard.hidden = true;
     return;
   }
 
   installCard.hidden = false;
-  installAppButton.disabled = !installPromptEvent;
-  installAppButton.textContent = installPromptEvent ? "Install App" : "Use Browser Install";
+  installAppButton.disabled = false;
+  installAppButton.textContent = "Install App";
+}
+
+function closeAlertMenu() {
+  alertMenu.hidden = true;
+  alertMenuButton.setAttribute("aria-expanded", "false");
 }
 
 function renderAlerts() {
   const unseenAlerts = getUnseenAlerts();
-  alertHeading.textContent = `New Uploads${unseenAlerts.length ? ` (${unseenAlerts.length})` : ""}`;
+  alertMenuButton.textContent = `New Uploads${unseenAlerts.length ? ` (${unseenAlerts.length})` : ""}`;
+  alertMenuButton.classList.toggle("has-new", Boolean(unseenAlerts.length));
   markAlertsSeenButton.hidden = !unseenAlerts.length;
 
   if (!unseenAlerts.length) {
@@ -1870,6 +1969,24 @@ async function requestAdminMagicLink(clientId) {
   });
 }
 
+async function updateAdminClientTaxInfo(clientId, taxInfo) {
+  const result = await apiRequest("/api/admin/clients/tax-info", {
+    method: "POST",
+    token: getAdminToken(),
+    body: { clientId, taxInfo }
+  });
+  return saveClientFromServer(result.client);
+}
+
+async function getAdminDocumentUrl(key) {
+  const result = await apiRequest("/api/admin/documents/download", {
+    method: "POST",
+    token: getAdminToken(),
+    body: { key }
+  });
+  return result.url;
+}
+
 async function consumeMagicLink() {
   const token = new URLSearchParams(location.search).get("magic");
   if (!token) return false;
@@ -1883,7 +2000,7 @@ async function consumeMagicLink() {
     history.replaceState(null, "", getCleanPageUrl().toString());
     setCurrentClient(client, result.clientToken);
     showHomeConfirmation("success", `Welcome back, ${client.name}.`);
-    setTimeout(openTaxInfo, 350);
+    setTimeout(openTaxInfoOncePerSession, 350);
     return true;
   } catch (error) {
     if (![404, 410].includes(error.status)) {
@@ -1927,7 +2044,7 @@ async function consumeMagicLink() {
   saveMagicLinks(records);
   setCurrentClient(client);
   showHomeConfirmation("success", `Welcome back, ${client.name}.`);
-  setTimeout(openTaxInfo, 350);
+  setTimeout(openTaxInfoOncePerSession, 350);
   return true;
 }
 
@@ -1965,13 +2082,6 @@ function renderSession() {
 
 function findClientByEmail(email) {
   return getSubmissions().find((client) => client.email.toLowerCase() === email.toLowerCase()) || null;
-}
-
-function resetMagicLinkOutput() {
-  pendingMagicLink = "";
-  magicLinkValue.value = "";
-  magicLinkOutput.hidden = true;
-  openMagicLinkButton.hidden = true;
 }
 
 function registerClient({ name, email }) {
@@ -2126,7 +2236,10 @@ function renderDocuments(client) {
     : "Not confirmed";
   const taxSummary = `
     <section class="tax-summary" aria-label="Confirmed tax information">
-      <h3>Confirmed Tax Info</h3>
+      <div class="tax-summary-header">
+        <h3>Confirmed Tax Info</h3>
+        <button class="button ghost" type="button" data-edit-tax-info="${escapeHtml(client.id)}">Edit</button>
+      </div>
       <div class="summary-grid">
         <div class="summary-item"><strong>Name</strong>${escapeHtml(taxInfo.fullName || client.name)}</div>
         <div class="summary-item"><strong>Phone</strong>${escapeHtml(taxInfo.phone || "Not provided")}</div>
@@ -2145,7 +2258,12 @@ function renderDocuments(client) {
   const rows = client.documents.map((doc) => {
     const isNew = unseenDocIds.has(doc.id);
     const download = doc.key
-      ? `<button class="button ghost" type="button" data-doc-key="${escapeHtml(doc.key)}" data-doc-name="${escapeHtml(doc.name)}">Download</button>`
+      ? `
+        <div class="doc-actions">
+          <button class="button secondary" type="button" data-doc-preview-key="${escapeHtml(doc.key)}" data-doc-name="${escapeHtml(doc.name)}" data-doc-type="${escapeHtml(doc.type)}" data-doc-size="${escapeHtml(doc.size)}" data-doc-uploaded="${escapeHtml(doc.uploadedAt)}">Preview</button>
+          <button class="button ghost" type="button" data-doc-download-key="${escapeHtml(doc.key)}" data-doc-name="${escapeHtml(doc.name)}">Download</button>
+        </div>
+      `
       : '<span class="pill">Metadata only</span>';
     const newPill = isNew ? ' <span class="pill warning">New</span>' : "";
 
@@ -2212,10 +2330,61 @@ function fillTaxInfoForm(client) {
   document.querySelector("#tax-confirmed").checked = false;
 }
 
+function getTaxInfoFromForm() {
+  const formData = new FormData(taxInfoForm);
+  return {
+    fullName: formData.get("tax-full-name").trim(),
+    phone: formData.get("tax-phone").trim(),
+    street: formData.get("tax-street").trim(),
+    city: formData.get("tax-city").trim(),
+    state: formData.get("tax-state").trim().toUpperCase(),
+    zip: formData.get("tax-zip").trim(),
+    filingStatus: formData.get("filing-status"),
+    dependents: formData.get("dependents"),
+    occupation: formData.get("occupation").trim(),
+    incomeChanges: formData.get("income-changes"),
+    notes: formData.get("tax-notes").trim()
+  };
+}
+
+function configureTaxInfoForm(mode) {
+  taxInfoFormMode = mode;
+  const isAdmin = mode === "admin";
+  taxInfoTitle.textContent = isAdmin ? "Edit Tax Info" : "Confirm Tax Info";
+  taxInfoCopy.textContent = isAdmin
+    ? "Update the client's contact and tax profile details."
+    : "Before uploading documents, confirm your contact and tax profile are up to date.";
+  taxInfoConfirmRow.hidden = isAdmin;
+  taxConfirmedInput.required = !isAdmin;
+  taxConfirmedInput.checked = isAdmin;
+  taxInfoSubmitButton.textContent = isAdmin ? "Save Tax Info" : "Confirm and Continue";
+}
+
+function getTaxInfoSessionKey(client) {
+  return `${TAX_INFO_SESSION_KEY}:${client.id}`;
+}
+
+function hasConfirmedTaxInfoThisSession(client) {
+  return sessionStorage.getItem(getTaxInfoSessionKey(client)) === "true";
+}
+
+function markTaxInfoConfirmedThisSession(client) {
+  sessionStorage.setItem(getTaxInfoSessionKey(client), "true");
+}
+
+function clearTaxInfoConfirmedThisSession(client) {
+  if (!client) return;
+  sessionStorage.removeItem(getTaxInfoSessionKey(client));
+}
+
+function showEmailLinkPopup() {
+  closeModal(registerModal);
+  openInfoModal("email-link-modal");
+}
+
 function openRegister() {
   clearHomeConfirmation();
   clearMessage(registerMessage);
-  resetMagicLinkOutput();
   registerForm.reset();
   openModal(registerModal);
   setTimeout(() => registerEmailInput.focus(), 30);
@@ -2232,9 +2401,75 @@ function openTaxInfo() {
   clearHomeConfirmation();
   clearMessage(taxInfoMessage);
   taxInfoForm.reset();
+  adminTaxInfoClientId = "";
+  configureTaxInfoForm("client");
   fillTaxInfoForm(client);
   openModal(taxInfoModal);
   setTimeout(() => document.querySelector("#tax-phone").focus(), 30);
+}
+
+function openAdminTaxInfo(client) {
+  if (!client) return;
+
+  clearMessage(taxInfoMessage);
+  taxInfoForm.reset();
+  adminTaxInfoClientId = client.id;
+  configureTaxInfoForm("admin");
+  fillTaxInfoForm(client);
+  openModal(taxInfoModal);
+  setTimeout(() => document.querySelector("#tax-full-name").focus(), 30);
+}
+
+function closeDocumentPreview() {
+  documentPreviewFrame.src = "about:blank";
+  documentPreviewTitle.textContent = "Document Preview";
+  documentPreviewMeta.textContent = "";
+  clearMessage(documentPreviewMessage);
+  closeModal(documentPreviewModal);
+}
+
+async function openDocumentPreview(button) {
+  const key = button.dataset.docPreviewKey;
+  if (!key) return;
+
+  const name = button.dataset.docName || "Document";
+  const type = button.dataset.docType || "application/octet-stream";
+  const size = Number(button.dataset.docSize) || 0;
+  const uploadedAt = button.dataset.docUploaded ? new Date(button.dataset.docUploaded).toLocaleString() : "Unknown upload time";
+
+  button.disabled = true;
+  button.textContent = "…";
+  documentPreviewTitle.textContent = name;
+  documentPreviewMeta.textContent = `${type} · ${formatBytes(size)} · ${uploadedAt}`;
+  clearMessage(documentPreviewMessage);
+  documentPreviewFrame.src = "about:blank";
+
+  try {
+    const url = await getAdminDocumentUrl(key);
+    documentPreviewFrame.src = url;
+    openModal(documentPreviewModal);
+  } catch (error) {
+    alert(error.message || "Could not get preview link.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Preview";
+  }
+}
+
+function openTaxInfoOncePerSession() {
+  const client = getCurrentClient();
+
+  if (!client) {
+    openRegister();
+    return;
+  }
+
+  if (hasConfirmedTaxInfoThisSession(client)) {
+    openUpload();
+    return;
+  }
+
+  openTaxInfo();
 }
 
 function openUpload() {
@@ -2304,6 +2539,7 @@ function enterAdminRoute() {
   closeModal(registerModal);
   closeModal(taxInfoModal);
   closeModal(uploadModal);
+  closeDocumentPreview();
   infoModals.forEach(closeModal);
 
   if (sessionStorage.getItem(ADMIN_AUTH_KEY) === "true") {
@@ -2336,11 +2572,12 @@ openUploadButton.addEventListener("click", () => {
     return;
   }
 
-  openTaxInfo();
+  openTaxInfoOncePerSession();
 });
 
 sessionNote.addEventListener("click", (event) => {
   if (!event.target.closest("#sign-out")) return;
+  clearTaxInfoConfirmedThisSession(getCurrentClient());
   sessionStorage.removeItem(SESSION_KEY);
   sessionStorage.removeItem(CLIENT_AUTH_KEY);
   clearHomeConfirmation();
@@ -2359,22 +2596,8 @@ registerForm.addEventListener("submit", async (event) => {
 
   try {
     const result = await requestBackendMagicLink({ email });
-    const client = saveClientFromServer(result.client);
-
-    if (result.previewLink) {
-      pendingMagicLink = result.previewLink;
-      magicLinkValue.value = result.previewLink;
-      magicLinkOutput.hidden = false;
-      openMagicLinkButton.hidden = false;
-      showMessage(registerMessage, "warning", "Email backend is running in console preview mode. Configure email credentials to send live email.");
-      return;
-    }
-
-    pendingMagicLink = "";
-    magicLinkValue.value = "";
-    magicLinkOutput.hidden = true;
-    openMagicLinkButton.hidden = true;
-    showMessage(registerMessage, "success", `Magic link emailed to ${client.email}.`);
+    saveClientFromServer(result.client);
+    showEmailLinkPopup();
   } catch (error) {
     if (error.status) {
       showMessage(registerMessage, "error", error.message || "Magic link could not be sent.");
@@ -2387,20 +2610,11 @@ registerForm.addEventListener("submit", async (event) => {
     }
 
     const link = createMagicLink(client);
-    pendingMagicLink = link;
-    magicLinkValue.value = link;
-    magicLinkOutput.hidden = false;
-    openMagicLinkButton.hidden = false;
     openMagicLinkEmail(client, link);
-    showMessage(registerMessage, "warning", "Backend is unavailable, so a local email draft was opened instead.");
+    showEmailLinkPopup();
   } finally {
     createMagicLinkButton.disabled = false;
   }
-});
-
-openMagicLinkButton.addEventListener("click", () => {
-  if (!pendingMagicLink) return;
-  window.location.href = pendingMagicLink;
 });
 
 document.querySelectorAll("[data-info-modal]").forEach((button) => {
@@ -2412,6 +2626,13 @@ window.addEventListener("beforeinstallprompt", (event) => {
   installPromptEvent = event;
   renderInstallPrompt();
 });
+
+window.addEventListener("appinstalled", () => {
+  installPromptEvent = null;
+  renderInstallPrompt();
+});
+
+window.addEventListener("resize", renderInstallPrompt);
 
 installAppButton.addEventListener("click", async () => {
   if (!installPromptEvent) return;
@@ -2427,30 +2648,48 @@ enableNotificationsButton.addEventListener("click", async () => {
   renderNotificationStatus();
 });
 
-taxInfoForm.addEventListener("submit", (event) => {
+taxInfoForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearMessage(taxInfoMessage);
 
-  const formData = new FormData(taxInfoForm);
-  const client = updateCurrentClientTaxInfo({
-    fullName: formData.get("tax-full-name").trim(),
-    phone: formData.get("tax-phone").trim(),
-    street: formData.get("tax-street").trim(),
-    city: formData.get("tax-city").trim(),
-    state: formData.get("tax-state").trim().toUpperCase(),
-    zip: formData.get("tax-zip").trim(),
-    filingStatus: formData.get("filing-status"),
-    dependents: formData.get("dependents"),
-    occupation: formData.get("occupation").trim(),
-    incomeChanges: formData.get("income-changes"),
-    notes: formData.get("tax-notes").trim()
-  });
+  const taxInfo = getTaxInfoFromForm();
+
+  if (taxInfoFormMode === "admin") {
+    if (!adminTaxInfoClientId) {
+      showMessage(taxInfoMessage, "error", "Select a client before editing tax info.");
+      return;
+    }
+
+    taxInfoSubmitButton.disabled = true;
+    showMessage(taxInfoMessage, "warning", "Saving tax info...");
+
+    try {
+      const client = await updateAdminClientTaxInfo(adminTaxInfoClientId, taxInfo);
+      activeClientId = client.id;
+      closeModal(taxInfoModal);
+      renderUsers();
+      const panel = document.querySelector("#dashboard-link-panel");
+      const message = document.querySelector("#dashboard-message");
+      if (panel && message) {
+        panel.hidden = false;
+        showMessage(message, "success", "Tax info updated.");
+      }
+    } catch (error) {
+      showMessage(taxInfoMessage, "error", error.message || "Tax info could not be updated.");
+    } finally {
+      taxInfoSubmitButton.disabled = false;
+    }
+    return;
+  }
+
+  const client = updateCurrentClientTaxInfo(taxInfo);
 
   if (!client) {
     showMessage(taxInfoMessage, "error", "Please register before confirming tax info.");
     return;
   }
 
+  markTaxInfoConfirmedThisSession(client);
   closeModal(taxInfoModal);
   openUpload();
 });
@@ -2522,6 +2761,10 @@ document.querySelectorAll("[data-close-upload]").forEach((button) => {
   button.addEventListener("click", () => closeModal(uploadModal));
 });
 
+document.querySelectorAll("[data-close-document-preview]").forEach((button) => {
+  button.addEventListener("click", closeDocumentPreview);
+});
+
 document.querySelectorAll("[data-close-admin-login]").forEach((button) => {
   button.addEventListener("click", () => closeModal(adminModal));
 });
@@ -2530,9 +2773,14 @@ document.querySelectorAll("[data-close-info]").forEach((button) => {
   button.addEventListener("click", () => closeModal(button.closest(".modal-backdrop")));
 });
 
-[registerModal, taxInfoModal, uploadModal, adminModal, ...infoModals].forEach((modal) => {
+[registerModal, taxInfoModal, uploadModal, documentPreviewModal, adminModal, ...infoModals].forEach((modal) => {
   modal.addEventListener("click", (event) => {
-    if (event.target === modal) closeModal(modal);
+    if (event.target !== modal) return;
+    if (modal === documentPreviewModal) {
+      closeDocumentPreview();
+      return;
+    }
+    closeModal(modal);
   });
 });
 
@@ -2558,8 +2806,20 @@ adminLoginForm.addEventListener("submit", async (event) => {
 
 clientFilter.addEventListener("input", renderUsers);
 
+alertMenuButton.addEventListener("click", () => {
+  const willOpen = alertMenu.hidden;
+  alertMenu.hidden = !willOpen;
+  alertMenuButton.setAttribute("aria-expanded", willOpen ? "true" : "false");
+});
+
+document.addEventListener("click", (event) => {
+  if (event.target.closest(".admin-menubar")) return;
+  closeAlertMenu();
+});
+
 markAlertsSeenButton.addEventListener("click", async () => {
   await markAlertsSeen();
+  closeAlertMenu();
   renderUsers();
 });
 
@@ -2577,16 +2837,28 @@ documentPanel.addEventListener("click", async (event) => {
     return;
   }
 
-  const downloadButton = event.target.closest("[data-doc-key]");
+  const editTaxInfoButton = event.target.closest("[data-edit-tax-info]");
+  if (editTaxInfoButton) {
+    const client = getSubmissions().find((item) => item.id === editTaxInfoButton.dataset.editTaxInfo);
+    openAdminTaxInfo(client);
+    return;
+  }
+
+  const previewButton = event.target.closest("[data-doc-preview-key]");
+  if (previewButton) {
+    await openDocumentPreview(previewButton);
+    return;
+  }
+
+  const downloadButton = event.target.closest("[data-doc-download-key]");
   if (downloadButton) {
-    const key = downloadButton.dataset.docKey;
+    const key = downloadButton.dataset.docDownloadKey;
     const name = downloadButton.dataset.docName || "document";
     downloadButton.disabled = true;
     downloadButton.textContent = "…";
     try {
-      const token = getAdminToken();
-      const result = await apiRequest("/api/admin/documents/download", { method: "POST", token, body: { key } });
-      window.open(result.url, "_blank");
+      const url = await getAdminDocumentUrl(key);
+      window.open(url, "_blank");
     } catch (error) {
       alert(error.message || "Could not get download link.");
     } finally {
@@ -2633,6 +2905,10 @@ documentPanel.addEventListener("click", async (event) => {
 });
 
 document.querySelector("#close-dashboard").addEventListener("click", () => {
+  if (isAdminRoute()) {
+    window.location.href = "/";
+    return;
+  }
   adminDashboard.classList.remove("open");
   adminDashboard.setAttribute("aria-hidden", "true");
 });
@@ -2645,7 +2921,7 @@ window.addEventListener("storage", (event) => {
 });
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js").catch(() => {});
+  navigator.serviceWorker.register("/service-worker.js").catch(() => {});
 }
 
 document.addEventListener("keydown", (event) => {
@@ -2653,8 +2929,10 @@ document.addEventListener("keydown", (event) => {
     closeModal(registerModal);
     closeModal(taxInfoModal);
     closeModal(uploadModal);
+    closeDocumentPreview();
     closeModal(adminModal);
     infoModals.forEach(closeModal);
+    closeAlertMenu();
     return;
   }
 
