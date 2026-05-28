@@ -3255,6 +3255,8 @@ if ("serviceWorker" in navigator) {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    const overlays = [registerModal, taxInfoModal, uploadModal, documentPreviewModal, adminModal, ...infoModals];
+    const modalOpen = overlays.some((modal) => modal.classList.contains("open"));
     closeModal(registerModal);
     closeModal(taxInfoModal);
     closeModal(uploadModal);
@@ -3262,6 +3264,11 @@ document.addEventListener("keydown", (event) => {
     closeModal(adminModal);
     infoModals.forEach(closeModal);
     closeAlertMenu();
+
+    if (!modalOpen && !isAdminRoute() && adminDashboard.classList.contains("open")) {
+      adminDashboard.classList.remove("open");
+      adminDashboard.setAttribute("aria-hidden", "true");
+    }
     return;
   }
 
