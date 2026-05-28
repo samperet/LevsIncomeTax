@@ -525,6 +525,14 @@ button * {
   width: 100%;
 }
 
+.button.danger {
+  color: var(--red);
+}
+
+.button.danger:hover {
+  background: var(--red-bg);
+}
+
 .magic-link-output {
   padding: 12px;
   border: 1px solid var(--glass-border);
@@ -1114,6 +1122,32 @@ a:focus-visible {
   margin: 0 0 12px;
 }
 
+.tax-summary.collapsed .tax-summary-header {
+  margin-bottom: 0;
+}
+
+.tax-summary-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tax-summary-caret {
+  font-size: 12px;
+  color: var(--muted);
+  transition: transform 0.15s ease;
+}
+
+.tax-summary.collapsed .tax-summary-caret {
+  transform: rotate(-90deg);
+}
+
 .tax-summary h3 {
   margin: 0;
   color: var(--ink);
@@ -1640,7 +1674,6 @@ a:focus-visible {
   <aside class="admin-sidebar">
     <div class="admin-top">
       <h2 class="admin-title">Clients</h2>
-      <button class="button ghost" type="button" id="close-dashboard">Close</button>
     </div>
     <nav class="admin-menubar" aria-label="Admin menu">
       <button class="button ghost admin-menu-button" type="button" id="alert-menu-button" aria-expanded="false" aria-controls="alert-menu">New Uploads</button>
@@ -1739,6 +1772,7 @@ const infoModals = [...document.querySelectorAll(".info-modal")];
 const quoteSlides = [...document.querySelectorAll("[data-quote-slide]")];
 const quoteControls = [...document.querySelectorAll("[data-quote-nav]")];
 let activeClientId = null;
+let taxInfoCollapsed = false;
 let typedBuffer = "";
 let installPromptEvent = null;
 let taxInfoFormMode = "client";
@@ -2198,6 +2232,26 @@ async function getAdminDocumentUrl(key) {
   return result.url;
 }
 
+async function deleteAdminDocument(clientId, documentId) {
+  const result = await apiRequest("/api/admin/documents/delete", {
+    method: "POST",
+    token: getAdminToken(),
+    body: { clientId, documentId }
+  });
+  saveAdminAlerts(getAdminAlerts().filter((alert) => alert.documentId !== documentId));
+  return saveClientFromServer(result.client);
+}
+
+async function deleteAdminClient(clientId) {
+  await apiRequest("/api/admin/clients/delete", {
+    method: "POST",
+    token: getAdminToken(),
+    body: { clientId }
+  });
+  saveSubmissions(getSubmissions().filter((client) => client.id !== clientId));
+  saveAdminAlerts(getAdminAlerts().filter((alert) => alert.clientId !== clientId));
+}
+
 async function consumeMagicLink() {
   const token = new URLSearchParams(location.search).get("magic");
   if (!token) return false;
@@ -2421,11 +2475,11 @@ function renderUsers() {
     `;
   }).join("");
 
-  if (!clients.some((client) => client.id === activeClientId)) {
-    activeClientId = clients[0].id;
+  if (activeClientId && !clients.some((client) => client.id === activeClientId)) {
+    activeClientId = null;
   }
 
-  renderDocuments(getSubmissions().find((client) => client.id === activeClientId));
+  renderDocuments(getSubmissions().find((client) => client.id === activeClientId) || null);
 }
 
 function renderDocuments(client) {
@@ -2446,12 +2500,17 @@ function renderDocuments(client) {
     ? new Date(client.taxInfoConfirmedAt).toLocaleString()
     : "Not confirmed";
   const taxSummary = `
-    <section class="tax-summary" aria-label="Confirmed tax information">
+    <section class="tax-summary${taxInfoCollapsed ? " collapsed" : ""}" aria-label="Confirmed tax information">
       <div class="tax-summary-header">
-        <h3>Confirmed Tax Info</h3>
+        <h3>
+          <button class="tax-summary-toggle" type="button" data-toggle-tax-info aria-expanded="${taxInfoCollapsed ? "false" : "true"}" aria-controls="tax-summary-grid">
+            <span class="tax-summary-caret" aria-hidden="true">▾</span>
+            Confirmed Tax Info
+          </button>
+        </h3>
         <button class="button ghost" type="button" data-edit-tax-info="${escapeHtml(client.id)}">Edit</button>
       </div>
-      <div class="summary-grid">
+      <div class="summary-grid" id="tax-summary-grid"${taxInfoCollapsed ? " hidden" : ""}>
         <div class="summary-item"><strong>Name</strong>${escapeHtml(taxInfo.fullName || client.name)}</div>
         <div class="summary-item"><strong>Phone</strong>${escapeHtml(taxInfo.phone || "Not provided")}</div>
         <div class="summary-item"><strong>Address</strong>${escapeHtml(addressParts || "Not provided")}</div>
@@ -2468,14 +2527,18 @@ function renderDocuments(client) {
   const unseenDocIds = getUnseenDocIds(client.id);
   const rows = client.documents.map((doc) => {
     const isNew = unseenDocIds.has(doc.id);
-    const download = doc.key
+    const fileActions = doc.key
       ? `
-        <div class="doc-actions">
           <button class="button secondary" type="button" data-doc-preview-key="${escapeHtml(doc.key)}" data-doc-name="${escapeHtml(doc.name)}" data-doc-type="${escapeHtml(doc.type)}" data-doc-size="${escapeHtml(doc.size)}" data-doc-uploaded="${escapeHtml(doc.uploadedAt)}">Preview</button>
           <button class="button ghost" type="button" data-doc-download-key="${escapeHtml(doc.key)}" data-doc-name="${escapeHtml(doc.name)}">Download</button>
-        </div>
       `
       : '<span class="pill">Metadata only</span>';
+    const download = `
+        <div class="doc-actions">
+          ${fileActions}
+          <button class="button ghost danger" type="button" data-doc-delete-id="${escapeHtml(doc.id)}" data-doc-name="${escapeHtml(doc.name)}">Delete</button>
+        </div>
+      `;
     const newPill = isNew ? ' <span class="pill warning">New</span>' : "";
 
     return `
@@ -2498,6 +2561,8 @@ function renderDocuments(client) {
       <div class="dashboard-actions">
         <button class="button secondary" type="button" data-email-magic-link="${escapeHtml(client.id)}">Email Magic Link</button>
         <button class="button ghost" type="button" data-mark-client-seen="${escapeHtml(client.id)}"${unseenDocIds.size ? "" : " hidden"}>Mark Seen</button>
+        <button class="button ghost danger" type="button" data-delete-client="${escapeHtml(client.id)}" data-client-name="${escapeHtml(client.name)}">Delete Customer</button>
+        <button class="button ghost" type="button" data-close-customer aria-label="Close customer preview">Close</button>
       </div>
     </div>
     <div class="dashboard-link-panel" id="dashboard-link-panel" hidden>
@@ -3053,6 +3118,57 @@ userList.addEventListener("click", (event) => {
 });
 
 documentPanel.addEventListener("click", async (event) => {
+  const closeCustomerButton = event.target.closest("[data-close-customer]");
+  if (closeCustomerButton) {
+    activeClientId = null;
+    renderUsers();
+    return;
+  }
+
+  const toggleTaxInfoButton = event.target.closest("[data-toggle-tax-info]");
+  if (toggleTaxInfoButton) {
+    taxInfoCollapsed = !taxInfoCollapsed;
+    const grid = documentPanel.querySelector("#tax-summary-grid");
+    const section = documentPanel.querySelector(".tax-summary");
+    if (grid) grid.hidden = taxInfoCollapsed;
+    if (section) section.classList.toggle("collapsed", taxInfoCollapsed);
+    toggleTaxInfoButton.setAttribute("aria-expanded", taxInfoCollapsed ? "false" : "true");
+    return;
+  }
+
+  const deleteClientButton = event.target.closest("[data-delete-client]");
+  if (deleteClientButton) {
+    const name = deleteClientButton.dataset.clientName || "this customer";
+    if (!confirm(`Delete ${name} and all of their documents? This cannot be undone.`)) return;
+    deleteClientButton.disabled = true;
+    try {
+      await deleteAdminClient(deleteClientButton.dataset.deleteClient);
+      activeClientId = null;
+      renderUsers();
+      renderAdminAwareness();
+    } catch (error) {
+      alert(error.message || "Could not delete customer.");
+      deleteClientButton.disabled = false;
+    }
+    return;
+  }
+
+  const deleteDocButton = event.target.closest("[data-doc-delete-id]");
+  if (deleteDocButton) {
+    const name = deleteDocButton.dataset.docName || "this document";
+    if (!confirm(`Delete "${name}"? This permanently removes the file and cannot be undone.`)) return;
+    deleteDocButton.disabled = true;
+    try {
+      await deleteAdminDocument(activeClientId, deleteDocButton.dataset.docDeleteId);
+      renderUsers();
+      renderAdminAwareness();
+    } catch (error) {
+      alert(error.message || "Could not delete document.");
+      deleteDocButton.disabled = false;
+    }
+    return;
+  }
+
   const markSeenButton = event.target.closest("[data-mark-client-seen]");
   if (markSeenButton) {
     markAlertsSeen(markSeenButton.dataset.markClientSeen).then(renderUsers);
@@ -3124,15 +3240,6 @@ documentPanel.addEventListener("click", async (event) => {
     openMagicLinkEmail(client, link);
     showMessage(message, "warning", "Backend is unavailable, so a local email draft was opened instead.");
   }
-});
-
-document.querySelector("#close-dashboard").addEventListener("click", () => {
-  if (isAdminRoute()) {
-    window.location.href = "/";
-    return;
-  }
-  adminDashboard.classList.remove("open");
-  adminDashboard.setAttribute("aria-hidden", "true");
 });
 
 window.addEventListener("storage", (event) => {

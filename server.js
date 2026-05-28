@@ -4,7 +4,7 @@ const fsp = require("fs/promises");
 const path = require("path");
 const express = require("express");
 const nodemailer = require("nodemailer");
-const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const ROOT = __dirname;
@@ -40,6 +40,20 @@ function getR2Client() {
     credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY }
   });
   return r2ClientCache;
+}
+
+async function deleteR2Objects(keys) {
+  const client = getR2Client();
+  if (!client) return;
+  await Promise.all(
+    keys.filter(Boolean).map(async (key) => {
+      try {
+        await client.send(new DeleteObjectCommand({ Bucket: process.env.R2_BUCKET, Key: key }));
+      } catch (error) {
+        console.warn(`Failed to delete R2 object ${key}:`, error.message);
+      }
+    })
+  );
 }
 
 function sanitizeKeySegment(name) {
@@ -329,6 +343,81 @@ app.post("/api/admin/clients/tax-info", async (req, res) => {
     }
 
     res.json({ ok: true, client: result.client });
+  } catch (error) {
+    handleApiError(res, error);
+  }
+});
+
+app.post("/api/admin/documents/delete", async (req, res) => {
+  try {
+    const result = await updateStore(async (store) => {
+      pruneStore(store);
+
+      if (!verifySession(store.adminSessions, getBearerToken(req))) {
+        return { error: "Admin session is missing or expired.", status: 401 };
+      }
+
+      const client = store.clients.find((item) => item.id === cleanText(req.body.clientId));
+      if (!client) {
+        return { error: "Client account was not found.", status: 404 };
+      }
+
+      const documentId = cleanText(req.body.documentId);
+      const documents = Array.isArray(client.documents) ? client.documents : [];
+      const index = documents.findIndex((doc) => doc.id === documentId);
+      if (index < 0) {
+        return { error: "Document not found.", status: 404 };
+      }
+
+      const [removed] = documents.splice(index, 1);
+      store.alerts = store.alerts.filter((alert) => alert.documentId !== documentId);
+      client.updatedAt = new Date().toISOString();
+      await deleteR2Objects([removed.key]);
+
+      return { client: publicClient(client), alerts: store.alerts };
+    });
+
+    if (result.error) {
+      res.status(result.status || 400).json({ error: result.error });
+      return;
+    }
+
+    res.json({ ok: true, client: result.client, alerts: result.alerts });
+  } catch (error) {
+    handleApiError(res, error);
+  }
+});
+
+app.post("/api/admin/clients/delete", async (req, res) => {
+  try {
+    const result = await updateStore(async (store) => {
+      pruneStore(store);
+
+      if (!verifySession(store.adminSessions, getBearerToken(req))) {
+        return { error: "Admin session is missing or expired.", status: 401 };
+      }
+
+      const clientId = cleanText(req.body.clientId);
+      const index = store.clients.findIndex((item) => item.id === clientId);
+      if (index < 0) {
+        return { error: "Client account was not found.", status: 404 };
+      }
+
+      const [removed] = store.clients.splice(index, 1);
+      store.alerts = store.alerts.filter((alert) => alert.clientId !== clientId);
+      store.magicLinks = store.magicLinks.filter((link) => link.clientId !== clientId);
+      const keys = (Array.isArray(removed.documents) ? removed.documents : []).map((doc) => doc.key);
+      await deleteR2Objects(keys);
+
+      return { clientId, alerts: store.alerts };
+    });
+
+    if (result.error) {
+      res.status(result.status || 400).json({ error: result.error });
+      return;
+    }
+
+    res.json({ ok: true, clientId: result.clientId, alerts: result.alerts });
   } catch (error) {
     handleApiError(res, error);
   }
